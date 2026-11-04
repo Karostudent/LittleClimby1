@@ -1,2 +1,81 @@
-# LittleClimby1
-Prototype til utvikling av mobilplattform for småbarnsforeldre
+# LittleClimby-appen
+
+LittleClimby-appen er en mobiltilpasset studentprototype for IS-219 ved Universitetet i Agder. Appen skal gjøre det enklere for kommende og nybakte foreldre å finne steder, aktiviteter og praktiske råd i Kristiansand.
+
+Dette er en privat demo med syntetiske data – ikke en offentlig tjeneste eller helseapp.
+
+## Kom i gang
+
+Forutsetter Node.js 20 eller nyere.
+
+```bash
+npm install
+npm run dev
+```
+
+Bygg og test:
+
+```bash
+npm run build
+npm test
+```
+
+## Funksjonalitet
+
+### Utforsk
+
+- Interaktivt Leaflet-kart og tekstlig listevisning.
+- Søk på navn, område og tagger.
+- Kategorier for kaféer/møteplasser, turer/uteområder og aktiviteter.
+- Filtre for blant annet stellerom, barnevognplass, trappefri adkomst og stelleplass for alle omsorgspersoner.
+- `Ja`, `Nei` og `Ukjent` vises separat. `Ukjent` teller aldri som et positivt filtertreff.
+- Favoritter lagres lokalt i nettleseren.
+- Fiktive steder er merket som «Fiktivt demosted».
+
+### Min reise og Profil
+
+- Frivillig demo-profil uten innlogging eller e-post.
+- Termin eller svangerskapsuke som alternative innganger.
+- Omtrentlig, deterministisk ukevisning basert på lokale kalenderdager.
+- Milepæler med separate, generelle råd til mor/den gravide og far/medforelder.
+- Milepælinnholdet endres med valgt alder: den første tiden for yngre barn og lek-, rutine- og selvstendighetsfokus for barn over ett år.
+- Valg av barnets alder fra 0–5 år.
+- Kort, generell beskrivelse av valgt aldersgruppe i «Din status», med tydelig forbehold om individuelle forskjeller.
+- Alderstilpassede fiktive aktiviteter og sjekkpunkter.
+- To lokale sjekklister med avkryssing.
+- Varslingsforhåndsvisning merket «Ikke sendt – prototype».
+- «Slett mine demodata» fjerner profil, sjekklister og favoritter.
+
+### Guider og Pappasporet
+
+- Praktiske, ikke-stereotype råd for pappa, medforelder og andre omsorgspersoner.
+- Enkel aktivitetsoversikt med tydelig demomarkering.
+- Tillitsmarkeringer for bekreftet informasjon, ukjent status og demodata.
+
+Den visuelle profilen bruker marineblå/petrol, skifer og dempede sandtoner for et mer nøytralt og robust uttrykk. Status kommuniseres også med tekst, ikke bare farge.
+
+Seed-data kan utvides i [src/data/places.ts](src/data/places.ts). Nye reelle steder må ha separat kilde- og kontrollstatus. Domenetyper og filterregler ligger i [src/domain/places.ts](src/domain/places.ts), mens reise- og alderslogikk ligger i [src/domain/journey.ts](src/domain/journey.ts).
+
+## Data og begrensninger
+
+- Fiktive oppføringer er kun laget for demonstrasjon og skal ikke tolkes som faktiske tilbud.
+- Reelle stedsidentiteter bekrefter ikke automatisk fasiliteter, ruter eller dagsaktuell tilgjengelighet.
+- Varsler, e-post, push, booking, betaling og innlogging er ikke implementert.
+- Kartlenker er eksterne; appen beregner ikke en trygg eller barnevognspesifikk rute.
+- Ingen medisinske vurderinger eller kliniske råd gis.
+- Demo-tilstand lagres kun lokalt og skal ikke fylles med ekte personopplysninger.
+
+Se [docs/data-provenance.md](docs/data-provenance.md) for kilder og status for reelle stedsidentiteter.
+
+## Verifisering og brukertest
+
+Kjør:
+
+```bash
+npm test
+npm run build
+```
+
+Manuelle Siri- og Jonas-skript finnes i [docs/test-scenarios.md](docs/test-scenarios.md). Kravstatus finnes i [docs/requirements-status.md](docs/requirements-status.md), og testnotater kan føres i [docs/user-test-notes.md](docs/user-test-notes.md).
+
+En produksjonsversjon trenger egen databehandling, personvern- og sikkerhetsvurdering, kartleverandøravtale, verifisering av fasiliteter, universell utforming og løpende kvalitetssikring.
