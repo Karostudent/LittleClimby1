@@ -12,7 +12,7 @@ import './styles.css';
 const filterOptions: FacilityName[] = ['changing_table', 'stroller_space', 'step_free_access', 'changing_access_all_caregivers', 'stroller_suitable_route', 'free_activity'];
 
 function Shell({ children }: { children: React.ReactNode }) {
-  return <><header className="topbar"><Link to="/" className="brand">LittleClimby-appen <span>DEMO</span></Link><nav aria-label="Hovedmeny">{['/', '/utforsk', '/reise', '/guider', '/profil'].map((path) => <NavLink key={path} to={path} end={path === '/'}>{path === '/' ? 'Hjem' : path.slice(1).replace('utforsk', 'Utforsk').replace('reise', 'Min reise').replace('guider', 'Guider').replace('profil', 'Profil')}</NavLink>)}</nav></header><main>{children}</main><footer>Studentprototype · Eksempeldata er ikke en offentlig tjeneste.</footer></>;
+  return <><header className="topbar"><Link to="/" className="brand"><img src="https://www.littleclimby.com/cdn/shop/files/Blde_logo_430x_f28bc674-bc9e-495a-898e-ed5b95cf0868.png?v=1681884793&width=220" alt="Little Climby" /><span>DEMO</span></Link><nav aria-label="Hovedmeny">{['/', '/utforsk', '/reise', '/guider', '/profil'].map((path) => <NavLink key={path} to={path} end={path === '/'}>{path === '/' ? 'Hjem' : path.slice(1).replace('utforsk', 'Utforsk').replace('reise', 'Min reise').replace('guider', 'Guider').replace('profil', 'Profil')}</NavLink>)}</nav></header><main>{children}</main><footer>Studentprototype · Eksempeldata er ikke en offentlig tjeneste.</footer></>;
 }
 
 function Home() {
