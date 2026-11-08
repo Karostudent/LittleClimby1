@@ -4,9 +4,11 @@ import {
   getJourneyWeek,
   checklistItems,
   checklistItemsForAge,
+  pregnancyChecklistForWeek,
   getAgeDescription,
   milestones,
   getParentAdvice,
+  kindergartenChecklistForAge,
   pregnancyWeekFromDueDate,
   pregnancyWeekFromEntry,
   type DemoProfile,
@@ -64,9 +66,21 @@ describe('journey calculations', () => {
     expect(toddlerIds).not.toContain('practical-route');
   });
 
+  it('returns kindergarten preparation tips only for preschool ages', () => {
+    expect(kindergartenChecklistForAge(2)).toHaveLength(0);
+    expect(kindergartenChecklistForAge(3).map((item) => item.id)).toContain('kindergarten-label-everything');
+    expect(kindergartenChecklistForAge(5).every((item) => item.ageMinYears <= 5 && item.ageMaxYears >= 5)).toBe(true);
+  });
+
   it('provides a short, non-clinical description for the selected age', () => {
     expect(getAgeDescription(2)).toContain('tempo');
     expect(getAgeDescription(9)).toContain('utvikler seg ulikt');
+  });
+
+  it('returns only practical pregnancy preparation tips from the current week', () => {
+    expect(pregnancyChecklistForWeek(27)).toHaveLength(0);
+    expect(pregnancyChecklistForWeek(35).map((item) => item.id)).toContain('pregnancy-hospital-bag');
+    expect(pregnancyChecklistForWeek(35).every((item) => item.fromWeek <= 35)).toBe(true);
   });
 
   it('provides separate practical advice for pregnant parent and dad/co-parent', () => {

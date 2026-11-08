@@ -33,6 +33,23 @@ export interface ChecklistItem {
   ageMaxYears: number;
 }
 
+export interface PregnancyChecklistItem {
+  id: string;
+  fromWeek: number;
+  label: string;
+  category: 'practical' | 'preparation' | 'economy' | 'work';
+  sourceUrl: string;
+}
+
+export interface KindergartenChecklistItem {
+  id: string;
+  ageMinYears: number;
+  ageMaxYears: number;
+  label: string;
+  category: 'clothing' | 'comfort' | 'routine';
+  sourceUrl: string;
+}
+
 export interface DemoState {
   schemaVersion: 1;
   profile: DemoProfile | null;
@@ -114,6 +131,37 @@ export const checklistItems: ChecklistItem[] = [
 
 export const checklistItemsForAge = (ageYears: number): ChecklistItem[] =>
   checklistItems.filter((item) => ageYears >= item.ageMinYears && ageYears <= item.ageMaxYears);
+
+export const kindergartenChecklistItems: KindergartenChecklistItem[] = [
+  { id: 'kindergarten-change-of-clothes', ageMinYears: 3, ageMaxYears: 5, label: 'Legg klart et merket skift med klær som tåler aktiv lek og vær.', category: 'clothing', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
+  { id: 'kindergarten-weather-clothes', ageMinYears: 3, ageMaxYears: 5, label: 'Sjekk at yttertøy, sko og hodeplagg passer til sesongen.', category: 'clothing', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
+  { id: 'kindergarten-indoor-shoes', ageMinYears: 3, ageMaxYears: 5, label: 'Avklar om barnehagen trenger tøfler eller innesko.', category: 'routine', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
+  { id: 'kindergarten-water-bottle', ageMinYears: 3, ageMaxYears: 5, label: 'Merk drikkeflaske og annet som skal være med i hverdagen.', category: 'routine', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
+  { id: 'kindergarten-comfort-item', ageMinYears: 3, ageMaxYears: 5, label: 'Avtal om barnet kan ha med smokk, koseklut eller en annen trygg ting ved behov.', category: 'comfort', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
+  { id: 'kindergarten-label-everything', ageMinYears: 3, ageMaxYears: 5, label: 'Merk klær, sko og utstyr med barnets navn før oppstart.', category: 'routine', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
+  { id: 'kindergarten-reuse', ageMinYears: 3, ageMaxYears: 5, label: 'Vurder brukt eller arvet utstyr der det passer, siden barn vokser raskt.', category: 'clothing', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
+];
+
+export const kindergartenChecklistForAge = (ageYears: number): KindergartenChecklistItem[] =>
+  kindergartenChecklistItems.filter((item) => ageYears >= item.ageMinYears && ageYears <= item.ageMaxYears);
+
+export const pregnancyChecklistItems: PregnancyChecklistItem[] = [
+  { id: 'pregnancy-course', fromWeek: 28, label: 'Undersøk fødselsforberedende kurs som passer for dere.', category: 'preparation', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-equipment-list', fromWeek: 30, label: 'Lag en rolig liste over nødvendig babyutstyr, og vurder hva som kan lånes eller vente.', category: 'practical', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-leave-plan', fromWeek: 30, label: 'Snakk sammen om hvordan permisjonen kan fordeles, og sjekk informasjonen på nav.no.', category: 'economy', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-birth-preferences', fromWeek: 31, label: 'Skriv ned spørsmål og ønsker dere vil ta opp med jordmor eller fødestedet.', category: 'preparation', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-car-seat', fromWeek: 31, label: 'Finn en godkjent bilstol og planlegg hvordan den skal monteres før hjemreisen.', category: 'practical', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-birth-network', fromWeek: 32, label: 'Undersøk barselgruppe eller annet lokalt nettverk via helsestasjonen.', category: 'practical', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-work-study', fromWeek: 34, label: 'Avklar eventuell tilrettelegging av jobb eller studier i god tid.', category: 'work', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-route', fromWeek: 34, label: 'Planlegg ruten til fødestedet og ha en enkel plan B.', category: 'practical', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-hospital-bag', fromWeek: 35, label: 'Pakk en enkel bag med klær, toalettsaker, lader og det dere trenger.', category: 'preparation', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-support', fromWeek: 36, label: 'Avtal hvem som kan hjelpe med mat, praktiske oppgaver og støtte den første tiden.', category: 'practical', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-contact-list', fromWeek: 36, label: 'Lag en liste over hvem som skal varsles når fødselen starter.', category: 'practical', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+  { id: 'pregnancy-home-ready', fromWeek: 39, label: 'Sjekk at det viktigste er klart hjemme: klær, bleier, soveplass og bilstol.', category: 'practical', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
+];
+
+export const pregnancyChecklistForWeek = (week: number): PregnancyChecklistItem[] =>
+  pregnancyChecklistItems.filter((item) => item.fromWeek <= week);
 
 const ageDescriptions: Record<number, string> = {
   0: 'Et lite barn som ofte utforsker verden gjennom nærhet, lyder og korte våkne perioder.',

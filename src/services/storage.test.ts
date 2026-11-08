@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { initialDemoState } from '../domain/journey';
-import { clearDemoState, readDemoState, writeDemoState } from './storage';
+import { clearDemoState, readDemoState, readTripPlan, readTripSelection, writeDemoState, writeTripPlan, writeTripSelection } from './storage';
 
 describe('demo storage', () => {
   beforeEach(() => localStorage.clear());
@@ -17,5 +17,17 @@ describe('demo storage', () => {
     expect(readDemoState()).toEqual(initialDemoState);
     clearDemoState();
     expect(localStorage.length).toBe(0);
+  });
+
+  it('stores up to three selected trip stops and supports multi-stop plans', () => {
+    writeTripSelection(['one', 'two', 'three', 'four']);
+    expect(readTripSelection()).toEqual(['one', 'two', 'three']);
+    writeTripPlan({ placeIds: ['one', 'two'], date: '', note: '' });
+    expect(readTripPlan()?.placeIds).toEqual(['one', 'two']);
+  });
+
+  it('reads legacy single-stop plans', () => {
+    localStorage.setItem('little-babylove:trip-plan:v1', JSON.stringify({ placeId: 'legacy', date: '', note: '' }));
+    expect(readTripPlan()?.placeIds).toEqual(['legacy']);
   });
 });
