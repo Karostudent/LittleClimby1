@@ -32,7 +32,7 @@ npm test
 - Favoritter lagres lokalt i nettleseren.
 - Fiktive steder er merket som «Fiktivt demosted».
 
-### Min reise og Profil
+### Min baby og Profil
 
 - Frivillig demo-profil uten innlogging eller e-post.
 - Termin eller svangerskapsuke som alternative innganger.

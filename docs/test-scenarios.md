@@ -35,7 +35,7 @@
 
 **Observatørens stoppunkter:**
 
-1. Fra Hjem åpner testpersonen «Se Min reise».
+1. Fra Hjem åpner testpersonen «Se Min baby».
 2. Velger «Jeg venter barn» og registrerer eksempeltermin `01.01.2027`, eller velger uke `20`.
 3. Velger «Pappa/medforelder» og lagrer profilen.
 4. Leser den omtrentlig beregnede uken og et pappatips.

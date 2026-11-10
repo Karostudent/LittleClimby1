@@ -16,4 +16,4 @@ Siri skal kunne åpne Utforsk uten innlogging, finne et sted ved tekst eller fil
 
 ## Ikke i denne fasen
 
-Min reise, sjekklister, varsler, produksjonskonto, booking, ratings og automatisk ruteplanlegging.
+Min baby, sjekklister, varsler, produksjonskonto, booking, ratings og automatisk ruteplanlegging.
