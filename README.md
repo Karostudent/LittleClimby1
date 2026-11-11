@@ -1,6 +1,6 @@
-# Little BabyLove
+# Enklere Babyliv
 
-Little BabyLove er en mobiltilpasset studentprototype for IS-219 ved Universitetet i Agder, med LittleClimby som merkevareunivers og Bittelilleskogen som et lekent figuruttrykk. Appen skal gjøre det enklere for kommende og nybakte foreldre å finne steder, aktiviteter og praktiske råd i Kristiansand.
+Enklere Babyliv er en mobiltilpasset studentprototype for IS-219 ved Universitetet i Agder. Appen skal gjøre det enklere for kommende og nybakte foreldre å finne steder, aktiviteter og praktiske råd i Kristiansand.
 
 Dette er en privat demo med syntetiske data – ikke en offentlig tjeneste eller helseapp.
 
@@ -51,12 +51,13 @@ npm test
 - Praktiske, ikke-stereotype råd for pappa, medforelder og andre omsorgspersoner.
 - Enkel aktivitetsoversikt med tydelig demomarkering.
 - Tillitsmarkeringer for bekreftet informasjon, ukjent status og demodata.
-- Forsiden og guidesiden viser fiktive, tydelig merkede annonseflater for lokale arrangementer og relevante produkter.
-- En konseptskisse viser også mulig premiumtilgang til AI-chat og deling med partner. Funksjonen er ikke aktivert.
+- Partnere har en egen, valgfri tilbudsside for kurs, babysvømming og arrangementer. Hovedmodellen er provisjon ved booking, mens sponset plassering er et tydelig merket tillegg.
+- En partnerside viser hvordan en kafé, arrangør eller kursleverandør kan sende inn et tilbud til vurdering.
+- En konseptskisse viser mulig premiumtilgang til Little BabyBot og deling med partner. Little BabyBot skal aldri gi helseråd, men henvise til lege eller helsestasjon.
 
 ### Demo av mulig inntektsmodell
 
-Annonsekortene er kun visuelle smakbiter for oppdragsgiver. De skal ikke tolkes som ekte samarbeid, anbefalinger eller betalt innhold. En produksjonsløsning bør holde sponsede plasseringer tydelig adskilt fra steddata, guider og generelle råd, og alltid merke dem med «Annonse» eller «Sponset».
+Partnertilbudene er kun visuelle smakbiter for oppdragsgiver. De skal ikke tolkes som ekte samarbeid, anbefalinger eller bookbare tilbud. En produksjonsløsning bør holde partnerinnhold tydelig adskilt fra steddata, guider og generelle råd, og alltid merke sponsede plasseringer med «Annonse» eller «Sponset».
 
 Den visuelle profilen bruker marineblå/petrol, skifer og dempede sandtoner for et mer nøytralt og robust uttrykk. Status kommuniseres også med tekst, ikke bare farge.
 

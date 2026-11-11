@@ -12,16 +12,15 @@ import './styles.css';
 const filterOptions: FacilityName[] = ['changing_table', 'stroller_space', 'step_free_access', 'changing_access_all_caregivers', 'stroller_suitable_route', 'free_activity'];
 
 function BrandLogo() {
-  return <span className="brand-lockup"><span className="brand-tree" aria-hidden="true">✦</span><span>Little BabyLove</span></span>;
+  return <span className="brand-lockup"><span className="brand-tree" aria-hidden="true">✦</span><span>Enklere Babyliv</span></span>;
 }
 
-function ForestAnimal({ animal, label }: { animal: 'bear' | 'rabbit' | 'fox'; label: string }) {
-  const faces = { bear: '◡', rabbit: '·ᴗ·', fox: '⌣' };
-  return <div className={`forest-animal forest-${animal}`} role="img" aria-label={label}><span className="animal-ear ear-left" /><span className="animal-ear ear-right" /><span className="animal-face">{faces[animal]}</span></div>;
+function FarmAnimal({ animal, label }: { animal: 'pig' | 'cow' | 'chicken'; label: string }) {
+  return <span className={`farm-animal farm-${animal}`} role="img" aria-label={label}><span className="farm-ear ear-left" /><span className="farm-ear ear-right" /><span className="farm-face"><i /><i /></span><span className="farm-muzzle" /></span>;
 }
 
 function Shell({ children }: { children: React.ReactNode }) {
-  return <><header className="topbar"><Link to="/" className="brand" aria-label="Little BabyLove hjem"><BrandLogo /><span>DEMO</span></Link><nav aria-label="Hovedmeny">{['/', '/utforsk', '/planlegg', '/reise', '/guider', '/profil'].map((path) => <NavLink key={path} to={path} end={path === '/'}>{path === '/' ? 'Hjem' : path.slice(1).replace('utforsk', 'Utforsk').replace('planlegg', 'Planlegg tur').replace('reise', 'Min baby').replace('guider', 'Guider').replace('profil', 'Profil')}</NavLink>)}</nav></header><main>{children}</main><footer>Little BabyLove · Studentprototype · Eksempeldata er ikke en offentlig tjeneste.</footer></>;
+  return <><header className="topbar"><Link to="/" className="brand" aria-label="Enklere Babyliv hjem"><BrandLogo /><span>DEMO</span></Link><nav aria-label="Hovedmeny">{['/', '/utforsk', '/planlegg', '/reise', '/guider', '/partnere', '/profil'].map((path) => <NavLink key={path} to={path} end={path === '/'}>{path === '/' ? 'Hjem' : path.slice(1).replace('utforsk', 'Utforsk').replace('planlegg', 'Planlegg tur').replace('reise', 'Min baby').replace('guider', 'Guider').replace('partnere', 'Partnere').replace('profil', 'Profil')}</NavLink>)}</nav></header><main>{children}</main><footer>Enklere Babyliv · Studentprototype · Eksempeldata er ikke en offentlig tjeneste.</footer></>;
 }
 
 function Home() {
@@ -32,16 +31,16 @@ function Home() {
       <div className="welcome-copy">
         <p className="eyebrow">Enklere babyliv, hjemme og ute</p>
         <h1>Små turer. Litt mer oversikt.</h1>
-        <p className="lead">Little BabyLove hjelper kommende og nybakte foreldre med å finne steder, aktiviteter og praktiske tips som passer deres hverdag i Kristiansand.</p>
+        <p className="lead">Enklere Babyliv hjelper kommende og nybakte foreldre med å finne steder, aktiviteter og praktiske tips som passer deres hverdag i Kristiansand.</p>
         <div className="actions"><Link className="button primary" to="/utforsk">Utforsk steder</Link><Link className="button secondary" to="/reise">Se Min baby</Link></div>
         <p className="welcome-note">Du kan starte uten innlogging. Alt du legger inn i demoen, lagres bare lokalt i nettleseren.</p>
       </div>
-      <div className="welcome-illustration" aria-label="Illustrasjon fra Bittelilleskogen">
+      <div className="welcome-illustration" aria-label="Egne illustrasjoner laget for Enklere Babyliv">
         <span className="illustration-sun" aria-hidden="true" />
         <span className="illustration-cloud cloud-one" aria-hidden="true" />
         <span className="illustration-cloud cloud-two" aria-hidden="true" />
         <div className="illustration-card"><span className="illustration-pin">●</span><div><strong>En god dag ute</strong><small>Finn et sted som passer dere</small></div></div>
-        <div className="illustration-animals" aria-hidden="true"><ForestAnimal animal="bear" label="Bittelilleskog-bjørn" /><ForestAnimal animal="rabbit" label="Bittelilleskog-kanin" /></div>
+        <div className="farm-hello" aria-hidden="true"><FarmAnimal animal="pig" label="Søt gårdsgris" /><FarmAnimal animal="chicken" label="Søt gårdshøne" /></div>
         <span className="illustration-hill hill-back" aria-hidden="true" />
         <span className="illustration-hill hill-front" aria-hidden="true" />
       </div>
@@ -56,7 +55,7 @@ function Home() {
       </div>
     </section>
 
-    <section className="forest-intro" aria-labelledby="forest-title"><div><p className="eyebrow">Et lite univers fra LittleClimby</p><h2 id="forest-title">Møt vennene i Bittelilleskogen</h2><p>Små, trygge følgesvenner kan dukke opp gjennom appen og gjøre praktiske valg litt hyggeligere.</p></div><div className="forest-friends"><ForestAnimal animal="bear" label="Bittelilleskog-bjørn" /><ForestAnimal animal="rabbit" label="Bittelilleskog-kanin" /><ForestAnimal animal="fox" label="Bittelilleskog-rev" /></div></section>
+    <section className="farm-friends-note"><div><p className="eyebrow">Små hverdagsvenner</p><h2>En liten gårdshilsen</h2><p>De fiktive gårdsdyrene er en del av appens varme uttrykk og kan dukke opp som små veivisere.</p></div><div className="farm-friends"><FarmAnimal animal="cow" label="Søt gårdsku" /><FarmAnimal animal="pig" label="Søt gårdsgris" /><FarmAnimal animal="chicken" label="Søt gårdshøne" /></div></section>
 
     <section className="welcome-section welcome-discover">
       <div className="section-intro"><div><p className="eyebrow">Hva finner dere her?</p><h2>Støtte som passer ulike dager</h2></div></div>
@@ -67,7 +66,8 @@ function Home() {
       </div>
     </section>
 
-    <SponsorShowcase />
+    <InterviewInsights />
+    <PartnerEntry />
     <PremiumShowcase />
     <TrustNote />
     {plannedPlaces.length > 0 && <article className="card home-plan"><p className="eyebrow">Neste tur</p><h2>{plannedPlaces.length} stopp planlagt</h2><p>{plannedPlaces.map((place) => place.name).join(' · ')}</p><p>{plan?.date ? `Planlagt ${new Date(`${plan.date}T12:00:00`).toLocaleDateString('nb-NO', { day: 'numeric', month: 'long' })}` : 'Dato ikke valgt'}</p><Link className="text-button" to="/planlegg">Åpne turplanen</Link></article>}
@@ -100,8 +100,23 @@ function SponsorShowcase() {
   </section>;
 }
 
+function PartnerEntry() {
+  return <section className="partner-entry card"><div><p className="eyebrow">Valgfritt å utforske</p><h2>Tilbud fra lokale partnere</h2><p>Finn kurs, babysvømming, arrangementer og andre tilbud som kan bestilles direkte. Partnerinnhold ligger samlet her – ikke som reklame rundt i appen.</p></div><div className="partner-entry-action"><FarmAnimal animal="cow" label="Søt gårdsku" /><Link className="button secondary" to="/partnere">Se partnertilbud</Link></div></section>;
+}
+
+function PartnerOffers() {
+  return <section className="page partner-page"><div className="section-intro"><div><p className="eyebrow">Partnertilbud</p><h1>Finn noe dere kan gjøre sammen</h1></div><div><Link className="button secondary" to="/utforsk">Utforsk steder</Link><Link className="text-button partner-portal-link" to="/partnerportal">Er du partner? Legg inn tilbud</Link></div></div><div className="farm-page-greeting"><FarmAnimal animal="pig" label="Søt gårdsgris" /><p className="lead">Her samler vi relevante tilbud fra lokale aktører. Bestilling kan på sikt skje direkte i appen; Enklere Babyliv kan da få provisjon fra partneren.</p></div><div className="partner-disclosure"><strong>Dette er en demo</strong><span>Alle tilbudene under er fiktive og ikke bookbare.</span></div><div className="partner-offer-grid"><article className="partner-offer-card"><span className="demo-label">Fiktivt tilbud</span><p className="muted">Sponset plassering · tydelig merket</p><h2>Babysvømming for nybegynnere</h2><p>Et rolig introduksjonskurs med liten gruppe, god tid og plass til foreldre. Fiktivt eksempel på et bookbart partnertilbud.</p><div className="offer-meta"><span>6 samlinger · fra 3 måneder</span><strong>Provisjon ved booking</strong></div><button className="button primary" disabled>Book tilbud (demo)</button></article><article className="partner-offer-card"><span className="demo-label">Fiktivt tilbud</span><p className="muted">Lokalt arrangement</p><h2>Åpen lekestund på kafé</h2><p>En uformell formiddag for små barn og omsorgspersoner, med barnevognplass og enkel servering.</p><div className="offer-meta"><span>Lørdag · Kristiansand</span><strong>Provisjon ved booking</strong></div><button className="button primary" disabled>Book tilbud (demo)</button></article></div><section className="partner-how card"><p className="eyebrow">Slik kan det fungere</p><h2>En enkel vei fra tilbud til booking</h2><ol><li>Partneren legger inn tilbud, kapasitet, pris og praktisk informasjon.</li><li>Brukeren finner tilbudet på denne siden og velger selv om det er relevant.</li><li>Booking og betaling skjer via en trygg partnerløsning.</li><li>Enklere Babyliv får avtalt provisjon – uten at partnerinnhold blandes med appens egne råd.</li></ol></section><SponsorShowcase /></section>;
+}
+
+function PartnerPortal() {
+  return <section className="page partner-portal"><div className="section-intro"><div><p className="eyebrow">Partnerside · konseptskisse</p><h1>Legg inn et tilbud</h1></div><Link className="button secondary" to="/partnere">Se brukersiden</Link></div><p className="lead">En kafé, et kurs eller en arrangør kan sende inn tilbud som passer familier. En godkjenning bør skje før tilbudet blir synlig.</p><form className="partner-form" onSubmit={(event) => event.preventDefault()}><label>Navn på virksomhet<input placeholder="For eksempel Lille Kafé" /></label><label>Hva tilbyr dere?<input placeholder="For eksempel babysvømming eller familielunsj" /></label><label>Beskriv tilbudet<textarea rows={4} placeholder="Kort og konkret informasjon til foreldre" /></label><div className="partner-form-grid"><label>Pris<input placeholder="For eksempel 250 kr" /></label><label>Kapasitet<input placeholder="For eksempel 12 plasser" /></label></div><label className="choice"><input type="checkbox" />Jeg bekrefter at tilbudet kan vurderes for målgruppen.</label><button className="button primary" type="submit">Send inn til vurdering (demo)</button><p className="muted">Demoen sender ikke inn data. I en ferdig løsning må partneren godta vilkår, provisjon og merking.</p></form></section>;
+}
+
+function InterviewInsights() {
+  return <section className="card interview-insights"><p className="eyebrow">Fra intervjuer</p><h2>Her kan deres stemmer få plass</h2><p>Vi legger ikke inn oppdiktede sitater. Når intervjusitatene er godkjent, kan de vises anonymt her for å forklare hvorfor appen prioriterer oversikt, tilgjengelighet og deling mellom foreldre.</p><div className="quote-placeholder"><span>«Godkjent intervjusitat kommer her.»</span><small>Plassholder – erstattes med faktisk sitat</small></div></section>;
+}
 function PremiumShowcase() {
-  return <section className="premium-showcase card" aria-labelledby="premium-title"><div><p className="eyebrow">Mulig premiumfunksjon</p><h2 id="premium-title">Snakk med Little BabyBot</h2><p>Little BabyBot kan hjelpe med å samle informasjon, foreslå en rolig plan og svare på praktiske spørsmål. Prøv noen meldinger gratis, og tilby mer ved behov.</p></div><div className="premium-points"><span>Gratis prøve</span><span>Del plan med partner</span><span>Betalt abonnement</span></div><span className="demo-label">Konseptskisse · Ikke aktivert</span></section>;
+  return <section className="premium-showcase card" aria-labelledby="premium-title"><div><p className="eyebrow">Mulig premiumfunksjon</p><h2 id="premium-title">Snakk med Little BabyBot</h2><p>Little BabyBot kan hjelpe med å samle informasjon og foreslå en rolig plan. Den skal ikke gi helseråd; ved helsebekymringer skal den henvise til lege, helsestasjon eller annet helsepersonell.</p></div><div className="premium-points"><span>Gratis prøve</span><span>Del plan med partner</span><span>Betalt abonnement</span></div><span className="demo-label">Konseptskisse · Ikke aktivert</span></section>;
 }
 
 function TrustNote() {
@@ -109,7 +124,7 @@ function TrustNote() {
 }
 
 function Guides() {
-  return <section className="page guides"><div className="section-intro"><div><p className="eyebrow">Guider og Pappasporet</p><h1>Praktisk støtte, uten fasit.</h1></div><Link className="button secondary" to="/utforsk">Finn steder</Link></div><p className="lead">Korte, generelle forslag for pappa, medforelder og andre omsorgspersoner. Innholdet er ikke medisinsk rådgivning.</p><div className="guide-grid"><article className="card guide-card"><p className="eyebrow">Pappasporet</p><h2>Pappa og baby på tur</h2><p>Velg et sted med enkel adkomst, og sjekk fasiliteter før dere drar. En plan B kan være å snu eller ta en kortere tur.</p><ul><li>Ta med det dere faktisk bruker.</li><li>Finn ut hvem som kan hjelpe hvis dagen endrer seg.</li><li>La begge omsorgspersoner få eie sin måte å gjøre ting på.</li></ul><Link className="text-button" to="/reise">Se praktiske sjekklister</Link></article><article className="card guide-card"><p className="eyebrow">På tur med baby</p><h2>Gjør første tur enkel</h2><p>Start med et rolig mål og god tid. Kartet viser fasilitetsstatus der den er kjent, men tilgjengelighet kan endre seg.</p><ul><li>Se etter plass til barnevogn.</li><li>Bruk listevisningen hvis kartfliser ikke lastes.</li><li>Åpne ekstern karttjeneste for vei – dette er ikke appens egen ruteplanlegger.</li></ul><Link className="text-button" to="/utforsk">Åpne kartet</Link></article></div><section className="card activities"><div className="section-intro"><div><p className="eyebrow">Enkel aktivitetsoversikt</p><h2>Aktiviteter i demoen</h2></div><span className="demo-label">Demodata</span></div><p>Dette er fiktive kort for å vise hvordan aktiviteter kan presenteres. Ingen datoer eller påmeldinger er reelle.</p><div className="activity-list">{places.filter((place) => place.category === 'activity').map((place) => <article className="activity-card" key={place.id}><h3>{place.name}</h3><p className="muted">{place.addressOrArea} · Gratis i demoen</p><span className="demo-label">Fiktiv aktivitet</span><p>{place.shortDescription}</p></article>)}</div></section><SponsorShowcase /><p className="source-note">Kunnskapskortene er generelle designhypoteser for studentprototypen. De skal kvalitetssikres før eventuell produksjonsbruk.</p></section>;
+  return <section className="page guides"><div className="section-intro"><div><p className="eyebrow">Guider og Pappasporet</p><h1>Praktisk støtte, uten fasit.</h1></div><Link className="button secondary" to="/utforsk">Finn steder</Link></div><div className="guide-greeting"><p className="lead">Korte, generelle forslag for pappa, medforelder og andre omsorgspersoner. Innholdet er ikke medisinsk rådgivning.</p><FarmAnimal animal="chicken" label="Søt gårdshøne" /></div><div className="guide-grid"><article className="card guide-card"><p className="eyebrow">Pappasporet</p><h2>Pappa og baby på tur</h2><p>Velg et sted med enkel adkomst, og sjekk fasiliteter før dere drar. En plan B kan være å snu eller ta en kortere tur.</p><ul><li>Ta med det dere faktisk bruker.</li><li>Finn ut hvem som kan hjelpe hvis dagen endrer seg.</li><li>La begge omsorgspersoner få eie sin måte å gjøre ting på.</li></ul><Link className="text-button" to="/reise">Se praktiske sjekklister</Link></article><article className="card guide-card"><p className="eyebrow">På tur med baby</p><h2>Gjør første tur enkel</h2><p>Start med et rolig mål og god tid. Kartet viser fasilitetsstatus der den er kjent, men tilgjengelighet kan endre seg.</p><ul><li>Se etter plass til barnevogn.</li><li>Bruk listevisningen hvis kartfliser ikke lastes.</li><li>Åpne ekstern karttjeneste for vei – dette er ikke appens egen ruteplanlegger.</li></ul><Link className="text-button" to="/utforsk">Åpne kartet</Link></article></div><section className="card activities"><div className="section-intro"><div><p className="eyebrow">Enkel aktivitetsoversikt</p><h2>Aktiviteter i demoen</h2></div><span className="demo-label">Demodata</span></div><p>Dette er fiktive kort for å vise hvordan aktiviteter kan presenteres. Ingen datoer eller påmeldinger er reelle.</p><div className="activity-list">{places.filter((place) => place.category === 'activity').map((place) => <article className="activity-card" key={place.id}><h3>{place.name}</h3><p className="muted">{place.addressOrArea} · Gratis i demoen</p><span className="demo-label">Fiktiv aktivitet</span><p>{place.shortDescription}</p></article>)}</div></section><InterviewInsights /><p className="source-note">Kunnskapskortene er generelle designhypoteser for studentprototypen. De skal kvalitetssikres før eventuell produksjonsbruk.</p></section>;
 }
 
 function PlaceCard({ place, favorite, onFavorite, onSelect }: { place: Place; favorite: boolean; onFavorite: () => void; onSelect: () => void }) {
@@ -222,7 +237,7 @@ function Profile({ state, onChange, onClear }: { state: DemoState; onChange: (st
     if (!profile || profile.stage !== 'baby_born') return;
     onChange({ ...state, profile: { ...profile, childAgeYears: value === '' ? undefined : Number(value) } });
   };
-  return <section className="page placeholder"><p className="eyebrow">Profil</p><h1>Din lokale demoprofil</h1><p className="lead">{profile ? 'Profilen brukes bare for å tilpasse Min baby i denne nettleseren.' : 'Du har ingen lagret demoprofil.'}</p>{profile?.stage === 'baby_born' && <div className="card profile-settings"><h2>Barnets alder</h2><label>Hvor gammelt er barnet?<select value={profile.childAgeYears ?? ''} onChange={(event) => updateAge(event.target.value)}><option value="">Velg alder (valgfritt)</option>{[0, 1, 2, 3, 4, 5].map((age) => <option value={age} key={age}>{age} år</option>)}</select></label><p className="muted">Alderen brukes bare til å vise relevante, fiktive aktivitetsforslag.</p></div>}<Link className="button primary" to="/reise">{profile ? 'Åpne Min baby' : 'Lag demoprofil'}</Link>{profile && <button className="danger-button profile-delete" onClick={onClear}>Slett demodata</button>}</section>;
+  return <section className="page placeholder"><p className="eyebrow">Profil</p><h1>Din lokale demoprofil</h1><p className="lead">{profile ? 'Profilen brukes bare for å tilpasse Min baby i denne nettleseren.' : 'Du har ingen lagret demoprofil.'}</p>{profile?.stage === 'baby_born' && <div className="card profile-settings"><h2>Barnets alder</h2><label>Hvor gammelt er barnet?<select value={profile.childAgeYears ?? ''} onChange={(event) => updateAge(event.target.value)}><option value="">Velg alder (valgfritt)</option>{[0, 1, 2, 3, 4, 5].map((age) => <option value={age} key={age}>{age} år</option>)}</select></label><p className="muted">Alderen brukes bare til å vise relevante, fiktive aktivitetsforslag.</p></div>}<InterviewInsights /><Link className="button primary" to="/reise">{profile ? 'Åpne Min baby' : 'Lag demoprofil'}</Link>{profile && <button className="danger-button profile-delete" onClick={onClear}>Slett demodata</button>}</section>;
 }
 
 function Placeholder({ title, text }: { title: string; text: string }) {
@@ -233,5 +248,5 @@ export function App() {
   const [journeyState, setJourneyState] = useState<DemoState>(readDemoState);
   const updateJourney = (next: DemoState) => { setJourneyState(next); writeDemoState(next); };
   const clearJourney = () => { clearDemoState(); setJourneyState(initialDemoState); };
-  return <Shell><Routes><Route path="/" element={<Home />} /><Route path="/utforsk" element={<Explore />} /><Route path="/planlegg" element={<TripPlanner />} /><Route path="/reise" element={<Journey state={journeyState} onChange={updateJourney} onClear={clearJourney} />} /><Route path="/guider" element={<Guides />} /><Route path="/profil" element={<Profile state={journeyState} onChange={updateJourney} onClear={clearJourney} />} /></Routes></Shell>;
+  return <Shell><Routes><Route path="/" element={<Home />} /><Route path="/utforsk" element={<Explore />} /><Route path="/planlegg" element={<TripPlanner />} /><Route path="/reise" element={<Journey state={journeyState} onChange={updateJourney} onClear={clearJourney} />} /><Route path="/guider" element={<Guides />} /><Route path="/partnere" element={<PartnerOffers />} /><Route path="/partnerportal" element={<PartnerPortal />} /><Route path="/profil" element={<Profile state={journeyState} onChange={updateJourney} onClear={clearJourney} />} /></Routes></Shell>;
 }
