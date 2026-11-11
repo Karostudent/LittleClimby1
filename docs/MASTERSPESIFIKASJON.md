@@ -109,7 +109,7 @@ Fem hovedområder (mobil bunnmeny, desktop toppmeny/sidepanel):
 
 1. **Hjem:** tydelig inngang til «Finn steder», aktivitetstips, mulighet for frivillig personlig profil, neste milepæl hvis profil finnes.
 2. **Utforsk:** kart/liste, søk, filterchips, kategorier, detaljkort for steder/turer/aktiviteter, favoritter og eventuell ekstern navigasjon.
-3. **Min reise:** frivillig registrering av termin eller svangerskapsuke, tidslinje, milepæler, pappatips, sjekklister og utstyrslister.
+3. **Min baby:** frivillig registrering av termin eller svangerskapsuke, tidslinje, milepæler, pappatips, sjekklister og utstyrslister.
 4. **Guider:** Pappasporet, tips for foreldre med baby på tur, kort og kvalitetssikret kunnskap med kildehenvisning.
 5. **Profil:** oppdater/slett demoprofil, valg av foreldrerolle/innhold og varslingspreferanser; visning av lagrede steder.
 
@@ -137,13 +137,13 @@ Globalt: tydelig merkevare, enkel navigasjon, mulig søk og synlig demomodus. In
 
 **Akseptanse:** BR-A kan fullføres uten profil, filter påvirker markører **og** liste, status og kilde vises, favoritt blir liggende etter reload og tomtilstander er forståelige.
 
-### 4.2 BR-B – Jonas registrerer termin og bruker «Min reise»
+### 4.2 BR-B – Jonas registrerer termin og bruker «Min baby»
 
 **Situasjon:** Jonas vil forberede seg på å bli far og bidra praktisk.
 
 **Flyt:**
 
-1. Fra Hjem velger Jonas «Min reise» og «Kom i gang».
+1. Fra Hjem velger Jonas «Min baby» og «Kom i gang».
 2. Velger «Kommende pappa/medforelder» eller tilsvarende frivillig rolle, og registrerer **termindato eller aktuell svangerskapsuke**.
 3. Ser beregnet, **omtrentlig** svangerskapsuke og en personlig tidslinje. Input kan redigeres og har forklaring på beregningen.
 4. Får en kort milepæltekst og pappatips, merket som generelle råd, ikke medisinsk veiledning.
@@ -197,7 +197,7 @@ Prioritering: **M = må** (for fullførte hovedreiser), **B = bør** (enkelt dem
 | NOT-02 | B | Innstilling for ønskede varsler, men tydelig opplyst at prototype ikke sender |
 | GUI-01 | B | «Pappasporet» med kort, konkret, ikke-stereotyp informasjon, lenker til kart og sjekklister |
 | GUI-02 | B | Korte guider med tydelig kilde og dato; ikke personlig helserådgivning |
-| UI-01 | M | Hjem, Utforsk, Min reise, Guider og Profil er navigerbare på mobil og desktop |
+| UI-01 | M | Hjem, Utforsk, Min baby, Guider og Profil er navigerbare på mobil og desktop |
 | UI-02 | M | Norsk bokmål, hyggelig, kortfattet, ikke masete tone og ingen reklame i kjernen |
 | COM-01 | S | Faktiske partneravtaler, booking, betalte plasseringer, rabattkoder og betaling |
 | FIN-01 | S | Kjøpsbudsjett og familieøkonomi; kan være enkel statisk skisse hvis ønskelig |
@@ -406,7 +406,7 @@ little-babylove/
 **Fase 0 – Context:** les kildene og masterspesifikasjonen; opprett sporbar prosjektstruktur og beslutningslogg.  
 **Fase 1 – Spec & Plan:** beskriv BR-A/BR-B, datakontrakter, kritiske risikomomenter og små implementeringsoppgaver.  
 **Fase 2 – Vertical slice kart:** ruter/Hjem/Utforsk, kart/liste, demo-steder, filtre, stedskort, favoritter, første tester.  
-**Fase 3 – Vertical slice Min reise:** frivillig demoprofil, termin/uke, milepæler, pappa-tips, sjekkliste og varslingsforhåndsvisning, tester.  
+**Fase 3 – Vertical slice Min baby:** frivillig demoprofil, termin/uke, milepæler, pappa-tips, sjekkliste og varslingsforhåndsvisning, tester.
 **Fase 4 – Polering:** responstilpasning, tastaturnavigasjon, kildemerking, tomtilstander, test og evaluering.  
 **Fase 5 – Brukertest:** observer brukere, dokumenter funn, korriger én ting om gangen.
 

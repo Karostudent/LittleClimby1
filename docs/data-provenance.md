@@ -15,12 +15,12 @@ De seks oppføringene med `demo-`-ID er syntetiske testdata laget for å demonst
 
 ## Praktiske graviditetssjekkpunkter
 
-Min reise viser bearbeidede, praktiske prototypetips fra [Gravidhjelpen – sjekkliste](https://www.gravidhjelpen.no/sjekkliste). Tipsene er avgrenset til forberedelse, utstyr, økonomi, jobb/studier og praktisk støtte fra uke 28 og fremover. Medisinske påstander og konkrete helsekontroll-råd fra kilden er ikke tatt inn i appen.
+Min baby viser bearbeidede, praktiske prototypetips fra [Gravidhjelpen – sjekkliste](https://www.gravidhjelpen.no/sjekkliste). Tipsene er avgrenset til forberedelse, utstyr, økonomi, jobb/studier og praktisk støtte fra uke 28 og fremover. Medisinske påstander og konkrete helsekontroll-råd fra kilden er ikke tatt inn i appen.
 
 Kilden er sist gjennomgått 2026-11-08. Innholdet er ikke medisinsk rådgivning, og brukeren henvises til jordmor eller annet helsepersonell ved helserelaterte spørsmål.
 
 ## Praktiske tips ved barnehagestart
 
-Min reise viser bearbeidede, praktiske sjekkpunkter for barn i alderen 3–5 år, basert på [Læringsverkstedet – klær og utstyrsliste](https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste). De dekker klær etter vær, merking av utstyr, innesko, drikkeflaske, trygghetsting og mulighet for gjenbruk.
+Min baby viser bearbeidede, praktiske sjekkpunkter for barn i alderen 3–5 år, basert på [Læringsverkstedet – klær og utstyrsliste](https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste). De dekker klær etter vær, merking av utstyr, innesko, drikkeflaske, trygghetsting og mulighet for gjenbruk.
 
 Listen er ikke en universell kravliste. Familier bør sjekke hva den aktuelle barnehagen ønsker, og innholdet i appen er bearbeidet for studentprototypen.
