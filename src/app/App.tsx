@@ -18,7 +18,47 @@ function Shell({ children }: { children: React.ReactNode }) {
 function Home() {
   const plan = readTripPlan();
   const plannedPlaces = plan ? plan.placeIds.map((id) => places.find((place) => place.id === id)).filter((place): place is Place => Boolean(place)) : [];
-  return <section className="hero page"><p className="eyebrow">Enklere babyliv, hjemme og ute</p><h1>Finn et sted som passer dere.</h1><p className="lead">Utforsk Kristiansand med tydelig informasjon om hva som er kjent, ukjent og bare demonstrert.</p><div className="actions"><Link className="button primary" to="/utforsk">Finn babyvennlige steder</Link><Link className="button secondary" to="/planlegg">Planlegg en tur</Link></div>{plannedPlaces.length > 0 && <article className="card home-plan"><p className="eyebrow">Neste tur</p><h2>{plannedPlaces.length} stopp planlagt</h2><p>{plannedPlaces.map((place) => place.name).join(' · ')}</p><p>{plan?.date ? `Planlagt ${new Date(`${plan.date}T12:00:00`).toLocaleDateString('nb-NO', { day: 'numeric', month: 'long' })}` : 'Dato ikke valgt'}</p><Link className="text-button" to="/planlegg">Åpne turplanen</Link></article>}<div className="card-grid"><article className="card"><h2>Tryggere valg</h2><p>Se fasiliteter med ja, nei eller ukjent – vi gjetter ikke.</p></article><article className="card"><h2>Fra valg til handling</h2><p>Lagre flere stopp og gjør dem om til en enkel plan dere kan ta med videre.</p></article></div><FeedbackCard /></section>;
+  return <section className="page welcome-page">
+    <div className="welcome-hero">
+      <div className="welcome-copy">
+        <p className="eyebrow">Enklere babyliv, hjemme og ute</p>
+        <h1>Små turer. Litt mer oversikt.</h1>
+        <p className="lead">LittleClimby hjelper kommende og nybakte foreldre med å finne steder, aktiviteter og praktiske tips som passer deres hverdag i Kristiansand.</p>
+        <div className="actions"><Link className="button primary" to="/utforsk">Utforsk steder</Link><Link className="button secondary" to="/reise">Se Min baby</Link></div>
+        <p className="welcome-note">Du kan starte uten innlogging. Alt du legger inn i demoen, lagres bare lokalt i nettleseren.</p>
+      </div>
+      <div className="welcome-illustration" aria-label="Illustrasjon av en rolig tur med baby">
+        <span className="illustration-sun" aria-hidden="true" />
+        <span className="illustration-cloud cloud-one" aria-hidden="true" />
+        <span className="illustration-cloud cloud-two" aria-hidden="true" />
+        <div className="illustration-card"><span className="illustration-pin">●</span><div><strong>En god dag ute</strong><small>Finn et sted som passer dere</small></div></div>
+        <span className="illustration-hill hill-back" aria-hidden="true" />
+        <span className="illustration-hill hill-front" aria-hidden="true" />
+      </div>
+    </div>
+
+    <section className="welcome-section">
+      <div className="section-intro"><div><p className="eyebrow">Slik bruker dere appen</p><h2>Fra idé til liten tur</h2></div><span className="welcome-caption">Tre enkle steg</span></div>
+      <div className="welcome-steps">
+        <article className="welcome-step"><span className="step-number">1</span><div><h3>Utforsk</h3><p>Se steder og aktiviteter på kart eller i liste. Filtrer på det som er viktig for dere, som stellebord, barnevognplass og trappefri adkomst.</p></div></article>
+        <article className="welcome-step"><span className="step-number">2</span><div><h3>Velg</h3><p>Lagre favoritter og åpne detaljene før dere drar. Informasjonen viser tydelig hva som er bekreftet, ukjent eller bare et eksempel.</p></div></article>
+        <article className="welcome-step"><span className="step-number">3</span><div><h3>Planlegg</h3><p>Velg opptil tre stopp, legg til en dato og en liten huskelapp. Planen blir liggende lokalt, klar når dere trenger den.</p></div></article>
+      </div>
+    </section>
+
+    <section className="welcome-section welcome-discover">
+      <div className="section-intro"><div><p className="eyebrow">Hva finner dere her?</p><h2>Støtte som passer ulike dager</h2></div></div>
+      <div className="card-grid">
+        <article className="card"><span className="welcome-card-icon" aria-hidden="true">⌖</span><h3>Steder å besøke</h3><p>Finn møteplasser, kaféer, turer og uteområder i nærheten – med praktisk informasjon samlet på ett sted.</p><Link className="text-button" to="/utforsk">Gå til Utforsk</Link></article>
+        <article className="card"><span className="welcome-card-icon" aria-hidden="true">✓</span><h3>Min baby</h3><p>Lag en frivillig demoprofil for å få generelle sjekklister og innhold som følger fasen dere er i.</p><Link className="text-button" to="/reise">Åpne Min baby</Link></article>
+        <article className="card"><span className="welcome-card-icon" aria-hidden="true">i</span><h3>Guider og Pappasporet</h3><p>Les korte, ikke-stereotype råd for pappa, medforelder og andre omsorgspersoner.</p><Link className="text-button" to="/guider">Se guider</Link></article>
+      </div>
+    </section>
+
+    <TrustNote />
+    {plannedPlaces.length > 0 && <article className="card home-plan"><p className="eyebrow">Neste tur</p><h2>{plannedPlaces.length} stopp planlagt</h2><p>{plannedPlaces.map((place) => place.name).join(' · ')}</p><p>{plan?.date ? `Planlagt ${new Date(`${plan.date}T12:00:00`).toLocaleDateString('nb-NO', { day: 'numeric', month: 'long' })}` : 'Dato ikke valgt'}</p><Link className="text-button" to="/planlegg">Åpne turplanen</Link></article>}
+    <FeedbackCard />
+  </section>;
 }
 
 function FeedbackCard() {
