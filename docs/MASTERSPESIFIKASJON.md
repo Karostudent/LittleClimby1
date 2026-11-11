@@ -32,7 +32,7 @@ Skill mellom:
 
 ## 1. Produktvisjon
 
-**Arbeidstittel:** Little BabyLove – *Enklere babyliv, hjemme og ute*.  
+**Produktnavn:** Enklere Babyliv – *Enklere babyliv, hjemme og ute*.  
 **Løfte:** Gjør det enkelt for kommende og nybakte foreldre å finne babyvennlige steder, turer og aktiviteter, samtidig som de får et rolig og praktisk hjelpemiddel for svangerskapet og de første månedene.
 
 ### 1.1 Produktet skal være
