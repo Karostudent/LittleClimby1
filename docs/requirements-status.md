@@ -11,7 +11,7 @@ Statusene betyr:
 |---|---|---|
 | Kart, liste, søk og filtre | Verifisert i kode/test | `src/domain/places.test.ts`, `src/app/App.tsx` |
 | `unknown` ekskluderes fra positive filtre | Verifisert i kode/test | `src/domain/places.test.ts` |
-| Favoritter i lokal lagring | Implementert, manuell kontroll gjenstår | `src/services/storage.ts`, Siri-skript |
+| Favoritter i lokal lagring | Implementert, manuell kontroll gjenstår | `src/services/storage.ts`, Ingrid-skript |
 | Fiktive og reelle stedsidentiteter | Implementert, data er demo | `docs/data-provenance.md` |
 | Termin- og ukeinngang | Verifisert i kode/test | `src/domain/journey.test.ts` |
 | Milepæler og minst tre pappatips | Verifisert i kode/test | `src/domain/journey.test.ts` |
