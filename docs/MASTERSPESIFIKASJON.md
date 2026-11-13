@@ -19,7 +19,7 @@ Skill mellom:
 ### Kildedokumenter og forankring
 
 1. `IS-219 - Oppgave 3. Fasene Undersøkelse og Analyse - Gruppe 3 (7).pptx`: oppsummering av fem intervjuer, personas Jonas/Ingrid/Maria, behov for tillit, rask informasjonsfremfinning og lokale tilbud (særlig lysbilde 8–17).
-2. `IS-219 - Oppgave 4. Fasene Idégenerering og Idéutvelgelse - Gruppe 3 (2).pptx`: konseptprioritering, verdiforslag for kart, Siris brukerreise, første krav og WBS (særlig lysbilde 5–9).
+2. `IS-219 - Oppgave 4. Fasene Idégenerering og Idéutvelgelse - Gruppe 3 (2).pptx`: konseptprioritering, verdiforslag for kart, Ingrids brukerreise, første krav og WBS (særlig lysbilde 5–9).
 3. `IS-219 - KONSEPTFORSLAG for mulig prototyping - Karoline.docx`: utkastet «Enklere babyliv, hjemme og ute», kategori- og filterideer, pappa-inkludering, forslag til navigasjon og tillitsregler.
 4. `Little BabyLove – studentbrief og intervjuguide (1).pdf`: oppdragsgivers mål, positiv/praktisk profil, utstyrslister, påminnelser, delte oppgaver, budsjett, kommersiell avgrensning og konfidensialitet (særlig s. 1–5).
 5. `IS-219 Digitalisering og Tjenestedesign (2026-4 og 5) - Oppgavemal.pptx`: kundeopplevelse, brukerflyt, IX/UX og testplan.
@@ -83,12 +83,11 @@ Dette bygger på et begrenset kvalitativt materiale (fem intervjuer, hvorav én 
 
 ### 2.2 Personas og prøvebrukere
 
-- **Siri – hovedscenario kart:** Førstegangsmor i permisjon fra oppgave 4, 31 år, vil planlegge kafé- og trilletur i Kristiansand.
+- **Ingrid – hovedscenario kart:** Førstegangsmor i permisjon fra oppgave 3, 29 år, vil planlegge kafé- og trilletur i Kristiansand.
 - **Jonas – hovedscenario personlig reise:** Førstegangsfar fra oppgave 3, 32 år, ønsker å være involvert, finne konkrete tips og vite hva som trengs når.
-- **Ingrid – supplerende:** Førstegangsmor med sterkt behov for kvalitetssikring og oversikt.
 - **Maria – supplerende:** Erfaren flerbarnsmor som vil finne relevante ting raskt og unngå reklame/kjøpepress.
 
-Siri er en persona fra oppgave 4; Jonas/Ingrid/Maria er konstruert på bakgrunn av funn og tolkninger i oppgave 3. Dette er ikke faktiske personopplysninger.
+Jonas/Ingrid/Maria er personas konstruert på bakgrunn av funn og tolkninger i oppgave 3. Dette er ikke faktiske personopplysninger.
 
 ### 2.3 Designprinsipper
 
@@ -119,9 +118,9 @@ Globalt: tydelig merkevare, enkel navigasjon, mulig søk og synlig demomodus. In
 
 ## 4. To komplette brukerreiser
 
-### 4.1 BR-A – Siri finner en kafé eller tur med baby
+### 4.1 BR-A – Ingrid finner en kafé eller tur med baby
 
-**Situasjon:** Siri ønsker en trilletur i Kristiansand sentrum, eventuelt et kaféstopp sammen med barselgruppen. Hun er usikker på om det er plass til barnevogn og stellefasiliteter.
+**Situasjon:** Ingrid ønsker en trilletur i Kristiansand sentrum, eventuelt et kaféstopp sammen med barselgruppen. Hun er usikker på om det er plass til barnevogn og stellefasiliteter.
 
 **Flyt:**
 
@@ -483,7 +482,7 @@ Det er tillatt å vise **lav-fidelitetsskisser eller ikke-interaktive informasjo
 
 Prototypen bør kunne supplere emnets figur- og refleksjonskrav:
 
-1. **Kundereise-narrativ** for Siri og Jonas.
+1. **Kundereise-narrativ** for Ingrid og Jonas.
 2. **Service blueprint** med frontstage, backstage, data og usikkerhet for hver hovedreise.
 3. **IX/sitemap** og brukerflyt med alternative veier.
 4. **Valg- og kravlogg** med sporbarhet fra intervjuinnsikt til funksjon.

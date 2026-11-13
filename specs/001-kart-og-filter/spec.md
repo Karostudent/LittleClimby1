@@ -2,7 +2,7 @@
 
 ## Mål
 
-Siri skal kunne åpne Utforsk uten innlogging, finne et sted ved tekst eller filter, forstå datastatus, åpne detaljer og lagre en favoritt.
+Ingrid skal kunne åpne Utforsk uten innlogging, finne et sted ved tekst eller filter, forstå datastatus, åpne detaljer og lagre en favoritt.
 
 ## Akseptanse
 

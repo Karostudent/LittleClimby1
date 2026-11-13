@@ -5,7 +5,7 @@ Kopier skjemaet for hver testperson. Bruk scenarioene i [test-scenarios.md](./te
 ## Testøkt
 
 - Dato:
-- Scenario: ☐ Siri ☐ Jonas ☐ Begge
+- Scenario: ☐ Ingrid ☐ Jonas ☐ Begge
 - Enhet/bredde:
 - Testleder:
 - Testperson-ID:

@@ -8,9 +8,9 @@
 4. Opplys testpersonen om at dette er en studentprototype med syntetiske data.
 5. Ikke be om ekte navn, e-post, termin eller andre personopplysninger. Bruk scenarioverdiene under.
 
-## Siri – kartreise (3–5 minutter)
+## Ingrid – kartreise (3–5 minutter)
 
-**Scenario:** Du er Siri og vil finne et sted i Kristiansand for en tur med baby. Du vil vite hva som er bekreftet, og om det finnes plass til barnevogn og stellefasilitet.
+**Scenario:** Du er Ingrid og vil finne et sted i Kristiansand for en tur med baby. Du vil vite hva som er bekreftet, og om det finnes plass til barnevogn og stellefasilitet.
 
 **Oppgave til testpersonen:** «Finn et passende sted uten å lage profil. Undersøk detaljene, lagre stedet og vis hvordan du ville funnet veien.»
 

@@ -22,7 +22,7 @@
 
 ## Fase 4
 
-- Siri- og Jonas-skript er dokumentert i [test-scenarios.md](./test-scenarios.md).
+- Ingrid- og Jonas-skript er dokumentert i [test-scenarios.md](./test-scenarios.md).
 - Testnotatskjema er dokumentert i [user-test-notes.md](./user-test-notes.md).
 - Kravstatus med skille mellom verifisert, implementert, simulert og utenfor MVP er dokumentert i [requirements-status.md](./requirements-status.md).
 - Ingen nye runtime-funksjoner ble lagt til i fase 4.
