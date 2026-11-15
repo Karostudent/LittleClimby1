@@ -7,7 +7,8 @@ export interface DemoProfile {
   enteredPregnancyWeek?: number;
   enteredWeekAnchorDate?: string;
   childBirthDate?: string;
-  childAgeYears?: number;
+  /** Barnets alder i hele måneder (0–12). Appen er avgrenset til første leveår. */
+  childAgeMonths?: number;
   contentPreference: ContentPreference;
   notificationPreference: 'off' | 'preview_only';
 }
@@ -29,8 +30,8 @@ export interface ChecklistItem {
   listId: string;
   label: string;
   category: 'must_have' | 'nice_to_have' | 'can_wait' | 'practical';
-  ageMinYears: number;
-  ageMaxYears: number;
+  ageMinMonths: number;
+  ageMaxMonths: number;
 }
 
 export interface PregnancyChecklistItem {
@@ -38,15 +39,6 @@ export interface PregnancyChecklistItem {
   fromWeek: number;
   label: string;
   category: 'practical' | 'preparation' | 'economy' | 'work';
-  sourceUrl: string;
-}
-
-export interface KindergartenChecklistItem {
-  id: string;
-  ageMinYears: number;
-  ageMaxYears: number;
-  label: string;
-  category: 'clothing' | 'comfort' | 'routine';
   sourceUrl: string;
 }
 
@@ -115,35 +107,22 @@ export const milestones: Milestone[] = [
   { id: 'pregnancy-ready', stage: 'pregnancy', minWeekOrMonth: 39, title: 'Ta én dag av gangen', body: 'Hold planen enkel og sjekk inn med hverandre om hva som er nyttig akkurat nå.', dadTip: 'Spør hva som vil gjøre dagen litt lettere, og lytt til svaret.', pregnantParentTip: 'Ta én dag av gangen og velg bort det som ikke haster.', checklistIds: ['practical'], medicalClaim: false },
   { id: 'postpartum-first', stage: 'postpartum', minWeekOrMonth: 0, title: 'Den første tiden hjemme', body: 'Prioriter hvile, mat og støtte. Det finnes ingen fasit for hvordan de første dagene skal se ut.', dadTip: 'Ta initiativ til mat, rydding og kontakt med nettverket deres.', pregnantParentTip: 'Si tydelig fra når du trenger hvile, mat eller avlastning.', checklistIds: ['practical'], medicalClaim: false },
   { id: 'postpartum-out', stage: 'postpartum', minWeekOrMonth: 2, title: 'Finn en liten tur sammen', body: 'Når det passer for dere, kan en kort tur til et rolig sted være et lite avbrekk.', dadTip: 'Finn et sted med praktiske fasiliteter, og ha en plan B uten at det blir et nederlag.', pregnantParentTip: 'Velg et tempo og et sted som føles overkommelig for dere.', checklistIds: ['equipment'], medicalClaim: false },
-  { id: 'postpartum-toddler', stage: 'postpartum', minWeekOrMonth: 12, title: 'Hverdagen med et større barn', body: 'Når barnet er over ett år, kan hverdagen romme mer lek, bevegelse og små valg. Lag enkle rutiner, gi tid til utforsking og velg aktiviteter som passer barnets dagsform.', dadTip: 'Inviter barnet med i små oppgaver og følg initiativet deres i lek og utforsking.', pregnantParentTip: 'Legg inn pauser for deg selv, og la barnet få prøve i sitt eget tempo.', checklistIds: ['practical', 'equipment'], medicalClaim: false },
+  { id: 'postpartum-explore', stage: 'postpartum', minWeekOrMonth: 6, title: 'Utvid turradiusen litt', body: 'Mange familier får etter hvert lyst på litt lengre turer og nye steder. Velg steder der dere vet hva som finnes av stell og plass til vogn.', dadTip: 'Ta ansvar for å planlegge én tur i uka – sted, rute og hva som skal være med.', pregnantParentTip: 'Si hva slags tur som gir deg et avbrekk, og hva som bare blir slitsomt.', checklistIds: ['equipment', 'practical'], medicalClaim: false },
 ];
 
 export const checklistItems: ChecklistItem[] = [
-  { id: 'equipment-bag', listId: 'equipment', label: 'Finn fram det dere allerede har til en enkel babytur', category: 'must_have', ageMinYears: 0, ageMaxYears: 1 },
-  { id: 'equipment-change', listId: 'equipment', label: 'Legg en ekstra skift og bleier i turbagen', category: 'must_have', ageMinYears: 0, ageMaxYears: 2 },
-  { id: 'equipment-reuse', listId: 'equipment', label: 'Vurder om noe kan lånes eller gjenbrukes', category: 'can_wait', ageMinYears: 0, ageMaxYears: 5 },
-  { id: 'equipment-toddler-snack', listId: 'equipment', label: 'Planlegg en enkel matbit og drikke til turen', category: 'practical', ageMinYears: 1, ageMaxYears: 5 },
-  { id: 'practical-food', listId: 'practical', label: 'Avtal hvem som ordner et måltid på en travel dag', category: 'practical', ageMinYears: 0, ageMaxYears: 5 },
-  { id: 'practical-route', listId: 'practical', label: 'Finn et rolig sted dere kan besøke med baby', category: 'practical', ageMinYears: 0, ageMaxYears: 1 },
-  { id: 'practical-play', listId: 'practical', label: 'Finn et trygt sted med plass til lek og utforsking', category: 'practical', ageMinYears: 1, ageMaxYears: 5 },
-  { id: 'practical-support', listId: 'practical', label: 'Skriv ned én person dere kan spørre om hjelp', category: 'practical', ageMinYears: 0, ageMaxYears: 5 },
+  { id: 'equipment-bag', listId: 'equipment', label: 'Finn fram det dere allerede har til en enkel babytur', category: 'must_have', ageMinMonths: 0, ageMaxMonths: 12 },
+  { id: 'equipment-change', listId: 'equipment', label: 'Legg et ekstra skift og bleier i turbagen', category: 'must_have', ageMinMonths: 0, ageMaxMonths: 12 },
+  { id: 'equipment-reuse', listId: 'equipment', label: 'Vurder om noe kan lånes eller gjenbrukes', category: 'can_wait', ageMinMonths: 0, ageMaxMonths: 12 },
+  { id: 'equipment-blanket', listId: 'equipment', label: 'Ta med et teppe dere kan legge babyen på når dere tar en pause', category: 'practical', ageMinMonths: 4, ageMaxMonths: 12 },
+  { id: 'practical-food', listId: 'practical', label: 'Avtal hvem som ordner et måltid på en travel dag', category: 'practical', ageMinMonths: 0, ageMaxMonths: 12 },
+  { id: 'practical-route', listId: 'practical', label: 'Finn et rolig sted dere kan besøke med baby', category: 'practical', ageMinMonths: 0, ageMaxMonths: 12 },
+  { id: 'practical-play', listId: 'practical', label: 'Finn et sted med plass til å ligge og utforske på gulvet', category: 'practical', ageMinMonths: 6, ageMaxMonths: 12 },
+  { id: 'practical-support', listId: 'practical', label: 'Skriv ned én person dere kan spørre om hjelp', category: 'practical', ageMinMonths: 0, ageMaxMonths: 12 },
 ];
 
-export const checklistItemsForAge = (ageYears: number): ChecklistItem[] =>
-  checklistItems.filter((item) => ageYears >= item.ageMinYears && ageYears <= item.ageMaxYears);
-
-export const kindergartenChecklistItems: KindergartenChecklistItem[] = [
-  { id: 'kindergarten-change-of-clothes', ageMinYears: 3, ageMaxYears: 5, label: 'Legg klart et merket skift med klær som tåler aktiv lek og vær.', category: 'clothing', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
-  { id: 'kindergarten-weather-clothes', ageMinYears: 3, ageMaxYears: 5, label: 'Sjekk at yttertøy, sko og hodeplagg passer til sesongen.', category: 'clothing', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
-  { id: 'kindergarten-indoor-shoes', ageMinYears: 3, ageMaxYears: 5, label: 'Avklar om barnehagen trenger tøfler eller innesko.', category: 'routine', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
-  { id: 'kindergarten-water-bottle', ageMinYears: 3, ageMaxYears: 5, label: 'Merk drikkeflaske og annet som skal være med i hverdagen.', category: 'routine', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
-  { id: 'kindergarten-comfort-item', ageMinYears: 3, ageMaxYears: 5, label: 'Avtal om barnet kan ha med smokk, koseklut eller en annen trygg ting ved behov.', category: 'comfort', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
-  { id: 'kindergarten-label-everything', ageMinYears: 3, ageMaxYears: 5, label: 'Merk klær, sko og utstyr med barnets navn før oppstart.', category: 'routine', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
-  { id: 'kindergarten-reuse', ageMinYears: 3, ageMaxYears: 5, label: 'Vurder brukt eller arvet utstyr der det passer, siden barn vokser raskt.', category: 'clothing', sourceUrl: 'https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste' },
-];
-
-export const kindergartenChecklistForAge = (ageYears: number): KindergartenChecklistItem[] =>
-  kindergartenChecklistItems.filter((item) => ageYears >= item.ageMinYears && ageYears <= item.ageMaxYears);
+export const checklistItemsForAge = (ageMonths: number): ChecklistItem[] =>
+  checklistItems.filter((item) => ageMonths >= item.ageMinMonths && ageMonths <= item.ageMaxMonths);
 
 export const pregnancyChecklistItems: PregnancyChecklistItem[] = [
   { id: 'pregnancy-course', fromWeek: 28, label: 'Undersøk fødselsforberedende kurs som passer for dere.', category: 'preparation', sourceUrl: 'https://www.gravidhjelpen.no/sjekkliste' },
@@ -163,17 +142,28 @@ export const pregnancyChecklistItems: PregnancyChecklistItem[] = [
 export const pregnancyChecklistForWeek = (week: number): PregnancyChecklistItem[] =>
   pregnancyChecklistItems.filter((item) => item.fromWeek <= week);
 
-const ageDescriptions: Record<number, string> = {
-  0: 'Et lite barn som ofte utforsker verden gjennom nærhet, lyder og korte våkne perioder.',
-  1: 'Et barn som gjerne utforsker mer aktivt, og kan ha glede av korte turer med pauser.',
-  2: 'Et nysgjerrig barn som ofte liker å bevege seg, leke og oppdage ting i eget tempo.',
-  3: 'Et barn som gjerne deltar mer i enkel lek, samtaler og små oppdagelser sammen med andre.',
-  4: 'Et barn som ofte liker å prøve selv, bruke fantasi og være med på aktiviteter med litt struktur.',
-  5: 'Et barn som gjerne kombinerer lek, fantasi og mer selvstendig utforsking i kjente omgivelser.',
+const ageDescriptions: { maxMonths: number; text: string }[] = [
+  { maxMonths: 2, text: 'Et lite barn som ofte utforsker verden gjennom nærhet, lyder og korte våkne perioder.' },
+  { maxMonths: 5, text: 'Mange babyer er lenger våkne og nysgjerrige på det de ser og hører. Korte turer med pauser passer ofte godt.' },
+  { maxMonths: 8, text: 'Mange babyer liker å se på andre barn og nye omgivelser. Et sted med plass til å stoppe opp kan gjøre turen enklere.' },
+  { maxMonths: 12, text: 'Mange babyer er aktive og vil utforske selv. Steder med plass på gulvet eller på et teppe kan være fine.' },
+];
+
+export const getAgeDescription = (ageMonths: number): string =>
+  ageDescriptions.find((entry) => ageMonths >= 0 && ageMonths <= entry.maxMonths)?.text
+  ?? 'Barn utvikler seg ulikt, og denne beskrivelsen er bare et generelt eksempel.';
+
+/** Alder i måneder: valgt alder går foran fødselsdato. Avgrenset til 0–12. */
+export const getChildAgeMonths = (profile: DemoProfile, today: string): number | undefined => {
+  if (profile.stage !== 'baby_born') return undefined;
+  if (profile.childAgeMonths !== undefined) return profile.childAgeMonths;
+  if (!profile.childBirthDate) return undefined;
+  const months = Math.floor(daysBetween(dateOnly(profile.childBirthDate), dateOnly(today)) / 30.44);
+  return Math.max(0, Math.min(12, months));
 };
 
-export const getAgeDescription = (ageYears: number): string =>
-  ageDescriptions[ageYears] ?? 'Barn utvikler seg ulikt, og denne beskrivelsen er bare et generelt eksempel.';
+export const formatAgeMonths = (months: number): string =>
+  months === 0 ? 'under én måned' : months === 1 ? '1 måned' : `${months} måneder`;
 
 export const getCurrentMilestone = (profile: DemoProfile, today: string): Milestone | null => {
   if (profile.stage === 'expecting') {
@@ -182,10 +172,7 @@ export const getCurrentMilestone = (profile: DemoProfile, today: string): Milest
     return [...milestones].filter((milestone) => milestone.stage === 'pregnancy' && milestone.minWeekOrMonth <= week).pop() ?? milestones[0];
   }
   if (profile.stage === 'baby_born') {
-    if (profile.childAgeYears !== undefined && profile.childAgeYears > 1) {
-      return milestones.find((milestone) => milestone.id === 'postpartum-toddler') ?? null;
-    }
-    const month = profile.childBirthDate ? Math.max(0, Math.floor(daysBetween(dateOnly(profile.childBirthDate), dateOnly(today)) / 30)) : 0;
+    const month = getChildAgeMonths(profile, today) ?? 0;
     return [...milestones].filter((milestone) => milestone.stage === 'postpartum' && milestone.minWeekOrMonth <= month).pop() ?? milestones.find((milestone) => milestone.stage === 'postpartum') ?? null;
   }
   return null;

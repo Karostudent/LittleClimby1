@@ -17,8 +17,9 @@ const demoCoordinates = [
   { lat: 58.1488, lng: 7.988 },
 ];
 
-const yes = { value: 'yes' as const, evidenceStatus: 'venue_confirmed' as const, checkedAt: '2026-11-04' };
-const no = { value: 'no' as const, evidenceStatus: 'venue_confirmed' as const, checkedAt: '2026-11-04' };
+// Fiktive steder har eksempelverdier, ikke bekreftede opplysninger. Derfor ingen kontrolldato.
+const yes = { value: 'yes' as const, evidenceStatus: 'demo_example' as const };
+const no = { value: 'no' as const, evidenceStatus: 'demo_example' as const };
 const unknown = { value: 'unknown' as const, evidenceStatus: 'unverified' as const };
 
 export const places: Place[] = [
@@ -173,9 +174,10 @@ export const places: Place[] = [
     name: 'Bystranda',
     category: 'outdoor_area',
     dataKind: 'real_place_identity',
-    coordinates: null,
+    coordinates: { lat: 58.14639, lng: 8.007667 },
+    coordinatesSourceUrl: 'https://en.wikipedia.org/wiki/Bystranda',
     addressOrArea: 'Kristiansand sentrum',
-    shortDescription: 'Reell stedsidentitet. Konkrete fasiliteter og posisjon er ikke verifisert i denne demoen.',
+    shortDescription: 'Reelt sted. Posisjonen er hentet fra åpen kilde. Fasiliteter er ikke kontrollert i denne demoen.',
     identitySourceUrl: 'https://www.kristiansand.kommune.no/navigasjon/bolig-kart-og-eiendom/parkvesenet/friluftsliv/',
     identityCheckedAt: '2026-11-04',
     facilities: { stroller_space: unknown, changing_table: unknown, step_free_access: unknown },
@@ -186,12 +188,15 @@ export const places: Place[] = [
     name: 'Fiskebrygga',
     category: 'outdoor_area',
     dataKind: 'real_place_identity',
-    coordinates: null,
+    coordinates: { lat: 58.14083, lng: 7.99583 },
+    coordinatesSourceUrl: 'https://en.wikipedia.org/wiki/Fiskebrygga,_Kristiansand',
     addressOrArea: 'Kvadraturen',
-    shortDescription: 'Reell stedsidentitet. Oppføringen bekrefter ikke fasiliteter hos virksomheter i området.',
+    shortDescription: 'Reelt sted. Posisjonen er hentet fra åpen kilde. Oppføringen bekrefter ikke fasiliteter hos virksomheter i området.',
     identitySourceUrl: 'https://www.visitnorway.no/reisemal/sorlandet/kristiansand/planlegg-reisen/',
     identityCheckedAt: '2026-11-04',
     facilities: { stroller_space: unknown, changing_table: unknown, changing_access_all_caregivers: unknown },
     tags: ['havn', 'Kristiansand', 'reell stedsidentitet'],
   },
 ];
+
+ 

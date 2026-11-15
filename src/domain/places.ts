@@ -12,7 +12,7 @@ export type FacilityName =
 
 export interface FacilityClaim {
   value: TriState;
-  evidenceStatus: 'venue_confirmed' | 'public_source' | 'unverified' | 'not_applicable';
+  evidenceStatus: 'venue_confirmed' | 'public_source' | 'unverified' | 'not_applicable' | 'demo_example';
   evidenceUrl?: string;
   checkedAt?: string;
   note?: string;
@@ -28,6 +28,7 @@ export interface Place {
   shortDescription: string;
   identitySourceUrl?: string;
   identityCheckedAt?: string;
+  coordinatesSourceUrl?: string;
   facilities: Partial<Record<FacilityName, FacilityClaim>>;
   tags: string[];
   routeInfo?: { lengthKm?: number; surfaceText?: string; routeVerified: boolean };
@@ -63,4 +64,29 @@ export const matchesPlace = (
   const categoryMatches = category === 'all' || place.category === category;
   const filterMatches = filters.every((filter) => place.facilities[filter]?.value === 'yes');
   return searchMatches && categoryMatches && filterMatches;
+};
+
+export const formatCheckedDate = (value: string) =>
+  new Date(`${value}T12:00:00`).toLocaleDateString('nb-NO', { day: 'numeric', month: 'long', year: 'numeric' });
+
+/** Kort tekst om hva som er kontrollert, og når. Fiktive steder får aldri «bekreftet». */
+export const verificationSummary = (place: Place): string => {
+  if (isFictional(place)) return 'Eksempeldata · ikke kontrollert';
+  const confirmed = Object.values(place.facilities)
+    .filter((claim): claim is FacilityClaim => Boolean(claim && claim.checkedAt && (claim.evidenceStatus === 'venue_confirmed' || claim.evidenceStatus === 'public_source')))
+    .map((claim) => claim.checkedAt as string)
+    .sort();
+  const identity = place.identityCheckedAt ? `Sted kontrollert ${formatCheckedDate(place.identityCheckedAt)}` : 'Sted ikke kontrollert';
+  const facilities = confirmed.length ? `fasiliteter sist kontrollert ${formatCheckedDate(confirmed[confirmed.length - 1])}` : 'fasiliteter ikke kontrollert';
+  return `${identity} · ${facilities}`;
+};
+
+/** Lenke som åpner veibeskrivelse i Google Maps fra brukerens posisjon. Brukeren velger selv gange, kollektiv eller bil der. */
+export const directionsUrl = (stops: { lat: number; lng: number }[]): string => {
+  if (!stops.length) throw new Error('Minst ett stopp trengs for veibeskrivelse');
+  const destination = stops[stops.length - 1];
+  const params = new URLSearchParams({ api: '1', destination: `${destination.lat},${destination.lng}`, travelmode: 'walking' });
+  const waypoints = stops.slice(0, -1).map((stop) => `${stop.lat},${stop.lng}`).join('|');
+  if (waypoints) params.set('waypoints', waypoints);
+  return `https://www.google.com/maps/dir/?${params.toString()}`;
 };
