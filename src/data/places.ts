@@ -176,6 +176,7 @@ export const places: Place[] = [
     dataKind: 'real_place_identity',
     coordinates: { lat: 58.14639, lng: 8.007667 },
     coordinatesSourceUrl: 'https://en.wikipedia.org/wiki/Bystranda',
+    coordinatesCheckedAt: '2026-11-15',
     addressOrArea: 'Kristiansand sentrum',
     shortDescription: 'Reelt sted. Posisjonen er hentet fra åpen kilde. Fasiliteter er ikke kontrollert i denne demoen.',
     identitySourceUrl: 'https://www.kristiansand.kommune.no/navigasjon/bolig-kart-og-eiendom/parkvesenet/friluftsliv/',
@@ -190,6 +191,7 @@ export const places: Place[] = [
     dataKind: 'real_place_identity',
     coordinates: { lat: 58.14083, lng: 7.99583 },
     coordinatesSourceUrl: 'https://en.wikipedia.org/wiki/Fiskebrygga,_Kristiansand',
+    coordinatesCheckedAt: '2026-11-15',
     addressOrArea: 'Kvadraturen',
     shortDescription: 'Reelt sted. Posisjonen er hentet fra åpen kilde. Oppføringen bekrefter ikke fasiliteter hos virksomheter i området.',
     identitySourceUrl: 'https://www.visitnorway.no/reisemal/sorlandet/kristiansand/planlegg-reisen/',
@@ -198,5 +200,3 @@ export const places: Place[] = [
     tags: ['havn', 'Kristiansand', 'reell stedsidentitet'],
   },
 ];
-
- 

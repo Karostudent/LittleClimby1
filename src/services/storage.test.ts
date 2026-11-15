@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { initialDemoState } from '../domain/journey';
-import { clearDemoState, readDemoState, readTripPlan, readTripSelection, writeDemoState, writeTripPlan, writeTripSelection } from './storage';
+import { addPlaceReport, clearDemoState, readDemoState, readPlaceReports, readTripPlan, readTripSelection, writeDemoState, writeTripPlan, writeTripSelection } from './storage';
 
 describe('demo storage', () => {
   beforeEach(() => localStorage.clear());
@@ -29,5 +29,15 @@ describe('demo storage', () => {
   it('reads legacy single-stop plans', () => {
     localStorage.setItem('little-babylove:trip-plan:v1', JSON.stringify({ placeId: 'legacy', date: '', note: '' }));
     expect(readTripPlan()?.placeIds).toEqual(['legacy']);
+  });
+
+  it('stores place reports locally and clears them with the rest of the demo data', () => {
+    addPlaceReport({ placeId: 'real-bystranda', kind: 'error', message: 'Stellerommet er stengt', createdAt: '2026-11-15' });
+    expect(readPlaceReports()).toHaveLength(1);
+    localStorage.setItem('little-babylove:place-reports:v1', '{"broken":true}');
+    expect(readPlaceReports()).toEqual([]);
+    addPlaceReport({ placeId: 'real-bystranda', kind: 'confirm', message: '', createdAt: '2026-11-15' });
+    clearDemoState();
+    expect(readPlaceReports()).toEqual([]);
   });
 });

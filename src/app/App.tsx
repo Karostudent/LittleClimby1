@@ -1,240 +1,109 @@
-﻿import { useMemo, useState } from 'react';
-import { Link, NavLink, Route, Routes, useNavigate } from 'react-router-dom';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import { categoryLabels, directionsUrl, facilityLabels, isFictional, matchesPlace, verificationSummary, type FacilityName, type Place, type PlaceCategory } from '../domain/places';
-import { places } from '../data/places';
-import { activitiesForAge } from '../data/activities';
-import { checklistItemsForAge, formatAgeMonths, getAgeDescription, getChildAgeMonths, getCurrentMilestone, getJourneyWeek, initialDemoState, pregnancyChecklistForWeek, type ContentPreference, type DemoProfile, type DemoState, type JourneyStage } from '../domain/journey';
-import { clearDemoState, readDemoState, readFavoriteIds, readFeedback, readTripPlan, readTripSelection, writeDemoState, writeFavoriteIds, writeFeedback, writeTripPlan, writeTripSelection, type DemoFeedback, type TripPlan } from '../services/storage';
+﻿import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
+import { initialDemoState, type DemoState } from '../domain/journey';
+import { clearDemoState, readDemoState, readTripSelection, writeDemoState, writeTripSelection } from '../services/storage';
+import { BrandMark, Icon, type IconName } from './ui';
+import { Home } from './pages/Home';
+import { Explore } from './pages/Explore';
+import { PlaceDetail } from './pages/PlaceDetail';
+import { TripPlanner } from './pages/TripPlanner';
+import { MinBaby } from './pages/MinBaby';
+import { Guides } from './pages/Guides';
+import { Partners } from './pages/Partners';
+import { PartnerPortal } from './pages/PartnerPortal';
+import { Profile } from './pages/Profile';
 import './styles.css';
 
-const filterOptions: FacilityName[] = ['changing_table', 'stroller_space', 'step_free_access', 'changing_access_all_caregivers', 'stroller_suitable_route', 'free_activity'];
+const navItems: { to: string; label: string; icon: IconName }[] = [
+  { to: '/', label: 'Hjem', icon: 'home' },
+  { to: '/utforsk', label: 'Utforsk', icon: 'map' },
+  { to: '/planlegg', label: 'Planlegg', icon: 'route' },
+  { to: '/reise', label: 'Min baby', icon: 'heart' },
+  { to: '/profil', label: 'Profil', icon: 'user' },
+];
 
-function BrandLogo() {
-  return <span className="brand-lockup"><span className="brand-tree" aria-hidden="true">✦</span><span>Enklere Babyliv</span></span>;
+/** Turvalget deles mellom Utforsk, stedsdetalj og Planlegg. */
+export interface TripSelection {
+  ids: string[];
+  toggle: (id: string) => void;
+  set: (ids: string[]) => void;
 }
 
-function FarmAnimal({ animal, label }: { animal: 'pig' | 'cow' | 'chicken'; label: string }) {
-  return <span className={`farm-animal farm-${animal}`} role="img" aria-label={label}><span className="farm-ear ear-left" /><span className="farm-ear ear-right" /><span className="farm-face"><i /><i /></span><span className="farm-muzzle" /></span>;
-}
+function Shell({ tripCount, children }: { tripCount: number; children: ReactNode }) {
+  const location = useLocation();
+  const firstRender = useRef(true);
 
-function Shell({ children }: { children: React.ReactNode }) {
-  return <><header className="topbar"><Link to="/" className="brand" aria-label="Enklere Babyliv hjem"><BrandLogo /><span>DEMO</span></Link><nav aria-label="Hovedmeny">{['/', '/utforsk', '/planlegg', '/reise', '/guider', '/partnere', '/profil'].map((path) => <NavLink key={path} to={path} end={path === '/'}>{path === '/' ? 'Hjem' : path.slice(1).replace('utforsk', 'Utforsk').replace('planlegg', 'Planlegg tur').replace('reise', 'Min baby').replace('guider', 'Guider').replace('partnere', 'Partnere').replace('profil', 'Profil')}</NavLink>)}</nav></header><main>{children}</main><footer>Enklere Babyliv · Studentprototype · Eksempeldata er ikke en offentlig tjeneste.</footer></>;
-}
+  // Ved sidebytte: til toppen, og fokus til sidens overskrift slik at skjermleser får beskjed.
+  useEffect(() => {
+    if (firstRender.current) { firstRender.current = false; return; }
+    window.scrollTo(0, 0);
+    const heading = document.querySelector<HTMLElement>('main h1');
+    heading?.focus();
+  }, [location.pathname]);
 
-function Home() {
-  const plan = readTripPlan();
-  const plannedPlaces = plan ? plan.placeIds.map((id) => places.find((place) => place.id === id)).filter((place): place is Place => Boolean(place)) : [];
-  return <section className="page welcome-page">
-    <div className="welcome-hero">
-      <div className="welcome-copy">
-        <p className="eyebrow">Enklere babyliv, hjemme og ute</p>
-        <h1>Små turer. Litt mer oversikt.</h1>
-        <p className="lead">Enklere Babyliv hjelper kommende og nybakte foreldre med å finne steder, aktiviteter og praktiske tips som passer deres hverdag i Kristiansand.</p>
-        <div className="actions"><Link className="button primary" to="/utforsk">Utforsk steder</Link><Link className="button secondary" to="/reise">Se Min baby</Link></div>
-        <p className="welcome-note">Du kan starte uten innlogging. Alt du legger inn i demoen, lagres bare lokalt i nettleseren.</p>
-      </div>
-      <div className="welcome-illustration" aria-label="Egne illustrasjoner laget for Enklere Babyliv">
-        <span className="illustration-sun" aria-hidden="true" />
-        <span className="illustration-cloud cloud-one" aria-hidden="true" />
-        <span className="illustration-cloud cloud-two" aria-hidden="true" />
-        <div className="illustration-card"><span className="illustration-pin">●</span><div><strong>En god dag ute</strong><small>Finn et sted som passer dere</small></div></div>
-        <div className="farm-hello" aria-hidden="true"><FarmAnimal animal="pig" label="Søt gårdsgris" /><FarmAnimal animal="chicken" label="Søt gårdshøne" /></div>
-        <span className="illustration-hill hill-back" aria-hidden="true" />
-        <span className="illustration-hill hill-front" aria-hidden="true" />
-      </div>
-    </div>
-
-    <section className="welcome-section">
-      <div className="section-intro"><div><p className="eyebrow">Slik bruker dere appen</p><h2>Fra idé til liten tur</h2></div><span className="welcome-caption">Tre enkle steg</span></div>
-      <div className="welcome-steps">
-        <article className="welcome-step"><span className="step-number">1</span><div><h3>Utforsk</h3><p>Se steder og aktiviteter på kart eller i liste. Filtrer på det som er viktig for dere, som stellebord, barnevognplass og trappefri adkomst.</p></div></article>
-        <article className="welcome-step"><span className="step-number">2</span><div><h3>Velg</h3><p>Lagre favoritter og åpne detaljene før dere drar. Informasjonen viser tydelig hva som er bekreftet, ukjent eller bare et eksempel.</p></div></article>
-        <article className="welcome-step"><span className="step-number">3</span><div><h3>Planlegg</h3><p>Velg opptil tre stopp, legg til en dato og en liten huskelapp. Planen blir liggende lokalt, klar når dere trenger den.</p></div></article>
-      </div>
-    </section>
-
-    <section className="farm-friends-note"><div><p className="eyebrow">Små hverdagsvenner</p><h2>En liten gårdshilsen</h2><p>De fiktive gårdsdyrene er en del av appens varme uttrykk og kan dukke opp som små veivisere.</p></div><div className="farm-friends"><FarmAnimal animal="cow" label="Søt gårdsku" /><FarmAnimal animal="pig" label="Søt gårdsgris" /><FarmAnimal animal="chicken" label="Søt gårdshøne" /></div></section>
-
-    <section className="welcome-section welcome-discover">
-      <div className="section-intro"><div><p className="eyebrow">Hva finner dere her?</p><h2>Støtte som passer ulike dager</h2></div></div>
-      <div className="card-grid">
-        <article className="card"><span className="welcome-card-icon" aria-hidden="true">⌖</span><h3>Steder å besøke</h3><p>Finn møteplasser, kaféer, turer og uteområder i nærheten – med praktisk informasjon samlet på ett sted.</p><Link className="text-button" to="/utforsk">Gå til Utforsk</Link></article>
-        <article className="card"><span className="welcome-card-icon" aria-hidden="true">✓</span><h3>Min baby</h3><p>Lag en frivillig demoprofil for å få generelle sjekklister og innhold som følger fasen dere er i.</p><Link className="text-button" to="/reise">Åpne Min baby</Link></article>
-        <article className="card"><span className="welcome-card-icon" aria-hidden="true">i</span><h3>Guider og Pappasporet</h3><p>Les korte, ikke-stereotype råd for pappa, medforelder og andre omsorgspersoner.</p><Link className="text-button" to="/guider">Se guider</Link></article>
-      </div>
-    </section>
-
-    <PartnerEntry />
-    <TrustNote />
-    {plannedPlaces.length > 0 && <article className="card home-plan"><p className="eyebrow">Neste tur</p><h2>{plannedPlaces.length} stopp planlagt</h2><p>{plannedPlaces.map((place) => place.name).join(' · ')}</p><p>{plan?.date ? `Planlagt ${new Date(`${plan.date}T12:00:00`).toLocaleDateString('nb-NO', { day: 'numeric', month: 'long' })}` : 'Dato ikke valgt'}</p><Link className="text-button" to="/planlegg">Åpne turplanen</Link></article>}
-    <FeedbackCard />
-  </section>;
-}
-
-function FeedbackCard() {
-  const [feedback, setFeedback] = useState<DemoFeedback | null>(readFeedback);
-  const [rating, setRating] = useState<DemoFeedback['rating']>('useful');
-  const [comment, setComment] = useState('');
-  const save = () => {
-    const next = { rating, comment };
-    writeFeedback(next);
-    setFeedback(next);
-  };
-  if (feedback) return <section className="card feedback-card" aria-live="polite"><p className="eyebrow">Takk for testen</p><h2>Tilbakemeldingen er lagret lokalt</h2><p>Dette er en prototype – ingen data sendes videre.</p><button className="text-button" onClick={() => setFeedback(null)}>Endre svar</button></section>;
-  return <section className="card feedback-card"><p className="eyebrow">Hjelp oss å teste</p><h2>Hvordan opplevdes førsteinntrykket?</h2><div className="feedback-options" role="group" aria-label="Tilbakemelding"><button className={rating === 'useful' ? 'selected' : ''} onClick={() => setRating('useful')}>Nyttig</button><button className={rating === 'unclear' ? 'selected' : ''} onClick={() => setRating('unclear')}>Litt uklart</button><button className={rating === 'missing' ? 'selected' : ''} onClick={() => setRating('missing')}>Savner noe</button></div><label>En kort kommentar (valgfritt)<textarea value={comment} onChange={(event) => setComment(event.target.value)} rows={3} placeholder="Hva ville gjort appen enda bedre?" /></label><button className="button primary" onClick={save}>Lagre tilbakemelding</button></section>;
-}
-
-function SponsorShowcase() {
-  return <section className="sponsor-showcase" aria-labelledby="sponsor-title">
-    <div className="section-intro"><div><p className="eyebrow">Eksempel på samarbeid</p><h2 id="sponsor-title">Relevant inspirasjon, tydelig merket</h2></div><span className="ad-label">Annonse</span></div>
-    <p className="sponsor-intro">Her kan lokale aktører løfte frem tilbud som passer familier. Kortene under er fiktive og viser en mulig annonseflate – de er ikke anbefalinger eller betalte samarbeid.</p>
-    <div className="sponsor-grid">
-      <article className="sponsor-card sponsor-event"><div className="sponsor-card-top"><span className="ad-label">Sponset arrangement</span><span className="sponsor-mark">Lokalt</span></div><p className="sponsor-date">Lørdag · 10:00–12:00</p><h3>Familielørdag ved sjøen</h3><p>Rolig formiddag med sang, lek og god plass til barnevogn. Et fiktivt eksempel på et relevant arrangement.</p><div className="sponsor-footer"><span>Fiktiv partner · Kristiansand</span><Link className="text-button" to="/utforsk">Se eksempel</Link></div></article>
-      <article className="sponsor-card sponsor-product"><div className="sponsor-card-top"><span className="ad-label">Annonse</span><span className="sponsor-mark">Tips til turen</span></div><h3>Gjør turen litt enklere</h3><p>Praktisk utstyr for små turer, valgt for familier som vil ut i nærmiljøet. Produktomtalen er et fiktivt demoeksempel.</p><div className="sponsor-footer"><span>Fiktiv butikk · Betalt plassering</span><span className="text-button">Les mer</span></div></article>
-    </div>
-    <p className="sponsor-disclosure">I en ferdig løsning skal annonser alltid merkes tydelig, være relevante for målgruppen og holdes adskilt fra appens egne råd og steddata.</p>
-  </section>;
-}
-
-function PartnerEntry() {
-  return <section className="partner-entry card"><div><p className="eyebrow">Valgfritt å utforske</p><h2>Tilbud fra lokale partnere</h2><p>Finn kurs, babysvømming, arrangementer og andre tilbud som kan bestilles direkte. Partnerinnhold ligger samlet her – ikke som reklame rundt i appen.</p></div><div className="partner-entry-action"><FarmAnimal animal="cow" label="Søt gårdsku" /><Link className="button secondary" to="/partnere">Se partnertilbud</Link></div></section>;
-}
-
-function PartnerOffers() {
-  return <section className="page partner-page"><div className="section-intro"><div><p className="eyebrow">Partnertilbud</p><h1>Finn noe dere kan gjøre sammen</h1></div><div><Link className="button secondary" to="/utforsk">Utforsk steder</Link><Link className="text-button partner-portal-link" to="/partnerportal">Er du partner? Legg inn tilbud</Link></div></div><div className="farm-page-greeting"><FarmAnimal animal="pig" label="Søt gårdsgris" /><p className="lead">Her samler vi relevante tilbud fra lokale aktører. Bestilling kan på sikt skje direkte i appen; Enklere Babyliv kan da få provisjon fra partneren.</p></div><div className="partner-disclosure"><strong>Dette er en demo</strong><span>Alle tilbudene under er fiktive og ikke bookbare.</span></div><div className="partner-offer-grid"><article className="partner-offer-card"><span className="demo-label">Fiktivt tilbud</span><p className="muted">Sponset plassering · tydelig merket</p><h2>Babysvømming for nybegynnere</h2><p>Et rolig introduksjonskurs med liten gruppe, god tid og plass til foreldre. Fiktivt eksempel på et bookbart partnertilbud.</p><div className="offer-meta"><span>6 samlinger · fra 3 måneder</span><strong>Provisjon ved booking</strong></div><button className="button primary" disabled>Book tilbud (demo)</button></article><article className="partner-offer-card"><span className="demo-label">Fiktivt tilbud</span><p className="muted">Lokalt arrangement</p><h2>Åpen lekestund på kafé</h2><p>En uformell formiddag for små barn og omsorgspersoner, med barnevognplass og enkel servering.</p><div className="offer-meta"><span>Lørdag · Kristiansand</span><strong>Provisjon ved booking</strong></div><button className="button primary" disabled>Book tilbud (demo)</button></article></div><section className="partner-how card"><p className="eyebrow">Slik kan det fungere</p><h2>En enkel vei fra tilbud til booking</h2><ol><li>Partneren legger inn tilbud, kapasitet, pris og praktisk informasjon.</li><li>Brukeren finner tilbudet på denne siden og velger selv om det er relevant.</li><li>Booking og betaling skjer via en trygg partnerløsning.</li><li>Enklere Babyliv får avtalt provisjon – uten at partnerinnhold blandes med appens egne råd.</li></ol></section><SponsorShowcase /></section>;
-}
-
-function PartnerPortal() {
-  return <section className="page partner-portal"><div className="section-intro"><div><p className="eyebrow">Partnerside · konseptskisse</p><h1>Legg inn et tilbud</h1></div><Link className="button secondary" to="/partnere">Se brukersiden</Link></div><p className="lead">En kafé, et kurs eller en arrangør kan sende inn tilbud som passer familier. En godkjenning bør skje før tilbudet blir synlig.</p><form className="partner-form" onSubmit={(event) => event.preventDefault()}><label>Navn på virksomhet<input placeholder="For eksempel Lille Kafé" /></label><label>Hva tilbyr dere?<input placeholder="For eksempel babysvømming eller familielunsj" /></label><label>Beskriv tilbudet<textarea rows={4} placeholder="Kort og konkret informasjon til foreldre" /></label><div className="partner-form-grid"><label>Pris<input placeholder="For eksempel 250 kr" /></label><label>Kapasitet<input placeholder="For eksempel 12 plasser" /></label></div><label className="choice"><input type="checkbox" />Jeg bekrefter at tilbudet kan vurderes for målgruppen.</label><button className="button primary" type="submit">Send inn til vurdering (demo)</button><p className="muted">Demoen sender ikke inn data. I en ferdig løsning må partneren godta vilkår, provisjon og merking.</p></form></section>;
-}
-
-function TrustNote() {
-  return <aside className="trust-note" aria-label="Om data og demo"><strong>Slik leser du informasjonen</strong><span><b className="legend-dot confirmed" />Bekreftet vises alltid med kilde og dato for siste kontroll</span><span><b className="legend-dot unknown" />Ukjent betyr at vi ikke har bevis</span><span><b className="legend-dot demo" />Fiktivt demosted er kun eksempeldata</span></aside>;
-}
-
-function Guides() {
-  return <section className="page guides"><div className="section-intro"><div><p className="eyebrow">Guider og Pappasporet</p><h1>Praktisk støtte, uten fasit.</h1></div><Link className="button secondary" to="/utforsk">Finn steder</Link></div><div className="guide-greeting"><p className="lead">Korte, generelle forslag for pappa, medforelder og andre omsorgspersoner. Innholdet er ikke medisinsk rådgivning.</p><FarmAnimal animal="chicken" label="Søt gårdshøne" /></div><div className="guide-grid"><article className="card guide-card"><p className="eyebrow">Pappasporet</p><h2>Pappa og baby på tur</h2><p>Velg et sted med enkel adkomst, og sjekk fasiliteter før dere drar. En plan B kan være å snu eller ta en kortere tur.</p><ul><li>Ta med det dere faktisk bruker.</li><li>Finn ut hvem som kan hjelpe hvis dagen endrer seg.</li><li>La begge omsorgspersoner få eie sin måte å gjøre ting på.</li></ul><Link className="text-button" to="/reise">Se praktiske sjekklister</Link></article><article className="card guide-card"><p className="eyebrow">På tur med baby</p><h2>Gjør første tur enkel</h2><p>Start med et rolig mål og god tid. Kartet viser fasilitetsstatus der den er kjent, men tilgjengelighet kan endre seg.</p><ul><li>Se etter plass til barnevogn.</li><li>Bruk listevisningen hvis kartfliser ikke lastes.</li><li>Åpne ekstern karttjeneste for vei – dette er ikke appens egen ruteplanlegger.</li></ul><Link className="text-button" to="/utforsk">Åpne kartet</Link></article></div><section className="card activities"><div className="section-intro"><div><p className="eyebrow">Enkel aktivitetsoversikt</p><h2>Aktiviteter i demoen</h2></div><span className="demo-label">Demodata</span></div><p>Dette er fiktive kort for å vise hvordan aktiviteter kan presenteres. Ingen datoer eller påmeldinger er reelle.</p><div className="activity-list">{places.filter((place) => place.category === 'activity').map((place) => <article className="activity-card" key={place.id}><h3>{place.name}</h3><p className="muted">{place.addressOrArea} · Gratis i demoen</p><span className="demo-label">Fiktiv aktivitet</span><p>{place.shortDescription}</p></article>)}</div></section><p className="source-note">Kunnskapskortene er generelle designhypoteser for studentprototypen. De skal kvalitetssikres før eventuell produksjonsbruk.</p></section>;
-}
-
-function PlaceCard({ place, favorite, onFavorite, onSelect }: { place: Place; favorite: boolean; onFavorite: () => void; onSelect: () => void }) {
-  return <article className="place-card"><div className="card-heading"><div><h3>{place.name}</h3><p className="muted">{categoryLabels[place.category]} · {place.addressOrArea}</p></div><button className="icon-button" aria-label={favorite ? `Fjern ${place.name} fra favoritter` : `Lagre ${place.name} som favoritt`} onClick={onFavorite}>{favorite ? '★' : '☆'}</button></div>{isFictional(place) && <span className="demo-label">Fiktivt demosted</span>}<p className="muted verification-line">{verificationSummary(place)}</p><p>{place.shortDescription}</p>{place.routeInfo && <p className="route-summary"><strong>{place.routeInfo.lengthKm} km</strong> · {place.routeInfo.surfaceText} · Ikke verifisert</p>}<div className="facility-list">{Object.entries(place.facilities).slice(0, 3).map(([name, claim]) => <span className={`status ${claim?.value}`} key={name}>{claim?.value === 'yes' ? 'Ja' : claim?.value === 'no' ? 'Nei' : 'Ukjent'} · {facilityLabels[name as FacilityName]}</span>)}</div><button className="text-button" onClick={onSelect}>Se detaljer</button></article>;
-}
-
-function TripSelectionBar({ selectedIds, onToggle, onCreatePlan }: { selectedIds: string[]; onToggle: (id: string) => void; onCreatePlan: () => void }) {
-  return <aside className="trip-selection" aria-label="Valgte stopp for turplan"><div><strong>{selectedIds.length}/3 stopp valgt</strong><p className="muted">{selectedIds.length ? 'Velg opptil tre steder og lag en samlet turplan.' : 'Velg steder fra listen for å bygge en tur.'}</p></div><div className="trip-selection-actions">{selectedIds.length > 0 && <button className="text-button" onClick={() => selectedIds.forEach(onToggle)}>Nullstill valg</button>}<button className="button primary" disabled={!selectedIds.length} onClick={onCreatePlan}>Lag turplan</button></div></aside>;
-}
-
-function PlaceDetails({ place, onClose }: { place: Place; onClose: () => void }) {
-  return <div className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><button className="close-button" onClick={onClose}>Lukk</button><h2 id="detail-title">{place.name}</h2>{isFictional(place) ? <p className="demo-label">Fiktivt demosted – kun eksempeldata</p> : <p className="verified-label">Reelt sted · fasiliteter må kontrolleres separat</p>}<p className="muted">{place.addressOrArea}</p><p className="verification-line"><strong>Sist kontrollert:</strong> {verificationSummary(place)}</p><p>{place.shortDescription}</p>{place.routeInfo && <p className="route-summary"><strong>Rute:</strong> {place.routeInfo.lengthKm} km · {place.routeInfo.surfaceText}. Rutedata er ikke verifisert.</p>}<h3>Fasiliteter</h3><ul>{Object.entries(place.facilities).map(([name, claim]) => <li key={name}><strong>{facilityLabels[name as FacilityName]}:</strong> {claim?.value === 'yes' ? 'Ja' : claim?.value === 'no' ? 'Nei' : 'Ukjent'}{claim?.note ? ` – ${claim.note}` : ''}</li>)}</ul>{place.identitySourceUrl && <p><a href={place.identitySourceUrl} target="_blank" rel="noreferrer">Kilde for stedet (ekstern)</a></p>}{place.coordinatesSourceUrl && <p><a href={place.coordinatesSourceUrl} target="_blank" rel="noreferrer">Kilde for posisjon (ekstern)</a></p>}{place.coordinates && !isFictional(place) ? <><a className="button secondary" href={directionsUrl([place.coordinates])} target="_blank" rel="noreferrer">Vis vei i kartappen (ekstern)</a><p className="muted">Åpner Google Maps. Der velger du gange, kollektiv eller bil.</p></> : <p className="muted">Veibeskrivelse er bare tilgjengelig for reelle steder.</p>}</div>;
-}
-
-function Explore() {
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState<PlaceCategory | 'all'>('all');
-  const [filters, setFilters] = useState<FacilityName[]>([]);
-  const [view, setView] = useState<'map' | 'list'>('map');
-  const [selected, setSelected] = useState<Place | null>(null);
-  const [favorites, setFavorites] = useState(readFavoriteIds);
-  const [tripSelection, setTripSelection] = useState(readTripSelection);
-  const navigate = useNavigate();
-  const results = useMemo(() => places.filter((place) => matchesPlace(place, search, category, filters)), [search, category, filters]);
-  const toggleFavorite = (id: string) => { const next = favorites.includes(id) ? favorites.filter((item) => item !== id) : [...favorites, id]; setFavorites(next); writeFavoriteIds(next); };
-  const reset = () => { setSearch(''); setCategory('all'); setFilters([]); };
-  const toggleTripSelection = (id: string) => {
-    const next = tripSelection.includes(id)
-      ? tripSelection.filter((item) => item !== id)
-      : tripSelection.length < 3 ? [...tripSelection, id] : tripSelection;
-    setTripSelection(next);
-    writeTripSelection(next);
-  };
-  const createTripPlan = () => { writeTripSelection(tripSelection); navigate('/planlegg'); };
-  return <section className="page explore"><div className="section-intro"><div><p className="eyebrow">Kristiansand og nærområdene</p><h1>Utforsk steder</h1></div><span className="result-count">{results.length} treff</span></div><TrustNote /><TripSelectionBar selectedIds={tripSelection} onToggle={toggleTripSelection} onCreatePlan={createTripPlan} /><div className="controls"><label>Søk<input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Navn, område eller tag" /></label><label>Kategori<select value={category} onChange={(event) => setCategory(event.target.value as PlaceCategory | 'all')}><option value="all">Alle kategorier</option>{Object.entries(categoryLabels).map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label><div className="filter-group"><span className="label">Filtre</span>{filterOptions.map((filter) => <label className="checkbox" key={filter}><input type="checkbox" checked={filters.includes(filter)} onChange={() => setFilters(filters.includes(filter) ? filters.filter((item) => item !== filter) : [...filters, filter])} />{facilityLabels[filter]}</label>)}</div><button className="text-button" onClick={reset}>Nullstill filtre</button></div><div className="view-toggle" role="group" aria-label="Visning"><button className={view === 'map' ? 'active' : ''} onClick={() => setView('map')}>Kart</button><button className={view === 'list' ? 'active' : ''} onClick={() => setView('list')}>Liste</button></div><div className={`explore-layout ${view}`}><div className="map-area" aria-label="Kart over Kristiansand"><MapContainer center={[58.1467, 7.9956]} zoom={13} scrollWheelZoom><TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />{results.filter((place) => place.coordinates).map((place) => <Marker position={[place.coordinates!.lat, place.coordinates!.lng]} key={place.id}><Popup><strong>{place.name}</strong><br />{isFictional(place) ? 'Fiktivt demosted' : 'Reell stedsidentitet'}<br /><button onClick={() => setSelected(place)}>Se detaljer</button></Popup></Marker>)}</MapContainer></div><div className="results" aria-live="polite">{results.length ? results.map((place) => <div className="place-card" key={place.id}><PlaceCard place={place} favorite={favorites.includes(place.id)} onFavorite={() => toggleFavorite(place.id)} onSelect={() => setSelected(place)} /><button className={`trip-add-button ${tripSelection.includes(place.id) ? 'selected' : ''}`} onClick={() => toggleTripSelection(place.id)} disabled={!tripSelection.includes(place.id) && tripSelection.length >= 3}>{tripSelection.includes(place.id) ? '✓ Valgt til turplan' : 'Legg til turplan'}</button></div>) : <div className="empty-state"><h2>Ingen treff</h2><p>Prøv et annet søk eller fjern noen filtre.</p><button className="button secondary" onClick={reset}>Nullstill filtre</button></div>}</div></div>{selected && <PlaceDetails place={selected} onClose={() => setSelected(null)} />}</section>;
-}
-
-function TripPlanner() {
-  const [plan, setPlan] = useState<TripPlan | null>(readTripPlan);
-  const savedSelection = readTripSelection();
-  const [placeIds, setPlaceIds] = useState(savedSelection.length > 0 ? savedSelection : plan?.placeIds ?? []);
-  const [date, setDate] = useState(plan?.date ?? '');
-  const [note, setNote] = useState(plan?.note ?? '');
-  const selectedPlaces = placeIds.map((id) => places.find((place) => place.id === id)).filter((place): place is Place => Boolean(place));
-  const togglePlace = (id: string) => setPlaceIds((current) => {
-    const next = current.includes(id) ? current.filter((item) => item !== id) : current.length < 3 ? [...current, id] : current;
-    writeTripSelection(next);
-    return next;
-  });
-  const routeStops = selectedPlaces.every((place) => place.coordinates && !isFictional(place)) ? selectedPlaces.map((place) => place.coordinates!) : [];
-  const save = () => {
-    const next = { placeIds, date, note };
-    writeTripPlan(next);
-    setPlan(next);
-    writeTripSelection(placeIds);
-  };
-  return <section className="page trip-planner"><div className="section-intro"><div><p className="eyebrow">Fra utforskning til plan</p><h1>Planlegg en liten tur</h1></div><Link className="button secondary" to="/utforsk">Velg flere stopp</Link></div><p className="lead">Sett sammen opptil tre stopp fra Utforsk, legg til en dato og skriv én ting som er viktig for dere. Rekkefølgen i listen blir rekkefølgen på turplanen.</p><div className="planner-grid"><section className="card"><h2>Valgte stopp</h2>{selectedPlaces.length === 0 ? <p className="muted">Ingen stopp valgt ennå. Gå tilbake til Utforsk og velg opptil tre steder.</p> : <div className="selected-stops">{selectedPlaces.map((place, index) => <div className="selected-stop" key={place.id}><span className="stop-number">{index + 1}</span><div><strong>{place.name}</strong><p className="muted">{categoryLabels[place.category]} · {place.addressOrArea}</p></div><button className="text-button" onClick={() => togglePlace(place.id)}>Fjern</button></div>)}</div>}<label>Når passer det?<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label><label>Hva vil dere huske?<textarea rows={4} value={note} onChange={(event) => setNote(event.target.value)} placeholder="For eksempel: ta med ekstra skift og finn en rolig benk." /></label><button className="button primary" disabled={!selectedPlaces.length} onClick={save}>Lagre samlet turplan</button></section><section className="card plan-preview"><p className="eyebrow">Turens stopp</p>{selectedPlaces.length === 0 ? <h2>Velg stopp i Utforsk</h2> : <ol className="plan-stop-list">{selectedPlaces.map((place) => <li key={place.id}><h2>{place.name}</h2><p className="muted">{place.addressOrArea} · {categoryLabels[place.category]}</p><p>{place.shortDescription}</p>{place.routeInfo && <p className="route-summary"><strong>Trilletur:</strong> {place.routeInfo.lengthKm} km · {place.routeInfo.surfaceText}</p>}<ul>{Object.entries(place.facilities).slice(0, 4).map(([name, claim]) => <li key={name}><strong>{facilityLabels[name as FacilityName]}:</strong> {claim?.value === 'yes' ? 'Ja' : claim?.value === 'no' ? 'Nei' : 'Ukjent'}</li>)}</ul></li>)}</ol>}{selectedPlaces.length > 0 && (routeStops.length ? <p><a className="button secondary" href={directionsUrl(routeStops)} target="_blank" rel="noreferrer">Start turen i kartappen (ekstern)</a></p> : <p className="muted">Samlet veibeskrivelse vises når alle stoppene er reelle steder. Fiktive demosteder har ingen ekte adresse.</p>)}{plan && <p className="saved-note" role="status">Samlet turplan er lagret lokalt.</p>}</section></div></section>;
-}
-
-const today = () => {
-  const date = new Date();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${date.getFullYear()}-${month}-${day}`;
-};
-
-function JourneySetup({ onSave }: { onSave: (profile: DemoProfile) => void }) {
-  const [stage, setStage] = useState<JourneyStage>('expecting');
-  const [inputMode, setInputMode] = useState<'dueDate' | 'week'>('dueDate');
-  const [dueDate, setDueDate] = useState('');
-  const [week, setWeek] = useState('');
-  const [birthDate, setBirthDate] = useState('');
-  const [ageMonths, setAgeMonths] = useState('');
-  const [preference, setPreference] = useState<ContentPreference>('general');
-  const canSave = stage !== 'expecting' || (inputMode === 'dueDate' ? Boolean(dueDate) : Number(week) >= 1 && Number(week) <= 42);
-  const save = () => {
-    if (!canSave) return;
-    onSave({
-      stage,
-      ...(stage === 'expecting' && inputMode === 'dueDate' ? { dueDate } : {}),
-      ...(stage === 'expecting' && inputMode === 'week' ? { enteredPregnancyWeek: Number(week), enteredWeekAnchorDate: today() } : {}),
-      ...(stage === 'baby_born' && birthDate ? { childBirthDate: birthDate } : {}),
-      ...(stage === 'baby_born' && ageMonths !== '' ? { childAgeMonths: Number(ageMonths) } : {}),
-      contentPreference: preference,
-      notificationPreference: 'preview_only',
-    });
-  };
-  return <div className="journey-setup card"><p className="eyebrow">Frivillig demoprofil</p><h2>Hva passer for deg nå?</h2><p className="muted">Du kan utforske kartet uten profil. Dette lagres bare lokalt i denne nettleseren.</p><div className="choice-grid"><label className="choice"><input type="radio" checked={stage === 'expecting'} onChange={() => setStage('expecting')} />Jeg venter barn</label><label className="choice"><input type="radio" checked={stage === 'baby_born'} onChange={() => setStage('baby_born')} />Jeg har fått barn</label><label className="choice"><input type="radio" checked={stage === 'prefer_not_to_say'} onChange={() => setStage('prefer_not_to_say')} />Jeg vil bare utforske</label></div>{stage === 'expecting' && <fieldset><legend>Velg én inngang</legend><div className="choice-grid"><label className="choice"><input type="radio" checked={inputMode === 'dueDate'} onChange={() => setInputMode('dueDate')} />Termindato</label><label className="choice"><input type="radio" checked={inputMode === 'week'} onChange={() => setInputMode('week')} />Svangerskapsuke</label></div>{inputMode === 'dueDate' ? <label>Termindato<input type="date" value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></label> : <label>Aktuell svangerskapsuke (1–42)<input type="number" min="1" max="42" value={week} onChange={(event) => setWeek(event.target.value)} /></label>}<p className="muted">Visningen er omtrentlig og ikke en klinisk vurdering.</p></fieldset>}{stage === 'baby_born' && <><label>Fødselsdato (valgfritt)<input type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} /></label><label>Barnets alder i måneder<select value={ageMonths} onChange={(event) => setAgeMonths(event.target.value)}><option value="">Velg alder (valgfritt)</option>{Array.from({ length: 13 }, (_, months) => months).map((months) => <option value={months} key={months}>{formatAgeMonths(months)}</option>)}</select></label></>}<label>Innholdspreferanse<select value={preference} onChange={(event) => setPreference(event.target.value as ContentPreference)}><option value="general">Generelt</option><option value="dad">Pappa/medforelder</option><option value="pregnant_parent">Den gravide</option><option value="both">Begge</option></select></label><button className="button primary" disabled={!canSave} onClick={save}>Lagre lokal demoprofil</button></div>;
-}
-
-function Journey({ state, onChange, onClear }: { state: DemoState; onChange: (state: DemoState) => void; onClear: () => void }) {
-  const profile = state.profile;
-  const week = profile ? getJourneyWeek(profile, today()) : null;
-  const milestone = profile ? getCurrentMilestone(profile, today()) : null;
-  const ageMonths = profile ? getChildAgeMonths(profile, today()) : undefined;
-  const ageActivities = ageMonths === undefined ? [] : activitiesForAge(ageMonths);
-  const pregnancyItems = profile?.stage === 'expecting' && week ? pregnancyChecklistForWeek(week) : [];
-  const toggleItem = (id: string) => onChange({ ...state, checkedItemIds: state.checkedItemIds.includes(id) ? state.checkedItemIds.filter((item) => item !== id) : [...state.checkedItemIds, id] });
-  if (!profile) return <section className="page"><p className="eyebrow">Min baby</p><h1>En roligere oversikt over det praktiske.</h1><p className="lead">Velg selv om du vil bruke en liten, lokal demoprofil. Ingen innlogging eller e-post er nødvendig.</p><JourneySetup onSave={(next) => onChange({ ...initialDemoState, profile: next })} /></section>;
-  const relevantItems = checklistItemsForAge(ageMonths ?? 0);
-  return <section className="page journey"><div className="section-intro"><div><p className="eyebrow">Min baby · lokal demo</p><h1>En liten plan for hverdagen</h1></div><button className="text-button" onClick={onClear}>Tilbakestill demo</button></div><div className="journey-grid"><article className="card"><h2>Din status</h2><p>{profile.stage === 'expecting' ? `Omtrentlig svangerskapsuke ${week ?? 'ukjent'}` : profile.stage === 'baby_born' ? `Barnet er ${ageMonths === undefined ? 'født' : formatAgeMonths(ageMonths)}` : 'Utforsker uten valgt fase'}</p>{profile.stage === 'baby_born' && ageMonths !== undefined && <><p>{getAgeDescription(ageMonths)}</p><p className="muted">Et generelt eksempel – barn utvikler seg ulikt.</p></>}<p className="muted">Dette er generell demo-informasjon, ikke medisinsk rådgivning.</p></article>{milestone && <article className="card milestone"><h2>{milestone.title}</h2><p>{milestone.body}</p>{milestone.pregnantParentTip && <p><strong>Råd til mor/den gravide:</strong> {milestone.pregnantParentTip}</p>}{milestone.dadTip && <p><strong>Råd til far/medforelder:</strong> {milestone.dadTip}</p>}<Link className="button secondary" to="/utforsk">Finn steder å besøke</Link></article>}</div>{profile.stage === 'expecting' && week && <section className="card pregnancy-source-card"><div className="section-intro"><div><p className="eyebrow">Praktiske steg fra uke {week}</p><h2>Forberedelser dere kan vurdere</h2></div><span className="demo-label">Kildebelagte prototypetips</span></div><p className="muted">Dette er praktiske påminnelser, ikke medisinske råd. Snakk med jordmor eller annet helsepersonell om spørsmål som gjelder helse eller oppfølging.</p><div className="checklist-grid">{['practical', 'preparation', 'economy', 'work'].map((category) => <div key={category}><h3>{{ practical: 'Praktisk', preparation: 'Forberedelse', economy: 'Økonomi', work: 'Jobb og studier' }[category as 'practical' | 'preparation' | 'economy' | 'work']}</h3>{pregnancyItems.filter((item) => item.category === category).map((item) => <label className="check-item" key={item.id}><input type="checkbox" checked={state.checkedItemIds.includes(item.id)} onChange={() => toggleItem(item.id)} />{item.label}</label>)}</div>)}</div><p className="source-note">Kilde: <a href="https://www.gravidhjelpen.no/sjekkliste" target="_blank" rel="noreferrer">Gravidhjelpen – sjekkliste</a>. Innholdet er bearbeidet og avgrenset for studentprototypen.</p></section>}{profile.stage === 'baby_born' && <section className="card age-activities"><div className="section-intro"><div><h2>Aktiviteter for deres aldersgruppe</h2><p className="muted">{ageMonths === undefined ? 'Velg barnets alder på profilsiden for å få tilpassede forslag.' : `Forslag for barn på ${formatAgeMonths(ageMonths)}`}</p></div><Link className="text-button" to="/profil">Endre alder</Link></div>{ageActivities.length ? <div className="activity-list">{ageActivities.map((activity) => <article className="activity-card" key={activity.id}><h3>{activity.title}</h3><p>{activity.description}</p><p className="muted">{activity.locationLabel} · {activity.ageMinMonths}–{activity.ageMaxMonths} mnd</p><span className="demo-label">Fiktiv aktivitet</span></article>)}</div> : <p>Ingen forslag for denne alderen i demoen ennå.</p>}</section>}<section className="card"><div className="section-intro"><div><h2>Sjekklister for deres aldersgruppe</h2><p className="muted">{ageMonths !== undefined ? `Forslag for barn på ${formatAgeMonths(ageMonths)}` : 'Generelle forslag for den første tiden'}</p></div><Link className="text-button" to="/profil">Endre alder</Link></div><div className="checklist-grid">{['equipment', 'practical'].map((listId) => <div key={listId}><h3>{listId === 'equipment' ? 'Utstyr og tur' : 'Praktisk støtte'}</h3>{relevantItems.filter((item) => item.listId === listId).map((item) => <label className="check-item" key={item.id}><input type="checkbox" checked={state.checkedItemIds.includes(item.id)} onChange={() => toggleItem(item.id)} />{item.label}</label>)}</div>)}</div></section><section className="card notification-preview"><h2>Varslingsforhåndsvisning</h2><p className="demo-label">Ikke sendt – prototype</p><p>En rolig påminnelse om neste praktiske steg kan vises her. Appen sender ingen e-post eller pushvarsler.</p></section><button className="danger-button" onClick={onClear}>Slett mine demodata</button></section>;
-}
-
-function Profile({ state, onChange, onClear }: { state: DemoState; onChange: (state: DemoState) => void; onClear: () => void }) {
-  const profile = state.profile;
-  const updateAge = (value: string) => {
-    if (!profile || profile.stage !== 'baby_born') return;
-    onChange({ ...state, profile: { ...profile, childAgeMonths: value === '' ? undefined : Number(value) } });
-  };
-  return <section className="page placeholder"><p className="eyebrow">Profil</p><h1>Din lokale demoprofil</h1><p className="lead">{profile ? 'Profilen brukes bare for å tilpasse Min baby i denne nettleseren.' : 'Du har ingen lagret demoprofil.'}</p>{profile?.stage === 'baby_born' && <div className="card profile-settings"><h2>Barnets alder</h2><label>Hvor gammelt er barnet?<select value={profile.childAgeMonths ?? ''} onChange={(event) => updateAge(event.target.value)}><option value="">Velg alder (valgfritt)</option>{Array.from({ length: 13 }, (_, months) => months).map((months) => <option value={months} key={months}>{formatAgeMonths(months)}</option>)}</select></label><p className="muted">Alderen brukes bare til å vise relevante, fiktive aktivitetsforslag.</p></div>}<Link className="button primary" to="/reise">{profile ? 'Åpne Min baby' : 'Lag demoprofil'}</Link>{profile && <button className="danger-button profile-delete" onClick={onClear}>Slett demodata</button>}</section>;
-}
-
-function Placeholder({ title, text }: { title: string; text: string }) {
-  return <section className="page placeholder"><p className="eyebrow">Kommer i neste fase</p><h1>{title}</h1><p className="lead">{text}</p><Link className="button primary" to="/utforsk">Utforsk kartet</Link></section>;
+  return (
+    <>
+      <a className="skip-link" href="#main">Hopp til innholdet</a>
+      <header className="site-header">
+        <div className="site-header-inner">
+          <Link to="/" className="brand"><BrandMark /><span>Enklere babyliv</span></Link>
+          <span className="demo-pill">Demo</span>
+          <nav className="mainnav" aria-label="Hovedmeny">
+            {navItems.map((item) => (
+              <NavLink key={item.to} to={item.to} end={item.to === '/'} className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
+                <span className="nav-icon">
+                  <Icon name={item.icon} size={22} />
+                  {item.to === '/planlegg' && tripCount > 0 && <span className="nav-badge">{tripCount}<span className="vh"> stopp valgt</span></span>}
+                </span>
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+      </header>
+      <main id="main">{children}</main>
+      <footer className="site-footer">Enklere babyliv · Studentprototype. Steder merket «Eksempeldata» er fiktive.</footer>
+    </>
+  );
 }
 
 export function App() {
   const [journeyState, setJourneyState] = useState<DemoState>(readDemoState);
+  const [tripIds, setTripIds] = useState<string[]>(readTripSelection);
+
   const updateJourney = (next: DemoState) => { setJourneyState(next); writeDemoState(next); };
-  const clearJourney = () => { clearDemoState(); setJourneyState(initialDemoState); };
-  return <Shell><Routes><Route path="/" element={<Home />} /><Route path="/utforsk" element={<Explore />} /><Route path="/planlegg" element={<TripPlanner />} /><Route path="/reise" element={<Journey state={journeyState} onChange={updateJourney} onClear={clearJourney} />} /><Route path="/guider" element={<Guides />} /><Route path="/partnere" element={<PartnerOffers />} /><Route path="/partnerportal" element={<PartnerPortal />} /><Route path="/profil" element={<Profile state={journeyState} onChange={updateJourney} onClear={clearJourney} />} /></Routes></Shell>;
-    }
+  const clearAll = () => { clearDemoState(); setJourneyState(initialDemoState); setTripIds([]); };
+  const setTrip = (ids: string[]) => { const next = ids.slice(0, 3); setTripIds(next); writeTripSelection(next); };
+  const trip: TripSelection = {
+    ids: tripIds,
+    set: setTrip,
+    toggle: (id) => setTrip(tripIds.includes(id) ? tripIds.filter((item) => item !== id) : tripIds.length < 3 ? [...tripIds, id] : tripIds),
+  };
+
+  return (
+    <Shell tripCount={tripIds.length}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/utforsk" element={<Explore trip={trip} />} />
+        <Route path="/utforsk/:placeId" element={<PlaceDetail trip={trip} />} />
+        <Route path="/planlegg" element={<TripPlanner trip={trip} />} />
+        <Route path="/reise" element={<MinBaby state={journeyState} onChange={updateJourney} />} />
+        <Route path="/guider" element={<Guides />} />
+        <Route path="/partnere" element={<Partners />} />
+        <Route path="/partnerportal" element={<PartnerPortal />} />
+        <Route path="/profil" element={<Profile state={journeyState} onChange={updateJourney} onClear={clearAll} />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Shell>
+  );
+}
+
+function NotFound() {
+  return (
+    <div className="page page-narrow">
+      <h1 tabIndex={-1}>Fant ikke siden</h1>
+      <p>Lenken kan være feil, eller siden finnes ikke lenger.</p>
+      <Link className="btn btn-primary" to="/">Til forsiden</Link>
+    </div>
+  );
+}

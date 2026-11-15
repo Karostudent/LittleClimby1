@@ -29,6 +29,7 @@ export interface Place {
   identitySourceUrl?: string;
   identityCheckedAt?: string;
   coordinatesSourceUrl?: string;
+  coordinatesCheckedAt?: string;
   facilities: Partial<Record<FacilityName, FacilityClaim>>;
   tags: string[];
   routeInfo?: { lengthKm?: number; surfaceText?: string; routeVerified: boolean };
@@ -59,7 +60,7 @@ export const matchesPlace = (
   category: PlaceCategory | 'all',
   filters: FacilityName[],
 ) => {
-  const haystack = `${place.name} ${place.addressOrArea} ${place.tags.join(' ')}`.toLocaleLowerCase('nb-NO');
+  const haystack = `${place.name} ${place.addressOrArea} ${categoryLabels[place.category]} ${place.tags.join(' ')}`.toLocaleLowerCase('nb-NO');
   const searchMatches = !search.trim() || haystack.includes(search.trim().toLocaleLowerCase('nb-NO'));
   const categoryMatches = category === 'all' || place.category === category;
   const filterMatches = filters.every((filter) => place.facilities[filter]?.value === 'yes');
