@@ -11,15 +11,31 @@ import './styles.css';
 
 const filterOptions: FacilityName[] = ['changing_table', 'stroller_space', 'step_free_access', 'changing_access_all_caregivers', 'stroller_suitable_route', 'free_activity'];
 
+type NavigationIconName = 'home' | 'map' | 'route' | 'heart' | 'info' | 'star' | 'user';
+
 const primaryNavigation = [
-  { path: '/', label: 'Hjem', icon: '⌂' },
-  { path: '/utforsk', label: 'Utforsk', icon: '⌖' },
-  { path: '/planlegg', label: 'Planlegg tur', icon: '↗' },
-  { path: '/reise', label: 'Min baby', icon: '♡' },
-  { path: '/guider', label: 'Guider', icon: 'i' },
-  { path: '/partnere', label: 'Partnere', icon: '☆' },
-  { path: '/profil', label: 'Profil', icon: '●' },
+  { path: '/', label: 'Hjem', icon: 'home' as NavigationIconName },
+  { path: '/utforsk', label: 'Utforsk', icon: 'map' as NavigationIconName },
+  { path: '/planlegg', label: 'Planlegg tur', icon: 'route' as NavigationIconName },
+  { path: '/reise', label: 'Min baby', icon: 'heart' as NavigationIconName },
+  { path: '/guider', label: 'Guider', icon: 'info' as NavigationIconName },
+  { path: '/partnere', label: 'Partnere', icon: 'star' as NavigationIconName },
+  { path: '/profil', label: 'Profil', icon: 'user' as NavigationIconName },
 ];
+
+function NavigationIcon({ name }: { name: NavigationIconName }) {
+  const paths = {
+    home: <path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z" />,
+    map: <><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z" /><path d="M9 4v14M15 6v14" /></>,
+    route: <><circle cx="6" cy="19" r="2" /><circle cx="18" cy="5" r="2" /><path d="M8 19h7a3.5 3.5 0 0 0 0-7H9a3.5 3.5 0 0 1 0-7h7" /></>,
+    heart: <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />,
+    info: <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></>,
+    star: <path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" />,
+    user: <><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>,
+  }[name];
+
+  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{paths}</svg>;
+}
 
 function BrandLogo() {
   return <span className="brand-lockup"><span className="brand-tree" aria-hidden="true">✦</span><span>Enklere Babyliv</span></span>;
@@ -35,7 +51,7 @@ const formatChildAge = (months: number | undefined, years: number | undefined): 
 };
 
 function Shell({ children }: { children: React.ReactNode }) {
-  return <><header className="topbar"><Link to="/" className="brand" aria-label="Enklere Babyliv hjem"><BrandLogo /><span>DEMO</span></Link><nav className="desktop-nav" aria-label="Hovedmeny">{['/', '/utforsk', '/planlegg', '/reise', '/guider', '/partnere', '/profil'].map((path) => <NavLink key={path} to={path} end={path === '/'}>{path === '/' ? 'Hjem' : path.slice(1).replace('utforsk', 'Utforsk').replace('planlegg', 'Planlegg tur').replace('reise', 'Min baby').replace('guider', 'Guider').replace('partnere', 'Partnere').replace('profil', 'Profil')}</NavLink>)}</nav><nav className="mobile-nav" aria-label="Mobilmeny">{primaryNavigation.map((item) => <NavLink key={item.path} to={item.path} end={item.path === '/'}><span className="mobile-nav-icon" aria-hidden="true">{item.icon}</span><span>{item.label}</span></NavLink>)}</nav></header><main>{children}</main><footer>Enklere Babyliv · Studentprototype · Eksempeldata er ikke en offentlig tjeneste.</footer></>;
+  return <><header className="topbar"><Link to="/" className="brand" aria-label="Enklere Babyliv hjem"><BrandLogo /><span>DEMO</span></Link><nav className="desktop-nav" aria-label="Hovedmeny">{['/', '/utforsk', '/planlegg', '/reise', '/guider', '/partnere', '/profil'].map((path) => <NavLink key={path} to={path} end={path === '/'}>{path === '/' ? 'Hjem' : path.slice(1).replace('utforsk', 'Utforsk').replace('planlegg', 'Planlegg tur').replace('reise', 'Min baby').replace('guider', 'Guider').replace('partnere', 'Partnere').replace('profil', 'Profil')}</NavLink>)}</nav><nav className="mobile-nav" aria-label="Mobilmeny">{primaryNavigation.map((item) => <NavLink key={item.path} to={item.path} end={item.path === '/'}><span className="mobile-nav-icon"><NavigationIcon name={item.icon} /></span><span>{item.label}</span></NavLink>)}</nav></header><main>{children}</main><footer>Enklere Babyliv · Studentprototype · Eksempeldata er ikke en offentlig tjeneste.</footer></>;
 }
 
 function Home() {
@@ -46,7 +62,7 @@ function Home() {
       <div className="welcome-copy">
         <p className="eyebrow">Enklere babyliv, hjemme og ute</p>
         <h1>Små turer. Litt mer oversikt.</h1>
-        <p className="lead">Enklere Babyliv hjelper kommende og nybakte foreldre med å finne steder, aktiviteter og praktiske tips som passer deres hverdag i Kristiansand.</p>
+        <p className="lead">Finn steder, aktiviteter og praktiske tips som passer hverdagen i Kristiansand.</p>
         <div className="actions"><Link className="button primary" to="/utforsk">Utforsk steder</Link><Link className="button secondary" to="/reise">Se Min baby</Link></div>
         <p className="welcome-note">Du kan starte uten innlogging. Alt du legger inn i demoen, lagres bare lokalt i nettleseren.</p>
       </div>
@@ -64,9 +80,9 @@ function Home() {
     <section className="welcome-section">
       <div className="section-intro"><div><p className="eyebrow">Slik bruker dere appen</p><h2>Fra idé til liten tur</h2></div><span className="welcome-caption">Tre enkle steg</span></div>
       <div className="welcome-steps">
-        <article className="welcome-step"><span className="step-number">1</span><div><h3>Utforsk</h3><p>Se steder og aktiviteter på kart eller i liste. Filtrer på det som er viktig for dere, som stellebord, barnevognplass og trappefri adkomst.</p></div></article>
-        <article className="welcome-step"><span className="step-number">2</span><div><h3>Velg</h3><p>Lagre favoritter og åpne detaljene før dere drar. Informasjonen viser tydelig hva som er bekreftet, ukjent eller bare et eksempel.</p></div></article>
-        <article className="welcome-step"><span className="step-number">3</span><div><h3>Planlegg</h3><p>Velg opptil tre stopp, legg til en dato og en liten huskelapp. Planen blir liggende lokalt, klar når dere trenger den.</p></div></article>
+        <article className="welcome-step"><span className="step-number">1</span><div><h3>Utforsk</h3><p>Se steder og aktiviteter på kart eller i liste, og filtrer på det som er viktig for dere.</p></div></article>
+        <article className="welcome-step"><span className="step-number">2</span><div><h3>Velg</h3><p>Lagre favoritter og sjekk hva som er bekreftet, ukjent eller eksempeldata.</p></div></article>
+        <article className="welcome-step"><span className="step-number">3</span><div><h3>Planlegg</h3><p>Velg opptil tre stopp, dato og en kort huskelapp. Planen lagres lokalt.</p></div></article>
       </div>
     </section>
 
