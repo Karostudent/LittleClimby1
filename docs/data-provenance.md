@@ -21,6 +21,6 @@ Kilden er sist gjennomgått 2026-11-08. Innholdet er ikke medisinsk rådgivning,
 
 ## Praktiske tips ved barnehagestart
 
-Min baby viser bearbeidede, praktiske sjekkpunkter for barn i alderen 3–5 år, basert på [Læringsverkstedet – klær og utstyrsliste](https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste). De dekker klær etter vær, merking av utstyr, innesko, drikkeflaske, trygghetsting og mulighet for gjenbruk.
+Min baby viser bearbeidede, praktiske sjekkpunkter for barn i alderen 3–6 år, basert på [Læringsverkstedet – klær og utstyrsliste](https://laringsverkstedet.no/barnehagestart/kl%C3%A6r-og-utstyrsliste). De dekker klær etter vær, merking av utstyr, innesko, drikkeflaske, trygghetsting og mulighet for gjenbruk.
 
 Listen er ikke en universell kravliste. Familier bør sjekke hva den aktuelle barnehagen ønsker, og innholdet i appen er bearbeidet for studentprototypen.

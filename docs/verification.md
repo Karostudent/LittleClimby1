@@ -39,3 +39,12 @@
 - `npm test`: bestått 2026-11-04, 4 testfiler og 13 tester.
 - Utvidet: «Den første tiden hjemme» byttes til større-barn-råd når valgt alder er over ett år. Rådene gjelder lek, bevegelse, rutiner, små oppgaver og pauser, og er generelle designhypoteser – ikke medisinsk veiledning.
 - `npm test`: bestått 2026-11-04, 4 testfiler og 14 tester.
+
+## Siste design- og aldersoppdatering
+
+- Implementert: aldersvalg til og med 6 år, fødselsdato som dynamisk alderskilde og månedstilpasset visning for babyer under ett år.
+- Implementert: full mobilbunnmeny med alle sju Karoline-innganger, safe-area-støtte, Emma-inspirert aktivt ikonfelt og matchende SVG-symboler.
+- `npm test`: bestått 2026-11-16, 4 testfiler og 23 tester.
+- `npm run build`: bestått 2026-11-16 med Vite-produksjonsbygg.
+- `git diff --check`: bestått 2026-11-16.
+- Ikke verifisert ennå: visuell kontroll i mobilnettleser og skjermlesergjennomgang.

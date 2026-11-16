@@ -17,7 +17,7 @@ Statusene betyr:
 | Milepæler og minst tre pappatips | Verifisert i kode/test | `src/domain/journey.test.ts` |
 | Separate råd til mor/den gravide og far/medforelder | Verifisert i kode/test | `src/domain/journey.test.ts`, `src/domain/journey.ts` |
 | To sjekklister og lokal utholdenhet | Verifisert i kode/test; manuell reload gjenstår | `src/services/storage.test.ts`, Jonas-skript |
-| Valg av barnets alder 0–5 år på profil | Implementert; manuell UI-kontroll gjenstår | `src/app/App.tsx` |
+| Valg av barnets alder 0–6 år og fødselsdato på profil | Verifisert i kode/test; manuell UI-kontroll gjenstår | `src/app/App.tsx`, `src/domain/journey.test.ts` |
 | Aldersfiltrerte aktivitetsforslag | Verifisert i kode/test; manuell UI-kontroll gjenstår | `src/data/activities.test.ts`, `src/data/activities.ts` |
 | Alderstilpassede sjekkpunkter | Verifisert i kode/test; manuell UI-kontroll gjenstår | `src/domain/journey.test.ts`, `src/domain/journey.ts` |
 | Kort aldersbeskrivelse i «Din status» | Verifisert i kode/test; manuell UI-kontroll gjenstår | `src/domain/journey.test.ts`, `src/app/App.tsx` |
@@ -32,6 +32,7 @@ Statusene betyr:
 
 ## Faktisk verifisert i fase 4
 
-- `npm test`: 8 tester bestått.
+- Siste `npm test`: 23 tester bestått i 4 testfiler.
 - `npm run build`: bestått.
+- Mobilbunnmeny med sju hovedinnganger, Emma-inspirert aktivt ikonfelt og SVG-symboler er implementert i `src/app/App.tsx` og `src/app/styles.css`.
 - Manuell brukertest, mobilnettleser, skjermleser og runtime-kartfeil: ikke kjørt i denne fasen.
