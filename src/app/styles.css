@@ -43,3 +43,31 @@
 }
 .farm-hello{align-items:end;bottom:15%;display:flex;gap:.45rem;position:absolute;right:13%;z-index:2}.farm-animal{display:inline-block;height:3.2rem;position:relative;width:3.2rem}.farm-pig{background:#E7B5B4;border-radius:42% 42% 35% 35%;transform:rotate(-3deg)}.farm-cow{background:#F7F0DF;border:1px solid #D9B08C;border-radius:42% 42% 35% 35%;transform:rotate(3deg)}.farm-chicken{background:#F3D7A6;border-radius:48% 48% 35% 35%;height:2.6rem;width:2.6rem}.farm-ear{background:inherit;position:absolute}.farm-pig .farm-ear{background:#D99099;border-radius:70% 20% 60% 30%;height:.85rem;top:-.25rem;width:.85rem}.farm-cow .farm-ear{background:#C98C78;border-radius:60% 30% 50% 30%;height:.7rem;top:-.15rem;width:.85rem}.farm-chicken .farm-ear{background:#E3A0A0;border-radius:50%;height:.45rem;top:-.35rem;width:.45rem}.farm-face{display:flex;gap:.7rem;left:calc(50% - .75rem);position:absolute;top:.75rem}.farm-face i{background:#755858;border-radius:50%;display:block;height:.23rem;width:.23rem}.farm-muzzle{background:#D99099;border-radius:45%;bottom:.35rem;height:.55rem;left:calc(50% - .3rem);position:absolute;width:.6rem}.farm-cow .farm-muzzle{background:#E7B8B0;border-radius:50%;width:.8rem}.farm-chicken .farm-muzzle{background:#D98958;border-radius:20% 20% 60% 60%;bottom:.25rem;height:.35rem;width:.5rem}.farm-friends-note{align-items:center;background:#F7EEEA;border:1px solid #E6DCDC;border-radius:18px;display:flex;gap:2rem;justify-content:space-between;margin-top:clamp(2rem,5vw,4rem);padding:1.2rem 1.4rem}.farm-friends-note h2{margin:.2rem 0}.farm-friends-note p:last-child{margin-bottom:0}.farm-friends{align-items:end;display:flex;gap:.55rem;padding:.5rem}.farm-friends .farm-animal:nth-child(2){height:3.5rem;width:3.5rem}.farm-friends .farm-animal:nth-child(3){height:2.8rem;width:2.8rem}.partner-entry-action{align-items:center;display:flex;gap:1rem}.farm-page-greeting,.guide-greeting{align-items:center;display:flex;gap:.8rem}.farm-page-greeting .lead,.guide-greeting .lead{margin:0}.farm-page-greeting .farm-animal,.guide-greeting .farm-animal{flex:none}
 @media(max-width:600px){.farm-hello{bottom:11%;right:8%}.farm-hello .farm-animal{height:2.5rem;width:2.5rem}.farm-friends-note{align-items:flex-start;display:block;margin-top:2rem;padding:1rem}.farm-friends{justify-content:center}.partner-entry-action{justify-content:space-between;margin-top:.8rem}.farm-page-greeting,.guide-greeting{align-items:flex-start}.farm-page-greeting .farm-animal,.guide-greeting .farm-animal{margin-top:.2rem}}
+
+/* Rolige, berøringsvennlige detaljer fra den mobile referansestilen. */
+.journey .card{box-shadow:0 6px 22px #75585812}
+.journey .section-intro{gap:1rem}
+.journey .text-button,.journey .button{min-height:44px}
+.journey .check-item{border-radius:10px;padding:.35rem .45rem}
+.journey .check-item:hover{background:#FCFAF9}
+@media(max-width:600px){
+  .journey .section-intro{gap:.5rem}
+  .journey .card{box-shadow:0 4px 16px #75585810}
+  .journey .check-item{margin:.5rem 0;padding:.45rem .35rem}
+}
+
+/* Mobilmenyen følger Emma-stilens faste bunnnavigasjon, mens full meny beholdes på desktop. */
+.mobile-nav{display:none}
+@media(max-width:899px){
+  .topbar{align-items:center;display:flex;gap:.75rem;padding:.65rem .8rem}
+  .desktop-nav{display:none!important}
+  .mobile-nav{align-items:stretch;background:#fff;border-top:1px solid #E6DCDC;bottom:0;display:flex;gap:.2rem;justify-content:space-around;left:0;padding:.35rem .25rem calc(.35rem + env(safe-area-inset-bottom));position:fixed;right:0;z-index:1100}
+  .mobile-nav a{align-items:center;border-radius:12px;color:#765F5F;display:flex;flex:1;flex-direction:column;font-size:.64rem;font-weight:600;gap:.1rem;justify-content:center;min-height:3.4rem;min-width:0;padding:.25rem .05rem;text-decoration:none;white-space:nowrap}
+  .mobile-nav a.active{background:#DDF0ED;color:#3F2E2E;text-decoration:none}
+  .mobile-nav-icon{align-items:center;border-radius:50%;display:flex;font-size:1.05rem;height:1.45rem;justify-content:center;line-height:1;width:2rem}
+  main{padding-bottom:5.7rem}
+  footer{padding-bottom:6.5rem}
+}
+@media(min-width:900px){
+  .desktop-nav{display:flex}
+}

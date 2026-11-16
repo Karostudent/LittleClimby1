@@ -70,6 +70,18 @@ describe('journey calculations', () => {
     expect(kindergartenChecklistForAge(2)).toHaveLength(0);
     expect(kindergartenChecklistForAge(3).map((item) => item.id)).toContain('kindergarten-label-everything');
     expect(kindergartenChecklistForAge(5).every((item) => item.ageMinYears <= 5 && item.ageMaxYears >= 5)).toBe(true);
+    expect(kindergartenChecklistForAge(6).map((item) => item.id)).toContain('school-start-routines');
+  });
+
+  it('uses the school-start milestone from age five', () => {
+    const child: DemoProfile = {
+      ...expectingProfile,
+      stage: 'baby_born',
+      dueDate: undefined,
+      childBirthDate: undefined,
+      childAgeYears: 6,
+    };
+    expect(getCurrentMilestone(child, '2026-11-04')?.id).toBe('postpartum-school-start');
   });
 
   it('provides a short, non-clinical description for the selected age', () => {
