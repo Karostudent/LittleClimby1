@@ -6,6 +6,10 @@ import {
   checklistItemsForAge,
   pregnancyChecklistForWeek,
   getAgeDescription,
+  getBabyAgeDescription,
+  childAgeMonthsFromBirthDate,
+  getChildAgeYears,
+  childAgeYearsFromBirthDate,
   milestones,
   getParentAdvice,
   kindergartenChecklistForAge,
@@ -22,6 +26,24 @@ const expectingProfile: DemoProfile = {
 };
 
 describe('journey calculations', () => {
+  it('derives whole child years from a birth date', () => {
+    expect(childAgeMonthsFromBirthDate('2026-10-16', '2026-11-16')).toBe(1);
+    expect(childAgeMonthsFromBirthDate('2026-10-17', '2026-11-16')).toBe(0);
+    expect(childAgeYearsFromBirthDate('2020-11-17', '2026-11-16')).toBe(5);
+    expect(childAgeYearsFromBirthDate('2020-11-16', '2026-11-16')).toBe(6);
+  });
+
+  it('uses the birth date as the changing source of age', () => {
+    const profile: DemoProfile = {
+      ...expectingProfile,
+      stage: 'baby_born',
+      childBirthDate: '2020-11-17',
+      childAgeYears: 6,
+    };
+    expect(getChildAgeYears(profile, '2026-11-16')).toBe(5);
+    expect(getChildAgeYears(profile, '2026-11-17')).toBe(6);
+  });
+
   it('calculates the same week from local calendar dates across a date boundary', () => {
     expect(pregnancyWeekFromDueDate('2027-01-01', '2026-11-04')).toBe(32);
     expect(getJourneyWeek(expectingProfile, '2026-11-04')).toBe(32);
@@ -36,6 +58,12 @@ describe('journey calculations', () => {
     expect(getCurrentMilestone(expectingProfile, '2026-09-01')?.id).not.toBe(getCurrentMilestone(expectingProfile, '2026-11-04')?.id);
     const born: DemoProfile = { ...expectingProfile, stage: 'baby_born', dueDate: undefined, childBirthDate: '2026-10-01' };
     expect(getCurrentMilestone(born, '2026-11-04')?.id).toBe('postpartum-first');
+  });
+
+  it('updates baby advice from birth date month milestones', () => {
+    const born: DemoProfile = { ...expectingProfile, stage: 'baby_born', dueDate: undefined, childBirthDate: '2026-09-16' };
+    expect(getCurrentMilestone(born, '2026-10-16')?.id).toBe('postpartum-first');
+    expect(getCurrentMilestone(born, '2026-11-16')?.id).toBe('postpartum-out');
   });
 
   it('switches postpartum advice to toddler-focused guidance after one year', () => {
@@ -64,6 +92,9 @@ describe('journey calculations', () => {
     expect(infantIds).toContain('practical-route');
     expect(toddlerIds).toContain('practical-play');
     expect(toddlerIds).not.toContain('practical-route');
+    for (let age = 0; age <= 6; age += 1) {
+      expect(checklistItemsForAge(age).every((item) => age >= item.ageMinYears && age <= item.ageMaxYears)).toBe(true);
+    }
   });
 
   it('returns kindergarten preparation tips only for preschool ages', () => {
@@ -85,6 +116,8 @@ describe('journey calculations', () => {
   });
 
   it('provides a short, non-clinical description for the selected age', () => {
+    expect(getBabyAgeDescription(2)).toContain('korte');
+    expect(getBabyAgeDescription(7)).toContain('trygg');
     expect(getAgeDescription(2)).toContain('tempo');
     expect(getAgeDescription(9)).toContain('utvikler seg ulikt');
   });

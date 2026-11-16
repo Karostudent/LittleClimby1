@@ -16,4 +16,10 @@ describe('age-adapted activities', () => {
     expect(schoolStartIds).toContain('activity-kindergarten-play');
     expect(schoolStartIds).not.toContain('activity-toddler-outdoor');
   });
+
+  it('keeps every suggestion inside its declared age range', () => {
+    for (let age = 0; age <= 6; age += 1) {
+      expect(activitiesForAge(age).every((activity) => age >= activity.ageMinYears && age <= activity.ageMaxYears)).toBe(true);
+    }
+  });
 });

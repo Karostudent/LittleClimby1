@@ -78,6 +78,25 @@ const formatDate = (date: Date): string => {
 
 const daysBetween = (from: Date, to: Date) => Math.round((to.getTime() - from.getTime()) / 86_400_000);
 
+export const childAgeMonthsFromBirthDate = (birthDate: string, today: string): number => {
+  const birth = dateOnly(birthDate);
+  const current = dateOnly(today);
+  let months = (current.getFullYear() - birth.getFullYear()) * 12 + current.getMonth() - birth.getMonth();
+  if (current.getDate() < birth.getDate()) months -= 1;
+  return Math.max(0, months);
+};
+
+export const childAgeYearsFromBirthDate = (birthDate: string, today: string): number =>
+  Math.floor(childAgeMonthsFromBirthDate(birthDate, today) / 12);
+
+export const getChildAgeMonths = (profile: DemoProfile, today: string): number | undefined =>
+  profile.childBirthDate
+    ? childAgeMonthsFromBirthDate(profile.childBirthDate, today)
+    : profile.childAgeYears !== undefined ? profile.childAgeYears * 12 : undefined;
+
+export const getChildAgeYears = (profile: DemoProfile, today: string): number | undefined =>
+  profile.childBirthDate ? childAgeYearsFromBirthDate(profile.childBirthDate, today) : profile.childAgeYears;
+
 export const pregnancyWeekFromDueDate = (dueDate: string, today: string): number => {
   const daysUntilDue = daysBetween(dateOnly(today), dateOnly(dueDate));
   return Math.max(1, Math.min(42, Math.floor((280 - daysUntilDue) / 7) + 1));
@@ -175,6 +194,18 @@ const ageDescriptions: Record<number, string> = {
   6: 'Et barn som kan ha glede av tydelige rutiner, lek med andre og små oppgaver fram mot skolestart.',
 };
 
+const babyAgeDescriptions: [number, string][] = [
+  [0, 'De første ukene kan korte, rolige turer med nærhet og pauser passe godt.'],
+  [1, 'En liten baby som fortsatt kan ha glede av korte økter, nærhet og god tid til pauser.'],
+  [3, 'En baby som kan ha glede av enkle sanseinntrykk, kontakt og korte oppdagelser.'],
+  [6, 'En baby som kan utforske mer aktivt fra en trygg base, med pauser etter behov.'],
+  [9, 'En baby som kan ha glede av å bevege seg, leke og utforske i et rolig tempo.'],
+];
+
+export const getBabyAgeDescription = (ageMonths: number): string =>
+  [...babyAgeDescriptions].reverse().find(([minimumMonths]) => ageMonths >= minimumMonths)?.[1]
+  ?? babyAgeDescriptions[0][1];
+
 export const getAgeDescription = (ageYears: number): string =>
   ageDescriptions[ageYears] ?? 'Barn utvikler seg ulikt, og denne beskrivelsen er bare et generelt eksempel.';
 
@@ -185,8 +216,9 @@ export const getCurrentMilestone = (profile: DemoProfile, today: string): Milest
     return [...milestones].filter((milestone) => milestone.stage === 'pregnancy' && milestone.minWeekOrMonth <= week).pop() ?? milestones[0];
   }
   if (profile.stage === 'baby_born') {
-    if (profile.childAgeYears !== undefined && profile.childAgeYears > 1) {
-      const milestoneId = profile.childAgeYears >= 5 ? 'postpartum-school-start' : 'postpartum-toddler';
+    const childAgeYears = getChildAgeYears(profile, today);
+    if (childAgeYears !== undefined && childAgeYears > 1) {
+      const milestoneId = childAgeYears >= 5 ? 'postpartum-school-start' : 'postpartum-toddler';
       return milestones.find((milestone) => milestone.id === milestoneId) ?? null;
     }
     const month = profile.childBirthDate ? Math.max(0, Math.floor(daysBetween(dateOnly(profile.childBirthDate), dateOnly(today)) / 30)) : 0;

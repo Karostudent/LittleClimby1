@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { categoryLabels, facilityLabels, isFictional, matchesPlace, type FacilityName, type Place, type PlaceCategory } from '../domain/places';
 import { places } from '../data/places';
 import { activitiesForAge } from '../data/activities';
-import { checklistItemsForAge, getAgeDescription, getCurrentMilestone, getJourneyWeek, initialDemoState, kindergartenChecklistForAge, pregnancyChecklistForWeek, type ContentPreference, type DemoProfile, type DemoState, type JourneyStage } from '../domain/journey';
+import { checklistItemsForAge, getAgeDescription, getBabyAgeDescription, getChildAgeMonths, getChildAgeYears, getCurrentMilestone, getJourneyWeek, initialDemoState, kindergartenChecklistForAge, pregnancyChecklistForWeek, type ContentPreference, type DemoProfile, type DemoState, type JourneyStage } from '../domain/journey';
 import { clearDemoState, readDemoState, readFavoriteIds, readFeedback, readTripPlan, readTripSelection, writeDemoState, writeFavoriteIds, writeFeedback, writeTripPlan, writeTripSelection, type DemoFeedback, type TripPlan } from '../services/storage';
 import './styles.css';
 
@@ -28,6 +28,11 @@ function BrandLogo() {
 function FarmAnimal({ animal, label }: { animal: 'pig' | 'cow' | 'chicken'; label: string }) {
   return <span className={`farm-animal farm-${animal}`} role="img" aria-label={label}><span className="farm-ear ear-left" /><span className="farm-ear ear-right" /><span className="farm-face"><i /><i /></span><span className="farm-muzzle" /></span>;
 }
+
+const formatChildAge = (months: number | undefined, years: number | undefined): string => {
+  if (months !== undefined && months < 12) return `${months} ${months === 1 ? 'måned' : 'måneder'}`;
+  return years === undefined ? 'valgt alder' : `${years} år`;
+};
 
 function Shell({ children }: { children: React.ReactNode }) {
   return <><header className="topbar"><Link to="/" className="brand" aria-label="Enklere Babyliv hjem"><BrandLogo /><span>DEMO</span></Link><nav className="desktop-nav" aria-label="Hovedmeny">{['/', '/utforsk', '/planlegg', '/reise', '/guider', '/partnere', '/profil'].map((path) => <NavLink key={path} to={path} end={path === '/'}>{path === '/' ? 'Hjem' : path.slice(1).replace('utforsk', 'Utforsk').replace('planlegg', 'Planlegg tur').replace('reise', 'Min baby').replace('guider', 'Guider').replace('partnere', 'Partnere').replace('profil', 'Profil')}</NavLink>)}</nav><nav className="mobile-nav" aria-label="Mobilmeny">{primaryNavigation.map((item) => <NavLink key={item.path} to={item.path} end={item.path === '/'}><span className="mobile-nav-icon" aria-hidden="true">{item.icon}</span><span>{item.label}</span></NavLink>)}</nav></header><main>{children}</main><footer>Enklere Babyliv · Studentprototype · Eksempeldata er ikke en offentlig tjeneste.</footer></>;
@@ -222,18 +227,25 @@ function JourneySetup({ onSave }: { onSave: (profile: DemoProfile) => void }) {
 
 function Journey({ state, onChange, onClear }: { state: DemoState; onChange: (state: DemoState) => void; onClear: () => void }) {
   const profile = state.profile;
-  const week = profile ? getJourneyWeek(profile, today()) : null;
-  const milestone = profile ? getCurrentMilestone(profile, today()) : null;
-  const ageActivities = profile?.childAgeYears === undefined ? [] : activitiesForAge(profile.childAgeYears);
-  const kindergartenItems = profile?.stage === 'baby_born' && profile.childAgeYears !== undefined
-    ? kindergartenChecklistForAge(profile.childAgeYears)
+  const currentDate = today();
+  const week = profile ? getJourneyWeek(profile, currentDate) : null;
+  const milestone = profile ? getCurrentMilestone(profile, currentDate) : null;
+  const childAgeMonths = profile?.stage === 'baby_born' ? getChildAgeMonths(profile, currentDate) : undefined;
+  const childAgeYears = profile?.stage === 'baby_born' ? getChildAgeYears(profile, currentDate) : undefined;
+  const childAgeLabel = formatChildAge(childAgeMonths, childAgeYears);
+  const ageActivities = childAgeYears === undefined ? [] : activitiesForAge(childAgeYears);
+  const kindergartenItems = profile?.stage === 'baby_born' && childAgeYears !== undefined
+    ? kindergartenChecklistForAge(childAgeYears)
     : [];
+  const ageDescription = childAgeMonths !== undefined && childAgeMonths < 12
+    ? getBabyAgeDescription(childAgeMonths)
+    : childAgeYears !== undefined ? getAgeDescription(childAgeYears) : null;
   const pregnancyItems = profile?.stage === 'expecting' && week ? pregnancyChecklistForWeek(week) : [];
   const toggleItem = (id: string) => onChange({ ...state, checkedItemIds: state.checkedItemIds.includes(id) ? state.checkedItemIds.filter((item) => item !== id) : [...state.checkedItemIds, id] });
   if (!profile) return <section className="page"><p className="eyebrow">Min baby</p><h1>En roligere oversikt over det praktiske.</h1><p className="lead">Velg selv om du vil bruke en liten, lokal demoprofil. Ingen innlogging eller e-post er nødvendig.</p><JourneySetup onSave={(next) => onChange({ ...initialDemoState, profile: next })} /></section>;
-  const relevantItems = profile.childAgeYears === undefined
+  const relevantItems = childAgeYears === undefined
     ? checklistItemsForAge(0)
-    : checklistItemsForAge(profile.childAgeYears);
+    : checklistItemsForAge(childAgeYears);
   return (
     <section className="page journey">
       <div className="section-intro">
@@ -243,8 +255,8 @@ function Journey({ state, onChange, onClear }: { state: DemoState; onChange: (st
       <div className="journey-grid">
         <article className="card">
           <h2>Din status</h2>
-          <p>{profile.stage === 'expecting' ? `Omtrentlig svangerskapsuke ${week ?? 'ukjent'}` : profile.stage === 'baby_born' ? `Barnet er ${profile.childAgeYears === undefined ? 'født' : `${profile.childAgeYears} år`}` : 'Utforsker uten valgt fase'}</p>
-          {profile.stage === 'baby_born' && profile.childAgeYears !== undefined && <><p>{getAgeDescription(profile.childAgeYears)}</p><p className="muted">Et generelt eksempel – barn utvikler seg ulikt.</p></>}
+          <p>{profile.stage === 'expecting' ? `Omtrentlig svangerskapsuke ${week ?? 'ukjent'}` : profile.stage === 'baby_born' ? `Barnet er ${childAgeLabel}` : 'Utforsker uten valgt fase'}</p>
+          {profile.stage === 'baby_born' && ageDescription && <><p>{ageDescription}</p><p className="muted">Et generelt eksempel – barn utvikler seg ulikt.</p></>}
           <p className="muted">Dette er generell demo-informasjon, ikke medisinsk rådgivning.</p>
         </article>
         {milestone && <article className="card milestone"><h2>{milestone.title}</h2><p>{milestone.body}</p>{milestone.pregnantParentTip && <p><strong>Råd til mor/den gravide:</strong> {milestone.pregnantParentTip}</p>}{milestone.dadTip && <p><strong>Råd til far/medforelder:</strong> {milestone.dadTip}</p>}<Link className="button secondary" to="/utforsk">Finn steder å besøke</Link></article>}
@@ -256,17 +268,17 @@ function Journey({ state, onChange, onClear }: { state: DemoState; onChange: (st
         <p className="source-note">Kilder: <a href="https://www.helsenorge.no/gravid/" target="_blank" rel="noreferrer">Helsenorge – graviditet</a>, <a href="https://www.nav.no/foreldrepenger" target="_blank" rel="noreferrer">NAV – foreldrepenger</a> og <a href="https://www.helsenorge.no/gravid/svangerskapskontroller/" target="_blank" rel="noreferrer">svangerskapskontroller</a>. Innholdet er bearbeidet og avgrenset for studentprototypen.</p>
       </section>}
       {profile.stage === 'baby_born' && <section className="card age-activities">
-        <div className="section-intro"><div><h2>Aktiviteter for deres aldersgruppe</h2><p className="muted">{profile.childAgeYears === undefined ? 'Velg barnets alder på profilsiden for å få tilpassede forslag.' : `Forslag for barn på ${profile.childAgeYears} år`}</p></div><Link className="text-button" to="/profil">Endre alder</Link></div>
-        {ageActivities.length ? <div className="activity-list">{ageActivities.map((activity) => <article className="activity-card" key={activity.id}><h3>{activity.title}</h3><p>{activity.description}</p><p className="muted">{activity.locationLabel} · {activity.ageMinYears}–{activity.ageMaxYears} år</p><span className="demo-label">Fiktiv aktivitet</span></article>)}</div> : <p>Ingen forslag for denne alderen i demoen ennå.</p>}
+        <div className="section-intro"><div><h2>Aktiviteter for deres aldersgruppe</h2><p className="muted">{childAgeYears === undefined ? 'Velg barnets alder på profilsiden for å få tilpassede forslag.' : `Forslag for barn på ${childAgeYears} år`}</p></div><Link className="text-button" to="/profil">Endre alder</Link></div>
+        {ageActivities.length ? <div className="activity-list">{ageActivities.map((activity) => <article className="activity-card" key={activity.id}><h3>{activity.title}</h3><p>{activity.description}</p><p className="muted">Tilpasset {childAgeLabel}</p><span className="demo-label">Fiktiv aktivitet</span></article>)}</div> : <p>Ingen forslag for denne alderen i demoen ennå.</p>}
       </section>}
       {profile.stage === 'baby_born' && kindergartenItems.length > 0 && <section className="card kindergarten-source-card">
-        <div className="section-intro"><div><p className="eyebrow">Forbered barnehage og skolestart</p><h2>Praktisk sjekkliste for barnehagebarn</h2></div><span className="demo-label">Alder 3–6 år</span></div>
+        <div className="section-intro"><div><p className="eyebrow">Forbered barnehage og skolestart</p><h2>Praktisk sjekkliste for barnehagebarn</h2></div><span className="demo-label">Tilpasset {childAgeLabel}</span></div>
         <p className="muted">Tipsene er forslag, ikke en universell kravliste. Sjekk også hva deres barnehage eller skole ønsker at barnet har med.</p>
         <div className="checklist-grid">{['clothing', 'comfort', 'routine'].map((category) => <div key={category}><h3>{{ clothing: 'Klær og vær', comfort: 'Trygghet', routine: 'Rutiner' }[category as 'clothing' | 'comfort' | 'routine']}</h3>{kindergartenItems.filter((item) => item.category === category).map((item) => <label className="check-item" key={item.id}><input type="checkbox" checked={state.checkedItemIds.includes(item.id)} onChange={() => toggleItem(item.id)} />{item.label}</label>)}</div>)}</div>
         <p className="source-note">Kilde: <a href="https://www.udir.no/laring-og-trivsel/rammeplan-for-barnehagen/" target="_blank" rel="noreferrer">Utdanningsdirektoratet – rammeplan for barnehagen</a>. Innholdet er bearbeidet for studentprototypen.</p>
       </section>}
       <section className="card">
-        <div className="section-intro"><div><h2>Sjekklister for deres aldersgruppe</h2><p className="muted">{profile.stage === 'baby_born' && profile.childAgeYears !== undefined ? `Forslag for barn på ${profile.childAgeYears} år` : 'Generelle forslag for den første tiden'}</p></div><Link className="text-button" to="/profil">Endre alder</Link></div>
+        <div className="section-intro"><div><h2>Sjekklister for deres aldersgruppe</h2><p className="muted">{profile.stage === 'baby_born' && childAgeYears !== undefined ? `Forslag for barn på ${childAgeLabel}` : 'Generelle forslag for den første tiden'}</p></div><Link className="text-button" to="/profil">Endre alder</Link></div>
         <div className="checklist-grid">{['equipment', 'practical'].map((listId) => <div key={listId}><h3>{listId === 'equipment' ? 'Utstyr og tur' : 'Praktisk støtte'}</h3>{relevantItems.filter((item) => item.listId === listId).map((item) => <label className="check-item" key={item.id}><input type="checkbox" checked={state.checkedItemIds.includes(item.id)} onChange={() => toggleItem(item.id)} />{item.label}</label>)}</div>)}</div>
       </section>
       <section className="card notification-preview"><h2>Varslingsforhåndsvisning</h2><p className="demo-label">Ikke sendt – prototype</p><p>En rolig påminnelse om neste praktiske steg kan vises her. Appen sender ingen e-post eller pushvarsler.</p></section>
@@ -277,11 +289,19 @@ function Journey({ state, onChange, onClear }: { state: DemoState; onChange: (st
 
 function Profile({ state, onChange, onClear }: { state: DemoState; onChange: (state: DemoState) => void; onClear: () => void }) {
   const profile = state.profile;
+  const [confirming, setConfirming] = useState(false);
+  const [cleared, setCleared] = useState(false);
+  const profileAgeYears = profile?.stage === 'baby_born' ? getChildAgeYears(profile, today()) : undefined;
   const updateAge = (value: string) => {
     if (!profile || profile.stage !== 'baby_born') return;
     onChange({ ...state, profile: { ...profile, childAgeYears: value === '' ? undefined : Number(value) } });
   };
-  return <section className="page placeholder"><p className="eyebrow">Profil</p><h1>Din lokale demoprofil</h1><p className="lead">{profile ? 'Profilen brukes bare for å tilpasse Min baby i denne nettleseren.' : 'Du har ingen lagret demoprofil.'}</p>{profile?.stage === 'baby_born' && <div className="card profile-settings"><h2>Barnets alder</h2><label>Hvor gammelt er barnet?<select value={profile.childAgeYears ?? ''} onChange={(event) => updateAge(event.target.value)}><option value="">Velg alder (valgfritt)</option>{[0, 1, 2, 3, 4, 5, 6].map((age) => <option value={age} key={age}>{age} år</option>)}</select></label><p className="muted">Alderen brukes bare til å vise relevante, fiktive aktivitetsforslag.</p></div>}<Link className="button primary" to="/reise">{profile ? 'Åpne Min baby' : 'Lag demoprofil'}</Link>{profile && <button className="danger-button profile-delete" onClick={onClear}>Slett demodata</button>}</section>;
+  const clearAll = () => {
+    onClear();
+    setConfirming(false);
+    setCleared(true);
+  };
+  return <section className="page placeholder"><p className="eyebrow">Profil</p><h1>Din lokale demoprofil</h1><p className="lead">{profile ? 'Profilen brukes bare for å tilpasse Min baby i denne nettleseren.' : 'Du har ingen lagret demoprofil.'}</p>{profile?.stage === 'baby_born' && <div className="card profile-settings"><h2>Barnets alder</h2><label>Hvor gammelt er barnet?<select value={profile.childAgeYears ?? profileAgeYears ?? ''} onChange={(event) => updateAge(event.target.value)}><option value="">Velg alder (valgfritt)</option>{[0, 1, 2, 3, 4, 5, 6].map((age) => <option value={age} key={age}>{age} år</option>)}</select></label><p className="muted">Alderen beregnes fra fødselsdato når den er valgt, og brukes til å vise relevant demo-innhold.</p></div>}<Link className="button primary" to="/reise">{profile ? 'Åpne Min baby' : 'Lag demoprofil'}</Link><section className="card privacy-card" aria-labelledby="privacy-title"><h2 id="privacy-title">Personvern</h2><p>Alder, favoritter, turplaner og tilbakemeldinger lagres bare i denne nettleseren.</p>{!confirming ? <button className="danger-button" onClick={() => { setConfirming(true); setCleared(false); }}>Slett alle mine data</button> : <div className="privacy-confirm"><p><strong>Er du sikker?</strong> Dette kan ikke angres.</p><div><button className="danger-button" onClick={clearAll}>Ja, slett alt</button><button className="text-button" onClick={() => setConfirming(false)}>Avbryt</button></div></div>}<div role="status">{cleared && <p className="status-message">Alle dine data er slettet fra denne nettleseren.</p>}</div></section></section>;
 }
 
 function Placeholder({ title, text }: { title: string; text: string }) {
