@@ -28,6 +28,8 @@ export interface Place {
   shortDescription: string;
   identitySourceUrl?: string;
   identityCheckedAt?: string;
+  coordinatesSourceUrl?: string;
+  coordinatesCheckedAt?: string;
   facilities: Partial<Record<FacilityName, FacilityClaim>>;
   tags: string[];
   routeInfo?: { lengthKm?: number; surfaceText?: string; routeVerified: boolean };
@@ -51,6 +53,18 @@ export const facilityLabels: Record<FacilityName, string> = {
 };
 
 export const isFictional = (place: Place) => place.dataKind === 'fictional_demo';
+
+export const formatCheckedDate = (value: string) =>
+  new Date(`${value}T12:00:00`).toLocaleDateString('nb-NO', { day: 'numeric', month: 'long', year: 'numeric' });
+
+export const buildExternalDirectionsUrl = (selectedPlaces: Place[]) => {
+  if (!selectedPlaces.length || selectedPlaces.some((place) => isFictional(place) || !place.coordinates)) return null;
+  const coordinates = selectedPlaces.map((place) => `${place.coordinates!.lat},${place.coordinates!.lng}`);
+  if (coordinates.length === 1) {
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coordinates[0])}`;
+  }
+  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(coordinates[0])}&destination=${encodeURIComponent(coordinates[coordinates.length - 1])}&waypoints=${coordinates.slice(1, -1).map(encodeURIComponent).join('|')}&travelmode=walking`;
+};
 
 export const matchesPlace = (
   place: Place,

@@ -99,3 +99,39 @@
 - Implementert: Min tur har en tydelig «Endre stopp»-knapp tilbake til Utforsk.
 - Bevart: valgte stopp, dato og notat kan redigeres uten å starte planen på nytt.
 - Bevart: endringer må lagres eksplisitt, og ulagrede endringer vises tydelig.
+
+## Kartkilder og lokal stedsrapportering
+
+- Implementert: Emma-referansens koordinater for Bystranda (`58.14639, 8.007667`) og Fiskebrygga (`58.14083, 7.99583`) er overført med eksisterende Karoline-ID-er.
+- Implementert: koordinatkilde og kontrolldato vises separat fra stedsidentitet og fasilitetsstatus.
+- Implementert: kartmarkører skiller reelle steder fra fiktive demosteder med farge og tekstforklaring.
+- Implementert: «Om informasjonen» viser kildebevisst status uten å fremstille ukjente fasiliteter som bekreftet.
+- Implementert: «Meld fra eller bekreft informasjon» lagrer tilbakemeldinger lokalt i `little-babylove:place-reports:v1`; ingen server eller innlogging er lagt til.
+- Verifisert: `npm test -- --run` bestått 2026-11-17, 4 testfiler og 25 tester.
+- Verifisert: `npm run build` bestått 2026-11-17 med Vite-produksjonsbygg.
+- Verifisert: `git diff --check` bestått 2026-11-17.
+
+## Turplanlegging og ekstern veibeskrivelse
+
+- Implementert: valgte stopp kan flyttes opp og ned i `Min tur`, med maks tre stopp og eksisterende dato/notat bevart.
+- Implementert: endret stopprekkefølge regnes som ulagret frem til «Lagre Min tur» brukes.
+- Implementert: reelle stopp med koordinater kan åpne veibeskrivelse i Google Maps; URL-en følger valgt stopprekkefølge.
+- Implementert: fiktive eller ufullstendige stopp får en kort forklaring i stedet for veibeskrivelsesknapp.
+- Rettet: «Nullstill valg» tømmer nå alle valgte stopp deterministisk.
+- Forenklet på mobil: kart, filter og stedskort bruker mindre minimumshøyde og tettere mellomrom uten å fjerne Karolines filtre.
+- Manuell nettleserkontroll 2026-11-17: Utforsk → Min tur → flytt stopp → ulagret status → Google Maps-lenke kontrollert.
+- Verifisert: `npm test -- --run` bestått 2026-11-17, 4 testfiler og 26 tester.
+- Verifisert: `npm run build` bestått 2026-11-17 med Vite-produksjonsbygg.
+- Verifisert: `git diff --check` bestått 2026-11-17.
+
+## Avsluttende selektiv Emma-overføring
+
+- Beholdt Karolines personlige reise: 0–6 år, fødselsdato, månedstilpasset babyvisning, aldersfiltrerte aktiviteter og sjekklister, generell aldersbeskrivelse, barnehage/skolestart, innholdspreferanser, profilredigering og lokal lagring.
+- Overført fra Emma som presentasjon: enkel sjekklistefremdrift (`x av y klart`), få filtrerte snarveier fra Hjem og Min baby, hopp-lenke, fokus på sidens `h1` ved navigasjon og tydelige sidetitler.
+- Snarveiene bruker eksisterende filterlogikk og query-parametre; ingen nye stedstyper eller datamodeller er lagt til.
+- Kompromiss: snarveiene er begrenset til tre praktiske filtre og viser ikke egne nye kataloger eller innholdssider.
+- Manuell nettleserkontroll 2026-11-17: Hjem → snarvei til Utforsk, Min baby → aldersvisning/sjekklister og navigasjonsfokus kontrollert.
+- Begrensning: tastatur- og skjermleseropplevelse bør fortsatt testes med faktiske brukere og hjelpemidler.
+- Verifisert: `npm test -- --run` bestått 2026-11-17, 4 testfiler og 26 tester.
+- Verifisert: `npm run build` bestått 2026-11-17 med Vite-produksjonsbygg.
+- Verifisert: `git diff --check` bestått 2026-11-17.

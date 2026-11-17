@@ -5,6 +5,7 @@ const JOURNEY_KEY = 'little-babylove:journey:v1';
 const TRIP_PLAN_KEY = 'little-babylove:trip-plan:v1';
 const TRIP_SELECTION_KEY = 'little-babylove:trip-selection:v1';
 const FEEDBACK_KEY = 'little-babylove:feedback:v1';
+const REPORTS_KEY = 'little-babylove:place-reports:v1';
 
 export interface TripPlan {
   placeIds: string[];
@@ -51,6 +52,7 @@ export const clearDemoState = () => {
   localStorage.removeItem(TRIP_PLAN_KEY);
   localStorage.removeItem(TRIP_SELECTION_KEY);
   localStorage.removeItem(FEEDBACK_KEY);
+  localStorage.removeItem(REPORTS_KEY);
 };
 
 export const readTripPlan = (): TripPlan | null => {
@@ -105,4 +107,30 @@ export const readFeedback = (): DemoFeedback | null => {
 
 export const writeFeedback = (feedback: DemoFeedback) => {
   localStorage.setItem(FEEDBACK_KEY, JSON.stringify(feedback));
+};
+
+export interface PlaceReport {
+  placeId: string;
+  kind: 'confirm' | 'error';
+  message: string;
+  createdAt: string;
+}
+
+export const readPlaceReports = (): PlaceReport[] => {
+  try {
+    const raw = localStorage.getItem(REPORTS_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((item): item is PlaceReport => Boolean(item)
+      && typeof item.placeId === 'string'
+      && (item.kind === 'confirm' || item.kind === 'error')
+      && typeof item.message === 'string'
+      && typeof item.createdAt === 'string');
+  } catch {
+    return [];
+  }
+};
+
+export const addPlaceReport = (report: PlaceReport) => {
+  localStorage.setItem(REPORTS_KEY, JSON.stringify([...readPlaceReports(), report]));
 };

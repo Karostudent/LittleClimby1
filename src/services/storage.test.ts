@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { initialDemoState } from '../domain/journey';
-import { clearDemoState, readDemoState, readTripPlan, readTripSelection, writeDemoState, writeTripPlan, writeTripSelection } from './storage';
+import { addPlaceReport, clearDemoState, readDemoState, readPlaceReports, readTripPlan, readTripSelection, writeDemoState, writeTripPlan, writeTripSelection } from './storage';
 
 describe('demo storage', () => {
   beforeEach(() => localStorage.clear());
@@ -29,5 +29,10 @@ describe('demo storage', () => {
   it('reads legacy single-stop plans', () => {
     localStorage.setItem('little-babylove:trip-plan:v1', JSON.stringify({ placeId: 'legacy', date: '', note: '' }));
     expect(readTripPlan()?.placeIds).toEqual(['legacy']);
+  });
+
+  it('stores local place reports', () => {
+    addPlaceReport({ placeId: 'real-bystranda', kind: 'error', message: 'Feil fasilitet', createdAt: '2026-11-17T00:00:00.000Z' });
+    expect(readPlaceReports()).toEqual([{ placeId: 'real-bystranda', kind: 'error', message: 'Feil fasilitet', createdAt: '2026-11-17T00:00:00.000Z' }]);
   });
 });
