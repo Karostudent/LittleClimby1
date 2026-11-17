@@ -25,6 +25,7 @@ Statusene betyr:
 | Varslingsforhåndsvisning | Implementert og simulert | `src/app/App.tsx` |
 | Sletting av demodata | Verifisert i lagringstest; manuell UI-kontroll gjenstår | `src/services/storage.test.ts`, Jonas-skript |
 | Pappasporet, guider og aktivitetsoversikt | Implementert; innholdet er demo/designhypotese | `src/app/App.tsx` |
+| Little BabyBot-konseptdemo under Mer | Implementert; ingen AI, nettverk eller melding lagres | `src/app/App.tsx`, `src/app/styles.css` |
 | Responsiv layout og femvalgsnavigasjon | Nettleserkontroll gjennomført; full skjermlesertest gjenstår | `src/app/styles.css`, `src/app/App.tsx` |
 | Tastaturfokus og dialogsemantikk | Escape, fokus og bakgrunnssperre kontrollert i nettleser; skjermlesertest gjenstår | `src/app/App.tsx`, `src/app/styles.css` |
 | Kartfliser og ekstern karttjeneste | Simulert av ekstern leverandør | `src/app/App.tsx`, `docs/data-provenance.md` |

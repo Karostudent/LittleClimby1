@@ -128,6 +128,13 @@
 - Verifisert: `git diff --check` bestått 2026-11-17.
 - Gjenstår: Faktisk brukertest med reelle testpersoner og manuell skjermleser-/hjelpemiddelsjekk.
 
+## Little BabyBot-konseptdemo
+
+- Implementert 2026-11-17: `/little-babybot` er lagt til som egen side under «Mer», uten endring i hovednavigasjonens fem valg.
+- Implementert: Tre valgbare forhåndsdefinerte samtaler, deaktivert meldingsfelt, fire fremtidspunkter og tydelig tillitsinformasjon.
+- Beholdt: Eksisterende fargepalett, typografi, avrundede kort og responsiv mobil-/desktopstruktur.
+- Ikke implementert: AI, API-kall, server, meldingutveksling, innlogging eller ny brukerdata-lagring.
+
 ## Turplanlegging og ekstern veibeskrivelse
 
 - Implementert: valgte stopp kan flyttes opp og ned i `Min tur`, med maks tre stopp og eksisterende dato/notat bevart.

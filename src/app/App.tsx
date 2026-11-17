@@ -18,7 +18,7 @@ const quickFilters: FacilityName[] = ['changing_table', 'stroller_space', 'free_
 const realPlaceMarker = divIcon({ className: 'place-marker place-marker-real', html: '<span aria-hidden="true">●</span>', iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -16] });
 const demoPlaceMarker = divIcon({ className: 'place-marker place-marker-demo', html: '<span aria-hidden="true">●</span>', iconSize: [32, 32], iconAnchor: [16, 16], popupAnchor: [0, -16] });
 
-type NavigationIconName = 'home' | 'map' | 'route' | 'heart' | 'info' | 'star' | 'user';
+type NavigationIconName = 'home' | 'map' | 'route' | 'heart' | 'info' | 'star' | 'user' | 'bot';
 
 const primaryNavigation = [
   { path: '/', label: 'Hjem', icon: 'home' as NavigationIconName },
@@ -30,6 +30,7 @@ const primaryNavigation = [
 const secondaryNavigation = [
   { path: '/guider', label: 'Guider', icon: 'info' as NavigationIconName },
   { path: '/partnere', label: 'Partnertilbud', icon: 'star' as NavigationIconName },
+  { path: '/little-babybot', label: 'Little BabyBot', icon: 'bot' as NavigationIconName },
   { path: '/profil', label: 'Profil og innstillinger', icon: 'user' as NavigationIconName },
 ];
 
@@ -42,6 +43,7 @@ function NavigationIcon({ name }: { name: NavigationIconName }) {
     info: <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></>,
     star: <path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" />,
     user: <><circle cx="12" cy="8" r="4" /><path d="M4 21a8 8 0 0 1 16 0" /></>,
+    bot: <><rect x="5" y="7" width="14" height="12" rx="4" /><path d="M12 7V3M9 3h6M9 12h.01M15 12h.01M9 16h6" /></>,
   }[name];
 
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{paths}</svg>;
@@ -109,6 +111,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       '/reise': 'Min baby',
       '/guider': 'Guider',
       '/partnere': 'Partnertilbud',
+      '/little-babybot': 'Little BabyBot',
       '/profil': 'Profil og innstillinger',
     };
     document.title = `${titles[location.pathname] ?? 'Enklere Babyliv'} – Enklere Babyliv`;
@@ -191,8 +194,73 @@ function PartnerPortal() {
   return <section className="page partner-portal"><div className="section-intro"><div><p className="eyebrow">Partnerside · konseptskisse</p><h1>Legg inn et tilbud</h1></div><Link className="button secondary" to="/partnere">Se brukersiden</Link></div><p className="lead">En kafé, et kurs eller en arrangør kan sende inn tilbud som passer familier. En godkjenning bør skje før tilbudet blir synlig.</p><form className="partner-form" onSubmit={(event) => event.preventDefault()}><label>Navn på virksomhet<input placeholder="For eksempel Lille Kafé" /></label><label>Hva tilbyr dere?<input placeholder="For eksempel babysvømming eller familielunsj" /></label><label>Beskriv tilbudet<textarea rows={4} placeholder="Kort og konkret informasjon til foreldre" /></label><div className="partner-form-grid"><label>Pris<input placeholder="For eksempel 250 kr" /></label><label>Kapasitet<input placeholder="For eksempel 12 plasser" /></label></div><label className="choice"><input type="checkbox" />Jeg bekrefter at tilbudet kan vurderes for målgruppen.</label><button className="button primary" type="submit">Send inn til vurdering (demo)</button><p className="muted">Demoen sender ikke inn data. I en ferdig løsning må partneren godta vilkår, provisjon og merking.</p></form></section>;
 }
 
-function PremiumShowcase() {
-  return <section className="premium-showcase card" aria-labelledby="premium-title"><div><p className="eyebrow">Mulig premiumfunksjon</p><h2 id="premium-title">Snakk med Little BabyBot</h2><p>Little BabyBot kan hjelpe med å samle informasjon og foreslå en rolig plan. Den skal ikke gi helseråd; ved helsebekymringer skal den henvise til lege, helsestasjon eller annet helsepersonell.</p></div><div className="premium-points"><span>Gratis prøve</span><span>Del plan med partner</span><span>Betalt abonnement</span></div><span className="demo-label">Konseptskisse · Ikke aktivert</span></section>;
+function LittleBabyBot() {
+  const examples = [
+    {
+      label: 'Lokale aktiviteter',
+      question: 'Hva kan vi finne på med en ettåring i Kristiansand?',
+      answer: 'Jeg kan hjelpe deg med å finne barnevennlige aktiviteter som passer barnets alder. Du kan også bruke Utforsk for å finne steder med stellemuligheter og plass til barnevogn.',
+    },
+    {
+      label: 'Praktiske forberedelser',
+      question: 'Hva bør vi huske før babyen kommer?',
+      answer: 'Jeg kan hjelpe dere med praktiske sjekklister og påminnelser, tilpasset hvor dere er i graviditeten. I Min baby finner dere eksempler på slike sjekklister.',
+    },
+    {
+      label: 'Planlegging',
+      question: 'Kan du hjelpe oss å planlegge en tur?',
+      answer: 'I en fremtidig versjon kan jeg foreslå passende steder og hjelpe dere med å sette sammen en tur. Foreløpig kan dere planlegge turer selv i Min tur.',
+    },
+  ];
+  const [activeExample, setActiveExample] = useState(0);
+  const example = examples[activeExample];
+  const futureFeatures = [
+    'Foreslå aktiviteter og babyvennlige steder basert på barnets alder.',
+    'Hjelpe med praktiske sjekklister, påminnelser og forberedelser.',
+    'Foreslå steder fra kartet og bidra til turplanlegging.',
+    'Hjelpe brukeren å finne relevant informasjon og kvalitetssikrede kilder.',
+  ];
+
+  return <section className="page babybot-page">
+    <div className="section-intro babybot-heading">
+      <div><p className="eyebrow">Fremtidig utvidelse</p><h1>Little BabyBot</h1></div>
+      <span className="demo-label">Konseptdemo · Kommer senere</span>
+    </div>
+    <p className="lead babybot-intro">Se hvordan en fremtidig assistent kan gjøre praktisk barnefamilieinformasjon enklere å finne.</p>
+
+    <div className="babybot-demo" aria-label="Forhåndsvist samtaledemo">
+      <div className="babybot-demo-header">
+        <div className="babybot-avatar" aria-hidden="true"><NavigationIcon name="bot" /></div>
+        <div><strong>Little BabyBot</strong><p className="muted">Forhåndsdefinerte eksempelsvar</p></div>
+        <span className="demo-label">Ikke aktiv</span>
+      </div>
+      <div className="babybot-example-tabs" role="tablist" aria-label="Velg eksempelsamtale">
+        {examples.map((item, index) => <button key={item.label} type="button" role="tab" aria-selected={activeExample === index} className={activeExample === index ? 'selected' : ''} onClick={() => setActiveExample(index)}>{item.label}</button>)}
+      </div>
+      <div className="babybot-messages" role="tabpanel" aria-live="polite">
+        <div className="babybot-message babybot-user"><span className="babybot-message-label">Bruker</span><p>{example.question}</p></div>
+        <div className="babybot-message babybot-answer"><span className="babybot-message-label">Little BabyBot</span><p>{example.answer}</p></div>
+      </div>
+      <div className="babybot-compose">
+        <input type="text" value="" placeholder="Skriv et spørsmål …" disabled aria-label="Meldingsfeltet er deaktivert i konseptdemoen" />
+        <button type="button" disabled aria-label="Send melding">↑</button>
+      </div>
+    </div>
+
+    <section className="babybot-future" aria-labelledby="babybot-future-title">
+      <p className="eyebrow">Konsept</p>
+      <h2 id="babybot-future-title">Hva kan Little BabyBot gjøre i fremtiden?</h2>
+      <div className="babybot-future-grid">
+        {futureFeatures.map((feature) => <article className="card" key={feature}><p>{feature}</p></article>)}
+      </div>
+    </section>
+
+    <aside className="babybot-trust" aria-label="Begrensning og tillit">
+      <strong>Foreløpig bare et konsept</strong>
+      <p>Little BabyBot er foreløpig bare et konsept. En fremtidig versjon skal hjelpe med praktisk informasjon og veivise til pålitelige kilder, men ikke erstatte råd fra helsepersonell.</p>
+      <p>Ved helserelaterte spørsmål skal dette rettes til helsestasjon, lege eller offentlige helsekilder som Helsenorge.</p>
+    </aside>
+  </section>;
 }
 
 function TrustNote() {
@@ -491,5 +559,5 @@ export function App() {
   const [journeyState, setJourneyState] = useState<DemoState>(readDemoState);
   const updateJourney = (next: DemoState) => { setJourneyState(next); writeDemoState(next); };
   const clearJourney = () => { clearDemoState(); setJourneyState(initialDemoState); };
-  return <Shell><Routes><Route path="/" element={<Home />} /><Route path="/utforsk" element={<Explore />} /><Route path="/planlegg" element={<TripPlanner />} /><Route path="/reise" element={<Journey state={journeyState} onChange={updateJourney} />} /><Route path="/guider" element={<Guides />} /><Route path="/partnere" element={<PartnerOffers />} /><Route path="/partnerportal" element={<PartnerPortal />} /><Route path="/profil" element={<Profile state={journeyState} onChange={updateJourney} onClear={clearJourney} />} /></Routes></Shell>;
+  return <Shell><Routes><Route path="/" element={<Home />} /><Route path="/utforsk" element={<Explore />} /><Route path="/planlegg" element={<TripPlanner />} /><Route path="/reise" element={<Journey state={journeyState} onChange={updateJourney} />} /><Route path="/guider" element={<Guides />} /><Route path="/partnere" element={<PartnerOffers />} /><Route path="/little-babybot" element={<LittleBabyBot />} /><Route path="/partnerportal" element={<PartnerPortal />} /><Route path="/profil" element={<Profile state={journeyState} onChange={updateJourney} onClear={clearJourney} />} /></Routes></Shell>;
 }

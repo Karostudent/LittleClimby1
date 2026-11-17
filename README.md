@@ -61,12 +61,12 @@ npm test
 - Tillitsmarkeringer for bekreftet informasjon, ukjent status og demodata.
 - Partnere har en egen, valgfri tilbudsside for kurs, babysvømming og arrangementer. Hovedmodellen er provisjon ved booking, mens sponset plassering er et tydelig merket tillegg.
 - En partnerside viser hvordan en kafé, arrangør eller kursleverandør kan sende inn et tilbud til vurdering.
-- En konseptskisse viser mulig premiumtilgang til Little BabyBot og deling med partner. Little BabyBot skal aldri gi helseråd, men henvise til lege eller helsestasjon.
+- Little BabyBot ligger som en egen konseptside under «Mer». Den viser tre forhåndsdefinerte samtaler og fremtidige muligheter, men har deaktivert meldingsfelt og ingen AI-, API- eller lagringsfunksjonalitet.
 
 ### Navigasjon og mobil
 
 - Mobil- og desktopnavigasjonen viser Hjem, Utforsk, Min tur, Min baby og Mer.
-- «Mer» samler Guider, Partnertilbud og Profil og innstillinger.
+- «Mer» samler Guider, Little BabyBot, Partnertilbud og Profil og innstillinger.
 - Partnerportalen er tilgjengelig fra Partnertilbud, men ligger ikke i hovednavigasjonen.
 - Aktivt valg markeres med et mintfarget ikonfelt inspirert av Emma-branchen.
 - Navigasjonssymbolene er SVG-symboler: hus, kart, rute, hjerte og informasjon.

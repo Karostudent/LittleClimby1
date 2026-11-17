@@ -19,3 +19,4 @@
 - **Barnets alder:** Fødselsdato og omtrentlig alder vises som to eksklusive alternativer for å unngå motstridende aldersopplysninger.
 - **Min tur:** Lagret tur og ulagret utkast skilles tydelig, og det finnes eksplisitte handlinger for å fjerne alle stopp eller starte en ny tur.
 - **Tilgjengelighet:** Mer-menyen og stedsdialogen støtter Escape, fokusstyring og lukking utenfor; mobilens Mer-meny begrenses til tilgjengelig viewport-høyde.
+- **Little BabyBot:** Implementert kun som en forhåndsvisningsside under «Mer» med tre forhåndsdefinerte samtaler. Meldingsfelt og sendehandling er deaktivert, og ingen AI, API, backend eller chatlagring brukes.

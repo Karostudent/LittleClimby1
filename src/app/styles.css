@@ -163,6 +163,44 @@ body.detail-open{overflow:hidden}
   .explore-shortcuts>div{gap:.55rem}
   .mobile-nav .more-panel{max-width:calc(100vw - .5rem)}
 }
+
+.babybot-page{max-width:760px}
+.babybot-heading{align-items:center}
+.babybot-intro{max-width:620px}
+.babybot-demo{background:#fff;border:1px solid #E6DCDC;border-radius:18px;margin:1.25rem 0;overflow:hidden}
+.babybot-demo-header{align-items:center;border-bottom:1px solid #E6DCDC;display:flex;gap:.75rem;padding:.85rem 1rem}
+.babybot-demo-header>div:nth-child(2){flex:1}
+.babybot-demo-header p{margin:.15rem 0 0}
+.babybot-avatar{align-items:center;background:#92CEC7;border-radius:50%;color:#fff;display:flex;height:2.8rem;justify-content:center;width:2.8rem}
+.babybot-example-tabs{display:flex;gap:.45rem;overflow-x:auto;padding:.75rem 1rem}
+.babybot-example-tabs button{background:#F0E3DE;border:1px solid transparent;border-radius:999px;color:#755858;flex:none;padding:.5rem .7rem}
+.babybot-example-tabs button.selected{background:#755858;color:#fff}
+.babybot-messages{display:grid;gap:.75rem;min-height:220px;padding:.25rem 1rem 1rem}
+.babybot-message{border-radius:14px;max-width:85%;padding:.75rem .85rem}
+.babybot-message p{margin:.25rem 0 0}
+.babybot-message-label{font-size:.75rem;font-weight:800}
+.babybot-user{background:#F0E3DE;justify-self:end}
+.babybot-answer{background:#E5F4F2;border:1px solid #D2E9E5;justify-self:start}
+.babybot-compose{align-items:center;border-top:1px solid #E6DCDC;display:flex;gap:.5rem;padding:.75rem 1rem}
+.babybot-compose input{background:#FCFAF9;border:1px solid #E6DCDC;border-radius:999px;color:#765F5F;flex:1;min-height:2.8rem;padding:.65rem .85rem}
+.babybot-compose button{align-items:center;background:#ECE9E3;border-radius:50%;color:#765F5F;display:flex;height:2.8rem;justify-content:center;opacity:.7;padding:0;width:2.8rem}
+.babybot-future{margin-top:1.25rem}
+.babybot-future h2{margin:.2rem 0 .75rem}
+.babybot-future-grid{display:grid;gap:.75rem;grid-template-columns:repeat(2,minmax(0,1fr))}
+.babybot-future-grid .card{margin:0}
+.babybot-future-grid p{margin:0}
+.babybot-trust{background:#FCFAF9;border-left:4px solid #92CEC7;border-radius:12px;margin-top:1.25rem;padding:.85rem 1rem}
+.babybot-trust p{margin:.35rem 0 0}
+@media(max-width:600px){
+  .babybot-heading{align-items:flex-start;display:grid;gap:.65rem}
+  .babybot-demo-header{align-items:flex-start}
+  .babybot-demo-header .demo-label{display:none}
+  .babybot-example-tabs{padding-inline:.75rem}
+  .babybot-messages{padding-inline:.75rem}
+  .babybot-message{max-width:92%}
+  .babybot-future-grid{grid-template-columns:1fr}
+  .babybot-compose{padding:.65rem .75rem}
+}
 h1[tabindex="-1"]:focus:not(:focus-visible),
 h2[tabindex="-1"]:focus:not(:focus-visible) {
   outline: none;
