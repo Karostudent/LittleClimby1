@@ -11,3 +11,11 @@
 - **Ingen falsk fasilitetsdata:** Reelle stedsidentiteter har `unknown` der separat fasilitetsbevis mangler.
 - **Koordinater:** Bare syntetiske demooppføringer har kartkoordinater i fase 1. Reelle identiteter kan ligge i listen uten pin.
 - **Teknikk:** React, TypeScript, Vite, React Router og React Leaflet brukes fordi de er foreslått i masterspesifikasjonen og holder prototypen forståelig.
+
+## 2026-11-17
+
+- **Stedsdialog:** Detaljvisningen beholder informasjonsrekkefølgen, men får intern vertikal scrolling og en fast tilgjengelig «Lukk»-handling.
+- **Hurtigfiltre:** URL-parameteren `filter` synkroniseres når Utforsk er montert på nytt eller navigasjonen endres mens siden forblir aktiv.
+- **Barnets alder:** Fødselsdato og omtrentlig alder vises som to eksklusive alternativer for å unngå motstridende aldersopplysninger.
+- **Min tur:** Lagret tur og ulagret utkast skilles tydelig, og det finnes eksplisitte handlinger for å fjerne alle stopp eller starte en ny tur.
+- **Tilgjengelighet:** Mer-menyen og stedsdialogen støtter Escape, fokusstyring og lukking utenfor; mobilens Mer-meny begrenses til tilgjengelig viewport-høyde.

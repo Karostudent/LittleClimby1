@@ -59,3 +59,6 @@
 8. Opprett forventende profil med termin og med uke som separat alternativ.
 9. Kryss av sjekklister, oppdater siden og slett demodata.
 10. Åpne Guider og kontroller Pappasporet, aktivitetskort og kildestatus.
+11. Åpne «Mer», kontroller at Escape og klikk utenfor lukker menyen, og flytt fokus med tastaturet.
+12. Åpne detaljpanelet på et kort mobilformat, scroll panelet, åpne og lukk kilde- og feilrapporteringsseksjonene, og kontroller at «Lukk» alltid er synlig.
+13. Gå tilbake fra Min tur til Utforsk og velg eller fjern stopp. Kontroller at ulagrede stopp ikke påstås lagret.

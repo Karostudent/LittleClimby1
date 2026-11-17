@@ -111,6 +111,23 @@
 - Verifisert: `npm run build` bestått 2026-11-17 med Vite-produksjonsbygg.
 - Verifisert: `git diff --check` bestått 2026-11-17.
 
+## Måltrettet UX- og kvalitetssikring
+
+- Rettet: Stedsdialogen bruker tilgjengelig viewport-høyde, intern vertikal scrolling og en alltid tilgjengelig «Lukk»-handling.
+- Rettet: Hurtigfilterlenker oppdaterer nå filtertilstanden når URL-parameteren `filter` endres mens Utforsk er montert.
+- Rettet: Profilskjemaet lar fødselsdato og omtrentlig alder være eksklusive innganger.
+- Rettet: Min tur skiller tydelig mellom lagret plan og ulagrede stoppvalg, og har handlinger for å fjerne alle stopp eller starte en ny tur.
+- Rettet: Mer-menyen har begrenset mobilhøyde, lukker ved Escape og klikk utenfor, og flytter/restorerer tastaturfokus.
+- Rettet: Stedsdialogen låser bakgrunnens utilsiktede tastaturnavigasjon, håndterer Escape og rullepanelets tastaturfokus.
+- Nettleserkontroll: Hjem, Utforsk, kart/liste, stedsdetaljer, Mer-meny, Min tur og profilredigering kontrollert ved 320, 375, 390, 430, 600, 768, 899, 900, 1024, 1280 og 1920 px bredde.
+- Nettleserkontroll: Kontrollerte høyder var 320, 568, 667, 768 og 900 px, inkludert korte og liggende mobilflater.
+- Verifisert: Hurtigfiltere for stellerom, barnevognplass og gratis aktiviteter oppdaterer riktig.
+- Verifisert: Stedsdialogen scrolles internt på 320 x 320 px, og Escape lukker den.
+- Verifisert: `npm test` bestått 2026-11-17, 4 testfiler og 26 tester.
+- Verifisert: `npm run build` bestått 2026-11-17 med Vite-produksjonsbygg.
+- Verifisert: `git diff --check` bestått 2026-11-17.
+- Gjenstår: Faktisk brukertest med reelle testpersoner og manuell skjermleser-/hjelpemiddelsjekk.
+
 ## Turplanlegging og ekstern veibeskrivelse
 
 - Implementert: valgte stopp kan flyttes opp og ned i `Min tur`, med maks tre stopp og eksisterende dato/notat bevart.

@@ -34,6 +34,9 @@ npm test
 - Favoritter lagres lokalt i nettleseren.
 - Fiktive steder er merket som «Fiktivt demosted».
 - Steder kan legges direkte til «Min tur», som viser valgte stopp, dato og notat.
+- Hurtigfilterlenker fra Hjem oppdaterer det aktive filteret også når Utforsk allerede er åpnet.
+- Stedsdetaljer åpnes som en tilgjengelig dialog med intern scrolling på korte skjermer og alltid synlig «Lukk»-handling.
+- «Mer»-menyen kan lukkes med Escape eller klikk utenfor.
 
 ### Min baby og Profil
 
@@ -49,6 +52,7 @@ npm test
 - To lokale sjekklister med avkryssing.
 - Varslingsforhåndsvisning merket «Ikke sendt – prototype».
 - «Slett mine demodata» fjerner profil, sjekklister, favoritter, turplan, turvalg og tilbakemeldinger.
+- Fødselsdato og omtrentlig alder er eksklusive alternativer, slik at bare én alderskilde kan lagres samtidig.
 
 ### Guider og Pappasporet
 
@@ -102,6 +106,6 @@ npm test
 npm run build
 ```
 
-Siste verifisering: 23 tester bestått og production build bestått. Manuelle Ingrid- og Jonas-skript finnes i [docs/test-scenarios.md](docs/test-scenarios.md). Kravstatus finnes i [docs/requirements-status.md](docs/requirements-status.md), og testnotater kan føres i [docs/user-test-notes.md](docs/user-test-notes.md).
+Siste verifisering: 26 tester bestått, production build bestått og `git diff --check` bestått. Manuelle Ingrid- og Jonas-skript finnes i [docs/test-scenarios.md](docs/test-scenarios.md). Kravstatus finnes i [docs/requirements-status.md](docs/requirements-status.md), og testnotater kan føres i [docs/user-test-notes.md](docs/user-test-notes.md).
 
 En produksjonsversjon trenger egen databehandling, personvern- og sikkerhetsvurdering, kartleverandøravtale, verifisering av fasiliteter, universell utforming og løpende kvalitetssikring.
