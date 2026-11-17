@@ -60,7 +60,9 @@
 }
 
 /* Mobilmenyen følger Emma-stilens faste bunnnavigasjon, mens full meny beholdes på desktop. */
-.mobile-nav{display:none}
+.topbar nav.mobile-nav {
+  display: none;
+}
 @media(max-width:899px){
   .topbar{align-items:center;display:flex;gap:.75rem;padding:.65rem .8rem}
   .desktop-nav{display:none!important}
@@ -74,6 +76,8 @@
 }
 @media(min-width:900px){
   .desktop-nav{display:flex}
+  .topbar nav.desktop-nav{overflow:visible}
+  .desktop-nav .more-panel{max-height:calc(100vh - 5.5rem);overflow-y:auto}
 }
 
 .more-menu{position:relative}
