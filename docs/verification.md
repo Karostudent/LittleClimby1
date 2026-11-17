@@ -43,8 +43,59 @@
 ## Siste design- og aldersoppdatering
 
 - Implementert: aldersvalg til og med 6 år, fødselsdato som dynamisk alderskilde og månedstilpasset visning for babyer under ett år.
-- Implementert: full mobilbunnmeny med alle sju Karoline-innganger, safe-area-støtte, Emma-inspirert aktivt ikonfelt og matchende SVG-symboler.
+- Implementert: mobilbunnmeny med safe-area-støtte, Emma-inspirert aktivt ikonfelt og matchende SVG-symboler.
 - `npm test`: bestått 2026-11-16, 4 testfiler og 23 tester.
 - `npm run build`: bestått 2026-11-16 med Vite-produksjonsbygg.
 - `git diff --check`: bestått 2026-11-16.
 - Ikke verifisert ennå: visuell kontroll i mobilnettleser og skjermlesergjennomgang.
+
+## UX- og informasjonsarkitektur
+
+- Implementert 2026-11-17: fem hovedvalg på mobil og desktop: Hjem, Utforsk, Min tur, Min baby og Mer.
+- Implementert 2026-11-17: Guider, Partnertilbud og Profil/innstillinger samlet under Mer; partnerportalen er fortsatt tilgjengelig fra Partnertilbud.
+- Implementert 2026-11-17: Hjem forkortet til én hovedhandling, én sekundærhandling, kompakt Min tur-status og én kort forklaring.
+- Eksisterende ruter er beholdt: `/utforsk`, `/planlegg`, `/reise`, `/guider`, `/partnere`, `/partnerportal` og `/profil`.
+- Implementert 2026-11-17: Utforsk → Min tur-flyten har tydeligere søk, primærfiltre, «Flere filtre», «Kun favoritter», progressive stedskort og eksplisitt lagret/ikke-lagret-status.
+- `npm test`: bestått 2026-11-17, 4 testfiler og 23 tester.
+- `npm run build`: bestått 2026-11-17 med Vite-produksjonsbygg.
+- `git diff --check`: bestått 2026-11-17.
+
+## Min baby, Guider og Profil
+
+- Implementert: Min baby er samlet som personlig oversikt med fase/alder, mest relevant milepæl, aldersfiltrerte sjekklister og tydelig inngang til å endre opplysninger.
+- Implementert: sekundære aktivitets-, barnehage/skolestart- og varslingsseksjoner er sammenleggbare, slik at hovedoppgaven ikke drukner i innhold.
+- Implementert: Guider inneholder generell veiledning og Pappasporet, mens lokale aktiviteter og steder henvises til Utforsk.
+- Implementert: Profil håndterer redigering av eksisterende opplysninger og separat, bekreftet sletting av all lokal demodata.
+- Verifisert: `npm test -- --run` bestått, 4 testfiler og 23 tester.
+- Verifisert: `npm run build` bestått med Vite-produksjonsbygg.
+- Verifisert: `git diff --check` bestått.
+
+## Navigasjonsretting
+
+- Rettet: Mer-menyen er nå en egen komponent for desktop- og mobilnavigasjonen, slik at klikk-state ikke deles med en skjult navigasjonsvariant.
+- Rettet: Mobilbunnmenyen klipper ikke lenger Mer-panelet når det åpnes oppover.
+- Verifisert etter rettingen: `npm test -- --run` bestått med 23 tester.
+- Verifisert etter rettingen: `npm run build` bestått.
+- Verifisert etter rettingen: `git diff --check` bestått.
+
+## Kritisk UX-gjennomgang før første brukertest
+
+- Forenklet: Detaljvisning av sted har nå direkte handling for å legge stedet til i Min tur.
+- Forenklet: Min baby har én tydelig «Endre opplysninger»-handling i hovedoversikten.
+- Forenklet: Profilskjemaet forklarer hvorfor lagring er deaktivert før nødvendig termin- eller ukeinformasjon er valgt.
+- Tydeliggjort: Stedlisten er visuelt skilt fra kartet med overskriften «Steder i området».
+- Kontrollert: Ingrid-flyten fra Utforsk til valgt sted, Min tur og lagret plan fungerer i eksisterende komponenter.
+- Kontrollert: Jonas-flyten fra Min baby til lokal profil, alders-/faseinnhold og sjekklister er bevart.
+- Begrensning: Brukervennlighet er ikke verifisert gjennom faktiske testpersoner; dette skal undersøkes i den planlagte brukertesten.
+
+## Stelleplass for alle omsorgspersoner
+
+- Implementert: «Stelleplass for alle omsorgspersoner» er tilbake som et synlig hovedfilter i Utforsk.
+- Implementert: Statusen vises også i stedskort sammen med de andre prioriterte fasilitetene.
+- Bevart: Filtreringen krever eksplisitt `Ja`; `Ukjent` behandles ikke som et positivt treff.
+
+## Endre Min tur
+
+- Implementert: Min tur har en tydelig «Endre stopp»-knapp tilbake til Utforsk.
+- Bevart: valgte stopp, dato og notat kan redigeres uten å starte planen på nytt.
+- Bevart: endringer må lagres eksplisitt, og ulagrede endringer vises tydelig.

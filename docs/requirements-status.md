@@ -25,7 +25,7 @@ Statusene betyr:
 | Varslingsforhåndsvisning | Implementert og simulert | `src/app/App.tsx` |
 | Sletting av demodata | Verifisert i lagringstest; manuell UI-kontroll gjenstår | `src/services/storage.test.ts`, Jonas-skript |
 | Pappasporet, guider og aktivitetsoversikt | Implementert; innholdet er demo/designhypotese | `src/app/App.tsx` |
-| Responsiv layout | CSS-regler implementert; manuell kontroll gjenstår | `src/app/styles.css` |
+| Responsiv layout og femvalgsnavigasjon | CSS-regler implementert; manuell kontroll gjenstår | `src/app/styles.css`, `src/app/App.tsx` |
 | Tastaturfokus og dialogsemantikk | Implementert; skjermleser-/tastaturtest gjenstår | `src/app/App.tsx`, `src/app/styles.css` |
 | Kartfliser og ekstern karttjeneste | Simulert av ekstern leverandør | `src/app/App.tsx`, `docs/data-provenance.md` |
 | Produksjonsinnlogging, sending, booking, betaling og medisinsk rådgivning | Utenfor MVP | `docs/MASTERSPESIFIKASJON.md` |
@@ -34,5 +34,5 @@ Statusene betyr:
 
 - Siste `npm test`: 23 tester bestått i 4 testfiler.
 - `npm run build`: bestått.
-- Mobilbunnmeny med sju hovedinnganger, Emma-inspirert aktivt ikonfelt og SVG-symboler er implementert i `src/app/App.tsx` og `src/app/styles.css`.
+- Mobil- og desktopnavigasjon med Hjem, Utforsk, Min tur, Min baby og Mer er implementert; Guider, Partnertilbud og Profil ligger under Mer.
 - Manuell brukertest, mobilnettleser, skjermleser og runtime-kartfeil: ikke kjørt i denne fasen.

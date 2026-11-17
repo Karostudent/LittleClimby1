@@ -28,9 +28,12 @@ npm test
 - Søk på navn, område og tagger.
 - Kategorier for kaféer/møteplasser, turer/uteområder og aktiviteter.
 - Filtre for blant annet stellerom, barnevognplass, trappefri adkomst og stelleplass for alle omsorgspersoner.
+- Søk og de viktigste praktiske filtrene vises først; øvrige filtre ligger under «Flere filtre».
+- «Kun favoritter» gjør det mulig å finne igjen lagrede steder direkte i Utforsk.
 - `Ja`, `Nei` og `Ukjent` vises separat. `Ukjent` teller aldri som et positivt filtertreff.
 - Favoritter lagres lokalt i nettleseren.
 - Fiktive steder er merket som «Fiktivt demosted».
+- Steder kan legges direkte til «Min tur», som viser valgte stopp, dato og notat.
 
 ### Min baby og Profil
 
@@ -58,10 +61,18 @@ npm test
 
 ### Navigasjon og mobil
 
-- Mobilbunnmenyen viser Hjem, Utforsk, Planlegg tur, Min baby, Guider, Partnere og Profil.
+- Mobil- og desktopnavigasjonen viser Hjem, Utforsk, Min tur, Min baby og Mer.
+- «Mer» samler Guider, Partnertilbud og Profil og innstillinger.
+- Partnerportalen er tilgjengelig fra Partnertilbud, men ligger ikke i hovednavigasjonen.
 - Aktivt valg markeres med et mintfarget ikonfelt inspirert av Emma-branchen.
-- Navigasjonssymbolene er SVG-symboler: hus, kart, rute, hjerte, informasjon, stjerne og bruker.
-- Desktop beholder samme sju hovedinnganger i toppmenyen.
+- Navigasjonssymbolene er SVG-symboler: hus, kart, rute, hjerte og informasjon.
+
+### Hjem
+
+- Hjem viser én hovedhandling: «Finn barnevennlige steder».
+- «Min baby» er sekundærhandlingen.
+- «Min tur» vises som en kompakt snarvei med planstatus.
+- Hjem forklarer tjenesten med én kort tekst i stedet for flere introduksjonskort.
 
 ### Demo av mulig inntektsmodell
 
