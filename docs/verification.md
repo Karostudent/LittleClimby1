@@ -135,6 +135,31 @@
 - Beholdt: Eksisterende fargepalett, typografi, avrundede kort og responsiv mobil-/desktopstruktur.
 - Ikke implementert: AI, API-kall, server, meldingutveksling, innlogging eller ny brukerdata-lagring.
 
+## Google Maps-veibeskrivelse
+
+- Beholdt: Knappen «Åpne veibeskrivelse i Google Maps» under Min tur.
+- Forbedret: En tydelig status viser at veibeskrivelsen er klar, og knappen har primær fremheving.
+- Beholdt: Opptil tre stopp og valgt stopprekkefølge.
+- Beholdt: Fiktive demosteder gir ingen Google Maps-rute.
+- Lagt til: Hjelpeteksten «Vil du prøve veibeskrivelse? Velg Bystranda og Fiskebrygga i Utforsk.»
+- Verifisert i tester: Bystranda som enkelt stopp, Bystranda–Fiskebrygga i begge rekkefølger og blanding av reelt/fiktivt sted.
+- Verifisert i nettleser 2026-11-17: Bystranda gir én destinasjonslenke, Bystranda–Fiskebrygga gir en rekkefølgelenke og fiktivt sted gir ingen knapp.
+- `npm test`: 29 tester bestod 2026-11-17.
+- `npm run build`: produksjonsbygg bestod 2026-11-17.
+- `git diff --check`: bestod 2026-11-17.
+
+## Utvidet reell stedsdatabase
+
+- Lagt til 2026-11-17: Ravnedalen, Baneheia, Otterdalsparken, Peisestuen park, Aquarama, Leo’s Lekeland Kristiansand, Hamresanden og Kristiansand Dyrepark.
+- Koordinater er registrert med OSM-objekt eller Google Maps-leverandør som kilde. Aquarama og Leo’s har også egen virksomhetsside for stedsidentitet.
+- Fasilitetsfelt for alle nye steder er Ukjent der egen dokumentasjon manglet.
+- Peisestuen er registrert som park på Odderøya; lekeplassstatus må kontrolleres manuelt før den beskrives som lekeplass.
+- Kart- og stedsmodellen er ikke redesignet.
+- Totalt reelle steder: 10; totalt fiktive demosteder: 13.
+- Verifisert: `npm test` bestod 2026-11-17 med 32 tester i 4 testfiler.
+- Verifisert: `npm run build` bestod 2026-11-17 med Vite-produksjonsbygg.
+- Verifisert: `git diff --check` bestod 2026-11-17.
+
 ## Turplanlegging og ekstern veibeskrivelse
 
 - Implementert: valgte stopp kan flyttes opp og ned i `Min tur`, med maks tre stopp og eksisterende dato/notat bevart.

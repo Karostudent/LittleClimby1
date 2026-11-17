@@ -10,6 +10,8 @@ Statusene betyr:
 | Område | Status | Dokumentasjon |
 |---|---|---|
 | Kart, liste, søk og filtre | Verifisert i kode/test | `src/domain/places.test.ts`, `src/app/App.tsx` |
+| Utvidet reell stedsdatabase | Implementert og verifisert i kode/test | `src/data/places.ts`, `src/domain/places.test.ts`, `docs/data-provenance.md` |
+| Google Maps-veibeskrivelse for reelle steder | Verifisert i kode/test | `src/domain/places.ts`, `src/domain/places.test.ts`, `src/app/App.tsx` |
 | `unknown` ekskluderes fra positive filtre | Verifisert i kode/test | `src/domain/places.test.ts` |
 | Favoritter i lokal lagring | Verifisert i kode/test og nettleserkontroll | `src/services/storage.ts`, Ingrid-skript |
 | Fiktive og reelle stedsidentiteter | Implementert, data er demo | `docs/data-provenance.md` |
@@ -33,7 +35,7 @@ Statusene betyr:
 
 ## Faktisk verifisert i fase 4
 
-- Siste `npm test`: 26 tester bestått i 4 testfiler.
+- Siste `npm test`: 32 tester bestått i 4 testfiler.
 - `npm run build`: bestått.
 - Mobil- og desktopnavigasjon med Hjem, Utforsk, Min tur, Min baby og Mer er implementert; Guider, Partnertilbud og Profil ligger under Mer.
 - Nettleserkontroll er kjørt for 320–1920 px bredde og 320–900 px høyde. Hurting-oppdatering av filter, Escape/lukking av Mer-meny og stedsdialog, samt Min tur-fjerning er kontrollert.

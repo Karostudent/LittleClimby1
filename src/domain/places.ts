@@ -63,7 +63,11 @@ export const buildExternalDirectionsUrl = (selectedPlaces: Place[]) => {
   if (coordinates.length === 1) {
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(coordinates[0])}`;
   }
-  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(coordinates[0])}&destination=${encodeURIComponent(coordinates[coordinates.length - 1])}&waypoints=${coordinates.slice(1, -1).map(encodeURIComponent).join('|')}&travelmode=walking`;
+  const waypoints = coordinates.slice(1, -1);
+  const waypointsParameter = waypoints.length
+    ? `&waypoints=${waypoints.map(encodeURIComponent).join('|')}`
+    : '';
+  return `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(coordinates[0])}&destination=${encodeURIComponent(coordinates[coordinates.length - 1])}${waypointsParameter}&travelmode=walking`;
 };
 
 export const matchesPlace = (

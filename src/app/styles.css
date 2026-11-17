@@ -104,6 +104,10 @@
 .place-card-actions .trip-add-button{margin-top:0;width:auto}
 .empty-plan{display:grid;gap:.8rem}
 .unsaved-note{background:#F0E3DE;border-radius:10px;font-weight:700;margin-top:1rem;padding:.7rem}
+.directions-block{display:grid;gap:.55rem;margin-top:.8rem}
+.directions-ready{background:#E5F4F2;border-radius:10px;margin:0;padding:.65rem .75rem}
+.directions-hint{color:#765F5F;font-size:.85rem;margin:.35rem 0 0}
+.external-directions{justify-self:start}
 
 @media(max-width:899px){
   .desktop-nav{display:none!important}

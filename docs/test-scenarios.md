@@ -63,3 +63,7 @@
 12. Åpne detaljpanelet på et kort mobilformat, scroll panelet, åpne og lukk kilde- og feilrapporteringsseksjonene, og kontroller at «Lukk» alltid er synlig.
 13. Gå tilbake fra Min tur til Utforsk og velg eller fjern stopp. Kontroller at ulagrede stopp ikke påstås lagret.
 14. Åpne «Mer» og velg «Little BabyBot». Kontroller at siden er merket som konseptdemo, at de tre eksempelsamtalene kan byttes, at meldingsfeltet er deaktivert og at ingen melding sendes eller lagres.
+15. Velg Bystranda i Min tur og kontroller at Google Maps åpner én reell destinasjon. Velg deretter Bystranda og Fiskebrygga i valgt rekkefølge og kontroller at lenken bruker start, slutt og eventuelle mellomstopp riktig.
+16. Legg til et fiktivt demosted i turen og kontroller at veibeskrivelsesknappen ikke vises og at årsaken forklares kort.
+17. Søker etter «Ravnedalen», «Baneheia», «Aquarama» eller «Leo’s Lekeland» og kontroller at reelle markører og detaljer åpnes.
+18. Legg til opptil tre reelle steder i Min tur, kontroller valgt rekkefølge og at Google Maps-lenken oppdateres.
