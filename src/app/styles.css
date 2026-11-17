@@ -111,7 +111,7 @@
   .mobile-nav .more-trigger{align-items:center;border-radius:12px;color:#765F5F;display:flex;flex:1;flex-direction:column;font-size:.6rem;font-weight:600;gap:.15rem;justify-content:center;min-height:3.65rem;min-width:0;padding:.25rem .05rem;white-space:nowrap}
   .mobile-nav .more-trigger:hover,.mobile-nav .more-menu.active .more-trigger{color:#3F2E2E}
   .mobile-nav .more-menu.active .more-trigger .mobile-nav-icon{background:#DDF0ED}
-  .mobile-nav .more-panel{bottom:calc(100% + .55rem);min-width:14rem;right:.25rem;top:auto}
+  .mobile-nav .more-panel{bottom:calc(100% + .55rem);max-height:calc(100dvh - 6.5rem);min-width:14rem;overflow-y:auto;right:.25rem;top:auto}
   .mobile-nav .more-panel a{font-size:.9rem;min-height:2.8rem}
   .explore-layout.map .results{grid-template-columns:1fr}
   .place-card-actions{align-items:stretch;display:grid;gap:.4rem}
@@ -143,3 +143,27 @@ details.card[open]>summary{margin-bottom:.75rem}
 .notification-preview{margin-top:1rem}
 .form-hint{color:#765F5F;font-size:.9rem;margin:0}
 @media(max-width:600px){.journey-overview{display:grid}.journey-overview .button{justify-self:start}.profile-summary .button{width:100%}}
+
+body.detail-open{overflow:hidden}
+.detail-backdrop{background:#3F2E2E66;bottom:0;left:0;position:fixed;right:0;top:0;z-index:1199}
+.detail-panel{bottom:auto;display:flex;flex-direction:column;max-height:calc(100dvh - 6.5rem);overflow:hidden;top:5.25rem}
+.detail-panel-header{align-items:center;display:flex;flex-shrink:0;justify-content:flex-end;min-height:2.25rem}
+.detail-panel-header .close-button{float:none}
+.detail-panel-scroll{min-height:0;overflow-y:auto;padding-right:.15rem;overscroll-behavior:contain}
+.more-panel{max-width:calc(100vw - 1rem)}
+@media(max-width:800px){
+  .detail-panel{bottom:.75rem;left:.75rem;max-height:calc(100dvh - 1.5rem);max-width:none;right:.75rem;top:.75rem}
+  .detail-panel-scroll{padding-right:.05rem}
+}
+@media(max-width:899px){
+  .topbar,.page,.controls,.explore-layout,.trip-planner,.journey,.profile-page{max-width:100%}
+  .controls,.section-intro,.planner-grid,.journey-grid,.checklist-grid,.sponsor-grid,.partner-offer-grid,.partner-form-grid{max-width:100%}
+  .topbar{overflow:visible}
+  .topbar nav.mobile-nav{max-width:100vw}
+  .explore-shortcuts>div{gap:.55rem}
+  .mobile-nav .more-panel{max-width:calc(100vw - .5rem)}
+}
+h1[tabindex="-1"]:focus:not(:focus-visible),
+h2[tabindex="-1"]:focus:not(:focus-visible) {
+  outline: none;
+}

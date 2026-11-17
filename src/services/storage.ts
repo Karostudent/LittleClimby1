@@ -76,6 +76,10 @@ export const writeTripPlan = (plan: TripPlan) => {
   localStorage.setItem(TRIP_PLAN_KEY, JSON.stringify(plan));
 };
 
+export const removeTripPlan = () => {
+  localStorage.removeItem(TRIP_PLAN_KEY);
+};
+
 export const readTripSelection = (): string[] => {
   try {
     const raw = localStorage.getItem(TRIP_SELECTION_KEY);

@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, NavLink, Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { divIcon } from 'leaflet';
@@ -7,7 +8,7 @@ import { buildExternalDirectionsUrl, categoryLabels, facilityLabels, formatCheck
 import { places } from '../data/places';
 import { activitiesForAge } from '../data/activities';
 import { checklistItemsForAge, getAgeDescription, getBabyAgeDescription, getChildAgeMonths, getChildAgeYears, getCurrentMilestone, getJourneyWeek, initialDemoState, kindergartenChecklistForAge, pregnancyChecklistForWeek, type ContentPreference, type DemoProfile, type DemoState, type JourneyStage } from '../domain/journey';
-import { addPlaceReport, clearDemoState, readDemoState, readFavoriteIds, readFeedback, readTripPlan, readTripSelection, writeDemoState, writeFavoriteIds, writeFeedback, writeTripPlan, writeTripSelection, type DemoFeedback, type TripPlan } from '../services/storage';
+import { addPlaceReport, clearDemoState, readDemoState, readFavoriteIds, readFeedback, readTripPlan, readTripSelection, removeTripPlan, writeDemoState, writeFavoriteIds, writeFeedback, writeTripPlan, writeTripSelection, type DemoFeedback, type TripPlan } from '../services/storage';
 import './styles.css';
 
 const primaryFilters: FacilityName[] = ['stroller_space', 'changing_table', 'changing_access_all_caregivers', 'step_free_access'];
@@ -49,10 +50,40 @@ function NavigationIcon({ name }: { name: NavigationIconName }) {
 function MoreMenu() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const firstItemRef = useRef<HTMLAnchorElement>(null);
   const moreActive = location.pathname === '/partnerportal' || secondaryNavigation.some((item) => location.pathname.startsWith(item.path));
-  const closeMenu = () => setOpen(false);
+  const closeMenu = (restoreFocus = false) => {
+    setOpen(false);
+    if (restoreFocus) triggerRef.current?.focus();
+  };
 
-  return <div className={`more-menu${moreActive ? ' active' : ''}`}><button className="more-trigger" type="button" aria-expanded={open} aria-haspopup="menu" onClick={() => setOpen((isOpen) => !isOpen)}><span className="mobile-nav-icon"><NavigationIcon name="info" /></span><span>Mer</span></button>{open && <div className="more-panel" role="menu" aria-label="Flere valg">{secondaryNavigation.map((item) => <NavLink key={item.path} to={item.path} role="menuitem" onClick={closeMenu}><NavigationIcon name={item.icon} /><span>{item.label}</span></NavLink>)}</div>}</div>;
+  useEffect(() => {
+    if (!open) return;
+    firstItemRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu(true);
+      }
+    };
+    const handlePointerDown = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) closeMenu();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handlePointerDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handlePointerDown);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
+
+  return <div ref={menuRef} className={`more-menu${moreActive ? ' active' : ''}`}><button ref={triggerRef} className="more-trigger" type="button" aria-expanded={open} aria-haspopup="menu" onClick={() => setOpen((isOpen) => !isOpen)}><span className="mobile-nav-icon"><NavigationIcon name="info" /></span><span>Mer</span></button>{open && <div className="more-panel" role="menu" aria-label="Flere valg">{secondaryNavigation.map((item, index) => <NavLink ref={index === 0 ? firstItemRef : undefined} key={item.path} to={item.path} role="menuitem" onClick={() => closeMenu()}><NavigationIcon name={item.icon} /><span>{item.label}</span></NavLink>)}</div>}</div>;
 }
 
 function BrandLogo() {
@@ -65,7 +96,7 @@ function FarmAnimal({ animal, label }: { animal: 'pig' | 'cow' | 'chicken'; labe
 
 const formatChildAge = (months: number | undefined, years: number | undefined): string => {
   if (months !== undefined && months < 12) return `${months} ${months === 1 ? 'måned' : 'måneder'}`;
-  return years === undefined ? 'valgt alder' : `${years} år`;
+  return years === undefined ? 'alder ikke oppgitt' : `${years} år`;
 };
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -192,6 +223,48 @@ function PlaceDetails({ place, inTrip, canAdd, onClose, onToggleTrip }: { place:
   const [reportMode, setReportMode] = useState<'confirm' | 'error' | null>(null);
   const [reportMessage, setReportMessage] = useState('');
   const [reportSent, setReportSent] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const header = document.querySelector<HTMLElement>('.topbar');
+    const main = document.querySelector<HTMLElement>('#main-content');
+    const footer = document.querySelector<HTMLElement>('footer');
+    [header, main, footer].forEach((element) => element?.setAttribute('inert', ''));
+    [header, main, footer].forEach((element) => element?.setAttribute('aria-hidden', 'true'));
+    closeRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onClose();
+        return;
+      }
+      if (event.key === 'Tab' && panelRef.current) {
+        const focusable = Array.from(panelRef.current.querySelectorAll<HTMLElement>('button:not([disabled]), a[href], input:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"])')).filter((element) => !element.hasAttribute('disabled'));
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    document.body.classList.add('detail-open');
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.classList.remove('detail-open');
+      [header, main, footer].forEach((element) => {
+        element?.removeAttribute('inert');
+        element?.removeAttribute('aria-hidden');
+      });
+      previousFocus?.focus();
+    };
+  }, [onClose]);
   const submitReport = (event: React.FormEvent) => {
     event.preventDefault();
     if (!reportMode || (reportMode === 'error' && !reportMessage.trim())) return;
@@ -200,25 +273,37 @@ function PlaceDetails({ place, inTrip, canAdd, onClose, onToggleTrip }: { place:
     setReportMode(null);
     setReportMessage('');
   };
-  return <div className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><button className="close-button" onClick={onClose}>Lukk</button><h2 id="detail-title">{place.name}</h2>{isFictional(place) ? <p className="demo-label">Fiktivt demosted – kun eksempeldata</p> : <p className="verified-label">Reell stedsidentitet · fasiliteter må verifiseres separat</p>}<p className="muted">{place.addressOrArea}</p><p>{place.shortDescription}</p>{place.routeInfo && <p className="route-summary"><strong>Rute:</strong> {place.routeInfo.lengthKm} km · {place.routeInfo.surfaceText}. Rutedata er ikke verifisert.</p>}<h3>Fasiliteter</h3><ul>{Object.entries(place.facilities).map(([name, claim]) => <li key={name}><FacilityStatus name={name as FacilityName} claim={claim} />{claim?.note && ` – ${claim.note}`}</li>)}</ul><button className={`trip-add-button ${inTrip ? 'selected' : ''}`} onClick={onToggleTrip} disabled={!inTrip && !canAdd}>{inTrip ? '✓ I Min tur' : 'Legg til i Min tur'}</button><details className="info-details"><summary>Om informasjonen</summary>{isFictional(place) ? <p>Dette er et fiktivt demosted. Opplysningene er kun laget for å vise hvordan prototypen fungerer.</p> : <><p>Stedsidentiteten er reell, men fasiliteter og tilgjengelighet må kontrolleres separat.</p><ul>{place.identitySourceUrl && <li>Stedsidentitet: <a href={place.identitySourceUrl} target="_blank" rel="noreferrer">åpen kilde</a>{place.identityCheckedAt && ` (kontrollert ${formatCheckedDate(place.identityCheckedAt)})`}</li>}{place.coordinatesSourceUrl && <li>Posisjon: <a href={place.coordinatesSourceUrl} target="_blank" rel="noreferrer">åpen kilde</a>{place.coordinatesCheckedAt && ` (kontrollert ${formatCheckedDate(place.coordinatesCheckedAt)})`}</li>}</ul></>}</details><details className="place-feedback"><summary>Meld fra eller bekreft informasjon</summary><p className="muted">Tilbakemeldingen lagres bare lokalt i denne prototypen.</p><div className="feedback-actions"><button className="text-button" type="button" onClick={() => setReportMode('confirm')}>Bekreft opplysninger</button><button className="text-button" type="button" onClick={() => setReportMode('error')}>Meld fra om feil</button></div>{reportMode && <form onSubmit={submitReport}><label>{reportMode === 'confirm' ? 'Hva vil du bekrefte? (valgfritt)' : 'Hva er feil?'}<textarea rows={3} value={reportMessage} required={reportMode === 'error'} onChange={(event) => setReportMessage(event.target.value)} /></label><button className="button secondary" type="submit">Lagre lokalt</button></form>}{reportSent && <p className="saved-note" role="status">Takk. Tilbakemeldingen er lagret lokalt.</p>}</details>{place.coordinates && !isFictional(place) && <a className="button secondary" href={`https://www.openstreetmap.org/?mlat=${place.coordinates.lat}&mlon=${place.coordinates.lng}#map=17/${place.coordinates.lat}/${place.coordinates.lng}`} target="_blank" rel="noreferrer">Vis vei (ekstern)</a>}</div>;
+  return createPortal(<><div className="detail-backdrop" aria-hidden="true" onMouseDown={onClose} /><div ref={panelRef} className="detail-panel" role="dialog" aria-modal="true" aria-labelledby="detail-title"><div className="detail-panel-header"><button ref={closeRef} className="close-button" type="button" onClick={onClose}>Lukk</button></div><div className="detail-panel-scroll"><h2 id="detail-title">{place.name}</h2>{isFictional(place) ? <p className="demo-label">Fiktivt demosted – kun eksempeldata</p> : <p className="verified-label">Reell stedsidentitet · fasiliteter må verifiseres separat</p>}<p className="muted">{place.addressOrArea}</p><p>{place.shortDescription}</p>{place.routeInfo && <p className="route-summary"><strong>Rute:</strong> {place.routeInfo.lengthKm} km · {place.routeInfo.surfaceText}. Rutedata er ikke verifisert.</p>}<h3>Fasiliteter</h3><ul>{Object.entries(place.facilities).map(([name, claim]) => <li key={name}><FacilityStatus name={name as FacilityName} claim={claim} />{claim?.note && ` – ${claim.note}`}</li>)}</ul><button className={`trip-add-button ${inTrip ? 'selected' : ''}`} onClick={onToggleTrip} disabled={!inTrip && !canAdd}>{inTrip ? '✓ I Min tur' : 'Legg til i Min tur'}</button><details className="info-details"><summary>Om informasjonen</summary>{isFictional(place) ? <p>Dette er et fiktivt demosted. Opplysningene er kun laget for å vise hvordan prototypen fungerer.</p> : <><p>Stedsidentiteten er reell, men fasiliteter og tilgjengelighet må kontrolleres separat.</p><ul>{place.identitySourceUrl && <li>Stedsidentitet: <a href={place.identitySourceUrl} target="_blank" rel="noreferrer">åpen kilde</a>{place.identityCheckedAt && ` (kontrollert ${formatCheckedDate(place.identityCheckedAt)})`}</li>}{place.coordinatesSourceUrl && <li>Posisjon: <a href={place.coordinatesSourceUrl} target="_blank" rel="noreferrer">åpen kilde</a>{place.coordinatesCheckedAt && ` (kontrollert ${formatCheckedDate(place.coordinatesCheckedAt)})`}</li>}</ul></>}</details><details className="place-feedback"><summary>Meld fra eller bekreft informasjon</summary><p className="muted">Tilbakemeldingen lagres bare lokalt i denne prototypen.</p><div className="feedback-actions"><button className="text-button" type="button" onClick={() => setReportMode('confirm')}>Bekreft opplysninger</button><button className="text-button" type="button" onClick={() => setReportMode('error')}>Meld fra om feil</button></div>{reportMode && <form onSubmit={submitReport}><label>{reportMode === 'confirm' ? 'Hva vil du bekrefte? (valgfritt)' : 'Hva er feil?'}<textarea rows={3} value={reportMessage} required={reportMode === 'error'} onChange={(event) => setReportMessage(event.target.value)} /></label><button className="button secondary" type="submit">Lagre lokalt</button></form>}{reportSent && <p className="saved-note" role="status">Takk. Tilbakemeldingen er lagret lokalt.</p>}</details>{place.coordinates && !isFictional(place) && <a className="button secondary" href={`https://www.openstreetmap.org/?mlat=${place.coordinates.lat}&mlon=${place.coordinates.lng}#map=17/${place.coordinates.lat}/${place.coordinates.lng}`} target="_blank" rel="noreferrer">Vis vei (ekstern)</a>}</div></div></>, document.body);
 }
 
 function Explore() {
   const [searchParams] = useSearchParams();
-  const initialFilter = searchParams.get('filter');
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState<PlaceCategory | 'all'>('all');
-  const [filters, setFilters] = useState<FacilityName[]>(() => quickFilters.includes(initialFilter as FacilityName) ? [initialFilter as FacilityName] : []);
+  const [filters, setFilters] = useState<FacilityName[]>([]);
   const [favoriteOnly, setFavoriteOnly] = useState(false);
-  const [showAdditionalFilters, setShowAdditionalFilters] = useState(initialFilter === 'free_activity');
+  const [showAdditionalFilters, setShowAdditionalFilters] = useState(false);
   const [view, setView] = useState<'map' | 'list'>('map');
   const [selected, setSelected] = useState<Place | null>(null);
   const [favorites, setFavorites] = useState(readFavoriteIds);
   const [tripSelection, setTripSelection] = useState(readTripSelection);
   const navigate = useNavigate();
+  useEffect(() => {
+    const urlFilter = searchParams.get('filter');
+    const nextFilter = quickFilters.includes(urlFilter as FacilityName) ? [urlFilter as FacilityName] : [];
+    setFilters(nextFilter);
+    setShowAdditionalFilters(urlFilter === 'free_activity');
+  }, [searchParams]);
   const results = useMemo(() => places.filter((place) => matchesPlace(place, search, category, filters) && (!favoriteOnly || favorites.includes(place.id))), [search, category, filters, favoriteOnly, favorites]);
   const toggleFavorite = (id: string) => { const next = favorites.includes(id) ? favorites.filter((item) => item !== id) : [...favorites, id]; setFavorites(next); writeFavoriteIds(next); };
-  const reset = () => { setSearch(''); setCategory('all'); setFilters([]); setFavoriteOnly(false); setShowAdditionalFilters(false); };
+  const reset = () => {
+    setSearch('');
+    setCategory('all');
+    setFilters([]);
+    setFavoriteOnly(false);
+    setShowAdditionalFilters(false);
+    navigate('/utforsk');
+  };
   const toggleTripSelection = (id: string) => {
     const next = tripSelection.includes(id)
       ? tripSelection.filter((item) => item !== id)
@@ -265,14 +350,26 @@ function TripPlanner() {
       return next;
     });
   };
+  const removeAll = () => {
+    setPlaceIds([]);
+    writeTripSelection([]);
+  };
+  const startNew = () => {
+    removeTripPlan();
+    writeTripSelection([]);
+    setPlan(null);
+    setPlaceIds([]);
+    setDate('');
+    setNote('');
+  };
   const directionsUrl = buildExternalDirectionsUrl(selectedPlaces);
   const save = () => {
     const next = { placeIds, date, note };
     writeTripPlan(next);
     setPlan(next);
-    writeTripSelection(placeIds);
+    writeTripSelection([]);
   };
-  return <section className="page trip-planner"><div className="section-intro"><div><p className="eyebrow">Min tur</p><h1>Sett sammen en liten tur</h1></div>{selectedPlaces.length > 0 && <Link className="button secondary" to="/utforsk">Endre stopp</Link>}</div><p className="lead">Velg opptil tre stopp fra Utforsk. Dato og notat kan legges til når dere er klare.</p><div className="planner-grid"><section className="card"><h2>Valgte stopp</h2>{selectedPlaces.length === 0 ? <div className="empty-plan"><p className="muted">Du har ikke valgt noen stopp ennå.</p><Link className="button primary" to="/utforsk">Finn steder til turen</Link></div> : <div className="selected-stops">{selectedPlaces.map((place, index) => <div className="selected-stop" key={place.id}><span className="stop-number">{index + 1}</span><div><strong>{place.name}</strong><p className="muted">{categoryLabels[place.category]} · {place.addressOrArea}</p><div className="stop-actions"><button className="text-button" type="button" onClick={() => movePlace(index, -1)} disabled={index === 0} aria-label={`Flytt ${place.name} opp`}>↑ Opp</button><button className="text-button" type="button" onClick={() => movePlace(index, 1)} disabled={index === selectedPlaces.length - 1} aria-label={`Flytt ${place.name} ned`}>↓ Ned</button><button className="text-button" type="button" onClick={() => togglePlace(place.id)}>Fjern</button></div></div></div>)}</div>}<label>Når passer det?<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label><label>Hva vil dere huske?<textarea rows={4} value={note} onChange={(event) => setNote(event.target.value)} placeholder="For eksempel: ta med ekstra skift." /></label><button className="button primary" disabled={!selectedPlaces.length} onClick={save}>Lagre Min tur</button>{plan && !isSaved && <p className="unsaved-note" role="status">Endringer er ikke lagret ennå.</p>}{selectedPlaces.length > 0 && (directionsUrl ? <a className="button secondary external-directions" href={directionsUrl} target="_blank" rel="noreferrer">Åpne veibeskrivelse i Google Maps</a> : <p className="muted directions-unavailable">Ekstern veibeskrivelse er bare tilgjengelig når alle stopp er reelle steder med koordinater.</p>)}</section><section className="card plan-preview"><p className="eyebrow">Oversikt</p>{selectedPlaces.length === 0 ? <h2>Min tur er tom</h2> : <ol className="plan-stop-list">{selectedPlaces.map((place) => <li key={place.id}><h2>{place.name}</h2><p className="muted">{place.addressOrArea} · {categoryLabels[place.category]}</p><p>{place.shortDescription}</p>{place.routeInfo && <p className="route-summary"><strong>Trilletur:</strong> {place.routeInfo.lengthKm} km · {place.routeInfo.surfaceText}</p>}<ul>{Object.entries(place.facilities).slice(0, 4).map(([name, claim]) => <li key={name}><strong>{facilityLabels[name as FacilityName]}:</strong> {claim?.value === 'yes' ? 'Ja' : claim?.value === 'no' ? 'Nei' : 'Ukjent'}</li>)}</ul></li>)}</ol>}{isSaved && <p className="saved-note" role="status">Min tur er lagret lokalt.</p>}</section></div></section>;
+  return <section className="page trip-planner"><div className="section-intro"><div><p className="eyebrow">Min tur</p><h1>Sett sammen en liten tur</h1></div>{selectedPlaces.length > 0 && <Link className="button secondary" to="/utforsk">Endre stopp</Link>}</div><p className="lead">Velg opptil tre stopp fra Utforsk. Dato og notat kan legges til når dere er klare.</p><div className="planner-grid"><section className="card"><h2>Valgte stopp</h2>{selectedPlaces.length === 0 ? <div className="empty-plan"><p className="muted">Ingen stopp er valgt i dette utkastet.</p><Link className="button primary" to="/utforsk">Finn steder til turen</Link>{plan && <button className="text-button" type="button" onClick={startNew}>Start ny tur og slett lagret tur</button>}</div> : <><div className="selected-stops">{selectedPlaces.map((place, index) => <div className="selected-stop" key={place.id}><span className="stop-number">{index + 1}</span><div><strong>{place.name}</strong><p className="muted">{categoryLabels[place.category]} · {place.addressOrArea}</p><div className="stop-actions"><button className="text-button" type="button" onClick={() => movePlace(index, -1)} disabled={index === 0} aria-label={`Flytt ${place.name} opp`}>↑ Opp</button><button className="text-button" type="button" onClick={() => movePlace(index, 1)} disabled={index === selectedPlaces.length - 1} aria-label={`Flytt ${place.name} ned`}>↓ Ned</button><button className="text-button" type="button" onClick={() => togglePlace(place.id)}>Fjern</button></div></div></div>)}</div><button className="text-button" type="button" onClick={removeAll}>Fjern alle stopp</button></>}<label>Når passer det?<input type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label><label>Hva vil dere huske?<textarea rows={4} value={note} onChange={(event) => setNote(event.target.value)} placeholder="For eksempel: ta med ekstra skift." /></label><button className="button primary" disabled={!selectedPlaces.length} onClick={save}>Lagre Min tur</button>{plan && !isSaved && <p className="unsaved-note" role="status">Tidligere lagret tur er uendret. Endringer i dette utkastet er ikke lagret.</p>}{!plan && savedSelection.length > 0 && <p className="unsaved-note" role="status">Dette er ulagret valg fra Utforsk.</p>}{selectedPlaces.length > 0 && (directionsUrl ? <a className="button secondary external-directions" href={directionsUrl} target="_blank" rel="noreferrer">Åpne veibeskrivelse i Google Maps</a> : <p className="muted directions-unavailable">Ekstern veibeskrivelse er bare tilgjengelig når alle stopp er reelle steder med koordinater.</p>)}</section><section className="card plan-preview"><p className="eyebrow">Oversikt</p>{selectedPlaces.length === 0 ? <h2>Min tur er tom</h2> : <ol className="plan-stop-list">{selectedPlaces.map((place) => <li key={place.id}><h2>{place.name}</h2><p className="muted">{place.addressOrArea} · {categoryLabels[place.category]}</p><p>{place.shortDescription}</p>{place.routeInfo && <p className="route-summary"><strong>Trilletur:</strong> {place.routeInfo.lengthKm} km · {place.routeInfo.surfaceText}</p>}<ul>{Object.entries(place.facilities).slice(0, 4).map(([name, claim]) => <li key={name}><strong>{facilityLabels[name as FacilityName]}:</strong> {claim?.value === 'yes' ? 'Ja' : claim?.value === 'no' ? 'Nei' : 'Ukjent'}</li>)}</ul></li>)}</ol>}{isSaved && <p className="saved-note" role="status">Min tur er lagret lokalt.</p>}</section></div></section>;
 }
 
 const today = () => {
@@ -289,6 +386,7 @@ function JourneySetup({ onSave, initialProfile, onCancel, submitLabel = 'Lagre l
   const [week, setWeek] = useState(initialProfile?.enteredPregnancyWeek?.toString() ?? '');
   const [birthDate, setBirthDate] = useState(initialProfile?.childBirthDate ?? '');
   const [ageYears, setAgeYears] = useState(initialProfile?.childAgeYears?.toString() ?? '');
+  const [childAgeMode, setChildAgeMode] = useState<'birthDate' | 'age'>(initialProfile?.childBirthDate ? 'birthDate' : 'age');
   const [preference, setPreference] = useState<ContentPreference>(initialProfile?.contentPreference ?? 'general');
   const canSave = stage !== 'expecting' || (inputMode === 'dueDate' ? Boolean(dueDate) : Number(week) >= 1 && Number(week) <= 42);
   const save = () => {
@@ -297,13 +395,13 @@ function JourneySetup({ onSave, initialProfile, onCancel, submitLabel = 'Lagre l
       stage,
       ...(stage === 'expecting' && inputMode === 'dueDate' ? { dueDate } : {}),
       ...(stage === 'expecting' && inputMode === 'week' ? { enteredPregnancyWeek: Number(week), enteredWeekAnchorDate: today() } : {}),
-      ...(stage === 'baby_born' && birthDate ? { childBirthDate: birthDate } : {}),
-      ...(stage === 'baby_born' && ageYears ? { childAgeYears: Number(ageYears) } : {}),
+      ...(stage === 'baby_born' && childAgeMode === 'birthDate' && birthDate ? { childBirthDate: birthDate } : {}),
+      ...(stage === 'baby_born' && childAgeMode === 'age' && ageYears ? { childAgeYears: Number(ageYears) } : {}),
       contentPreference: preference,
       notificationPreference: 'preview_only',
     });
   };
-  return <div className="journey-setup card"><p className="eyebrow">{initialProfile ? 'Endre opplysninger' : 'Frivillig demoprofil'}</p><h2>{initialProfile ? 'Oppdater det som skal styre Min baby' : 'Hva passer for deg nå?'}</h2><p className="muted">Du kan utforske kartet uten profil. Opplysningene lagres bare lokalt i denne nettleseren.</p><div className="choice-grid"><label className="choice"><input type="radio" checked={stage === 'expecting'} onChange={() => setStage('expecting')} />Jeg venter barn</label><label className="choice"><input type="radio" checked={stage === 'baby_born'} onChange={() => setStage('baby_born')} />Jeg har fått barn</label><label className="choice"><input type="radio" checked={stage === 'prefer_not_to_say'} onChange={() => setStage('prefer_not_to_say')} />Jeg vil bare utforske</label></div>{stage === 'expecting' && <fieldset><legend>Velg én inngang</legend><div className="choice-grid"><label className="choice"><input type="radio" checked={inputMode === 'dueDate'} onChange={() => setInputMode('dueDate')} />Termindato</label><label className="choice"><input type="radio" checked={inputMode === 'week'} onChange={() => setInputMode('week')} />Svangerskapsuke</label></div>{inputMode === 'dueDate' ? <label>Termindato (obligatorisk)<input type="date" required value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></label> : <label>Aktuell svangerskapsuke (1–42, obligatorisk)<input type="number" min="1" max="42" required value={week} onChange={(event) => setWeek(event.target.value)} /></label>}<p className="muted">Visningen er omtrentlig og ikke en klinisk vurdering.</p></fieldset>}{stage === 'baby_born' && <><label>Fødselsdato (valgfritt)<input type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} /></label><label>Barnets alder i hele år<select value={ageYears} onChange={(event) => setAgeYears(event.target.value)}><option value="">Velg alder (valgfritt)</option>{[0, 1, 2, 3, 4, 5, 6].map((age) => <option value={age} key={age}>{age} år</option>)}</select></label></>}<label>Innholdspreferanse<select value={preference} onChange={(event) => setPreference(event.target.value as ContentPreference)}><option value="general">Generelt</option><option value="dad">Pappa/medforelder</option><option value="pregnant_parent">Den gravide</option><option value="both">Begge</option></select></label><p className="form-hint" role="status">{!canSave && stage === 'expecting' ? 'Velg termindato eller svangerskapsuke for å lagre profilen.' : 'Du kan endre opplysningene senere i Profil.'}</p><div className="form-actions"><button className="button primary" disabled={!canSave} onClick={save}>{submitLabel}</button>{onCancel && <button className="text-button" type="button" onClick={onCancel}>Avbryt</button>}</div></div>;
+  return <div className="journey-setup card"><p className="eyebrow">{initialProfile ? 'Endre opplysninger' : 'Frivillig demoprofil'}</p><h2>{initialProfile ? 'Oppdater det som skal styre Min baby' : 'Hva passer for deg nå?'}</h2><p className="muted">Du kan utforske kartet uten profil. Opplysningene lagres bare lokalt i denne nettleseren.</p><div className="choice-grid"><label className="choice"><input type="radio" checked={stage === 'expecting'} onChange={() => setStage('expecting')} />Jeg venter barn</label><label className="choice"><input type="radio" checked={stage === 'baby_born'} onChange={() => setStage('baby_born')} />Jeg har fått barn</label><label className="choice"><input type="radio" checked={stage === 'prefer_not_to_say'} onChange={() => setStage('prefer_not_to_say')} />Jeg vil bare utforske</label></div>{stage === 'expecting' && <fieldset><legend>Velg én inngang</legend><div className="choice-grid"><label className="choice"><input type="radio" checked={inputMode === 'dueDate'} onChange={() => setInputMode('dueDate')} />Termindato</label><label className="choice"><input type="radio" checked={inputMode === 'week'} onChange={() => setInputMode('week')} />Svangerskapsuke</label></div>{inputMode === 'dueDate' ? <label>Termindato (obligatorisk)<input type="date" required value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></label> : <label>Aktuell svangerskapsuke (1–42, obligatorisk)<input type="number" min="1" max="42" required value={week} onChange={(event) => setWeek(event.target.value)} /></label>}<p className="muted">Visningen er omtrentlig og ikke en klinisk vurdering.</p></fieldset>}{stage === 'baby_born' && <fieldset><legend>Barnets alder</legend><p className="muted">Velg én metode, slik at opplysningene ikke gir motstridende alder.</p><div className="choice-grid"><label className="choice"><input type="radio" checked={childAgeMode === 'birthDate'} onChange={() => setChildAgeMode('birthDate')} />Fødselsdato</label><label className="choice"><input type="radio" checked={childAgeMode === 'age'} onChange={() => setChildAgeMode('age')} />Omtrentlig alder</label></div>{childAgeMode === 'birthDate' ? <label>Fødselsdato (valgfritt)<input type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} /></label> : <label>Barnets alder i hele år<select value={ageYears} onChange={(event) => setAgeYears(event.target.value)}><option value="">Velg alder (valgfritt)</option>{[0, 1, 2, 3, 4, 5, 6].map((age) => <option value={age} key={age}>{age} år</option>)}</select></label>}</fieldset>}<label>Innholdspreferanse<select value={preference} onChange={(event) => setPreference(event.target.value as ContentPreference)}><option value="general">Generelt</option><option value="dad">Pappa/medforelder</option><option value="pregnant_parent">Den gravide</option><option value="both">Begge</option></select></label><p className="form-hint" role="status">{!canSave && stage === 'expecting' ? 'Velg termindato eller svangerskapsuke for å lagre profilen.' : 'Du kan endre opplysningene senere i Profil.'}</p><div className="form-actions"><button className="button primary" disabled={!canSave} onClick={save}>{submitLabel}</button>{onCancel && <button className="text-button" type="button" onClick={onCancel}>Avbryt</button>}</div></div>;
 }
 
 function ChecklistProgress({ items, checkedItemIds }: { items: { id: string }[]; checkedItemIds: string[] }) {
