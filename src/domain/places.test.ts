@@ -12,6 +12,11 @@ describe('place filtering', () => {
     expect(places.filter((place) => matchesPlace(place, 'barseltreff', 'activity', [])).map((place) => place.id)).toEqual(['demo-barseltreff']);
   });
 
+  it('matches Dyreparken by search term and Hamresanden by name', () => {
+    expect(places.filter((place) => matchesPlace(place, 'Dyreparken', 'all', [])).map((place) => place.id)).toEqual(['real-dyreparken']);
+    expect(places.filter((place) => matchesPlace(place, 'Hamresanden', 'all', [])).map((place) => place.id)).toEqual(['real-hamresanden']);
+  });
+
   it('keeps reference coordinates and sources for real places', () => {
     const bystranda = places.find((place) => place.id === 'real-bystranda');
     const fiskebrygga = places.find((place) => place.id === 'real-fiskebrygga');
@@ -37,6 +42,24 @@ describe('place filtering', () => {
       expect(place?.dataKind).toBe('real_place_identity');
       expect(place?.coordinates).not.toBeNull();
       expect(place?.coordinatesSourceUrl).toBeTruthy();
+    });
+  });
+
+  it('uses direct place or venue sources for the new real places', () => {
+    const directSourceIds = [
+      'real-ravnedalen',
+      'real-baneheia',
+      'real-otterdalsparken',
+      'real-peisestuen-park',
+      'real-aquarama',
+      'real-leos-lekeland',
+      'real-hamresanden',
+      'real-dyreparken',
+    ];
+    directSourceIds.forEach((id) => {
+      const place = places.find((item) => item.id === id);
+      expect(place?.identitySourceUrl).toBeTruthy();
+      expect(place?.identitySourceUrl).not.toBe('https://www.kristiansand.kommune.no/');
     });
   });
 

@@ -34,6 +34,7 @@ npm test
 - Favoritter lagres lokalt i nettleseren.
 - Fiktive steder er merket som «Fiktivt demosted».
 - Kartet inneholder reelle steder i Kristiansand, blant annet Ravnedalen, Baneheia, Otterdalsparken, Aquarama, Leo’s Lekeland, Hamresanden og Kristiansand Dyrepark. Peisestuen er registrert som parkområde inntil lekeplassstatus kan bekreftes.
+- Kartutsnittet tilpasses synlige søkeresultater og zoomer inn på ett enkelt treff. Standardvisningen viser alle registrerte steder i området.
 - Steder kan legges direkte til «Min tur», som viser valgte stopp, dato og notat.
 - Min tur viser «Åpne veibeskrivelse i Google Maps» tydelig når alle stopp har reell posisjon. Fiktive demosteder hindrer derfor ikke bare reelle stopp; forklaringen sier hvorfor lenken er utilgjengelig.
 - Hjelpeteksten anbefaler Bystranda og Fiskebrygga som en enkel kontroll av enkel og kombinert veibeskrivelse.
@@ -109,6 +110,6 @@ npm test
 npm run build
 ```
 
-Siste verifisering: 32 tester bestått, production build bestått og `git diff --check` bestått. Manuelle Ingrid- og Jonas-skript finnes i [docs/test-scenarios.md](docs/test-scenarios.md). Kravstatus finnes i [docs/requirements-status.md](docs/requirements-status.md), og testnotater kan føres i [docs/user-test-notes.md](docs/user-test-notes.md).
+Siste verifisering: 34 tester bestått, production build bestått og `git diff --check` bestått. Manuelle Ingrid- og Jonas-skript finnes i [docs/test-scenarios.md](docs/test-scenarios.md). Kravstatus finnes i [docs/requirements-status.md](docs/requirements-status.md), og testnotater kan føres i [docs/user-test-notes.md](docs/user-test-notes.md).
 
 En produksjonsversjon trenger egen databehandling, personvern- og sikkerhetsvurdering, kartleverandøravtale, verifisering av fasiliteter, universell utforming og løpende kvalitetssikring.

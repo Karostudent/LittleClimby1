@@ -35,7 +35,7 @@ Statusene betyr:
 
 ## Faktisk verifisert i fase 4
 
-- Siste `npm test`: 32 tester bestått i 4 testfiler.
+- Siste `npm test`: 34 tester bestått i 4 testfiler.
 - `npm run build`: bestått.
 - Mobil- og desktopnavigasjon med Hjem, Utforsk, Min tur, Min baby og Mer er implementert; Guider, Partnertilbud og Profil ligger under Mer.
 - Nettleserkontroll er kjørt for 320–1920 px bredde og 320–900 px høyde. Hurting-oppdatering av filter, Escape/lukking av Mer-meny og stedsdialog, samt Min tur-fjerning er kontrollert.

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, NavLink, Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet';
 import { divIcon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { buildExternalDirectionsUrl, categoryLabels, facilityLabels, formatCheckedDate, isFictional, matchesPlace, type FacilityName, type FacilityClaim, type Place, type PlaceCategory, type TriState } from '../domain/places';
@@ -278,6 +278,22 @@ function FacilityStatus({ name, claim }: { name: FacilityName; claim?: FacilityC
   return <span className={`status ${value}`}><span className="status-mark" aria-hidden="true">{mark}</span>{label} · {facilityLabels[name]}</span>;
 }
 
+function MapViewport({ visiblePlaces }: { visiblePlaces: Place[] }) {
+  const map = useMap();
+  useEffect(() => {
+    const coordinates = visiblePlaces
+      .filter((place) => place.coordinates)
+      .map((place) => [place.coordinates!.lat, place.coordinates!.lng] as [number, number]);
+    if (!coordinates.length) return;
+    if (coordinates.length === 1) {
+      map.setView(coordinates[0], 14, { animate: false });
+    } else {
+      map.fitBounds(coordinates, { padding: [28, 28], maxZoom: 12, animate: false });
+    }
+  }, [map, visiblePlaces]);
+  return null;
+}
+
 function PlaceCard({ place, favorite, inTrip, canAdd, onFavorite, onSelect, onToggleTrip }: { place: Place; favorite: boolean; inTrip: boolean; canAdd: boolean; onFavorite: () => void; onSelect: () => void; onToggleTrip: () => void }) {
   return <article className="place-card"><div className="card-heading"><div><h3>{place.name}</h3><p className="muted">{categoryLabels[place.category]} · {place.addressOrArea}</p></div><button className="icon-button" aria-label={favorite ? `Fjern ${place.name} fra favoritter` : `Lagre ${place.name} som favoritt`} onClick={onFavorite}>{favorite ? '★' : '☆'}</button></div>{isFictional(place) && <span className="demo-label">Fiktivt demosted</span>}<p>{place.shortDescription}</p>{place.routeInfo && <p className="route-summary"><strong>{place.routeInfo.lengthKm} km</strong> · {place.routeInfo.surfaceText} · Ikke verifisert</p>}<div className="facility-list">{primaryFilters.map((name) => <FacilityStatus key={name} name={name} claim={place.facilities[name]} />)}</div><div className="place-card-actions"><button className="text-button" onClick={onSelect}>Se detaljer</button><button className={`trip-add-button ${inTrip ? 'selected' : ''}`} onClick={onToggleTrip} disabled={!inTrip && !canAdd}>{inTrip ? '✓ I Min tur' : 'Legg til i Min tur'}</button></div></article>;
 }
@@ -383,6 +399,7 @@ function Explore() {
   return <section className="page explore">
     <div className="section-intro"><div><p className="eyebrow">Kristiansand og nærområdene</p><h1>Utforsk steder</h1></div><span className="result-count">{results.length} treff</span></div>
     <p className="explore-trust-note">Ja og Nei kommer fra oppføringens informasjon. Ukjent betyr at vi ikke har bekreftet opplysningen. <span className="marker-legend"><span className="legend-dot real" aria-hidden="true" />Reelt sted <span className="legend-dot demo" aria-hidden="true" />Demosted</span></p>
+    {filters.length > 0 && <p className="filter-status-note" role="status">{results.length === 0 ? 'Ingen treff med bekreftet «Ja». Steder med «Ukjent» inngår ikke i filtreringen.' : 'Fasilitetsfilteret viser bare steder med bekreftet «Ja». Steder med «Ukjent» inngår ikke i resultatene.'}</p>}
     <div className="controls explore-controls">
       <label className="search-field">Søk etter sted<input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Navn, område eller tag" /></label>
       <div className="filter-group primary-filters"><span className="label">Praktiske behov</span>{primaryFilters.map((filter) => <label className="checkbox" key={filter}><input type="checkbox" checked={filters.includes(filter)} onChange={() => setFilters(filters.includes(filter) ? filters.filter((item) => item !== filter) : [...filters, filter])} />{facilityLabels[filter]}</label>)}</div>
@@ -392,7 +409,7 @@ function Explore() {
     </div>
     <div className="view-toggle" role="group" aria-label="Visning"><button className={view === 'map' ? 'active' : ''} onClick={() => setView('map')}>Kart</button><button className={view === 'list' ? 'active' : ''} onClick={() => setView('list')}>Liste</button></div>
     <TripSelectionBar selectedIds={tripSelection} onClear={() => { setTripSelection([]); writeTripSelection([]); }} onCreatePlan={createTripPlan} />
-    <div className={`explore-layout ${view}`}><div className="map-area" aria-label="Kart over Kristiansand"><MapContainer center={[58.1467, 7.9956]} zoom={13} scrollWheelZoom><TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />{results.filter((place) => place.coordinates).map((place) => <Marker position={[place.coordinates!.lat, place.coordinates!.lng]} icon={isFictional(place) ? demoPlaceMarker : realPlaceMarker} key={place.id}><Popup><strong>{place.name}</strong><br />{isFictional(place) ? 'Fiktivt demosted' : 'Reell stedsidentitet'}<br /><button onClick={() => setSelected(place)}>Se detaljer</button></Popup></Marker>)}</MapContainer></div><div className="results" aria-live="polite"><div className="results-heading"><h2>Steder i området</h2><span className="muted">{results.length} treff</span></div>{results.length ? results.map((place) => <PlaceCard key={place.id} place={place} favorite={favorites.includes(place.id)} inTrip={tripSelection.includes(place.id)} canAdd={tripSelection.length < 3} onFavorite={() => toggleFavorite(place.id)} onSelect={() => setSelected(place)} onToggleTrip={() => toggleTripSelection(place.id)} />) : <div className="empty-state"><h2>Ingen treff</h2><p>Prøv et annet søk eller fjern noen filtre.</p><button className="button secondary" onClick={reset}>Nullstill filtre</button></div>}</div></div>{selected && <PlaceDetails place={selected} inTrip={tripSelection.includes(selected.id)} canAdd={tripSelection.length < 3} onClose={() => setSelected(null)} onToggleTrip={() => toggleTripSelection(selected.id)} />}</section>;
+    <div className={`explore-layout ${view}`}><div className="map-area" aria-label="Kart over Kristiansand"><MapContainer center={[58.1467, 7.9956]} zoom={13} scrollWheelZoom><TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" /><MapViewport visiblePlaces={results} />{results.filter((place) => place.coordinates).map((place) => <Marker position={[place.coordinates!.lat, place.coordinates!.lng]} icon={isFictional(place) ? demoPlaceMarker : realPlaceMarker} key={place.id}><Popup><strong>{place.name}</strong><br />{isFictional(place) ? 'Fiktivt demosted' : 'Reell stedsidentitet'}<br /><button onClick={() => setSelected(place)}>Se detaljer</button></Popup></Marker>)}</MapContainer></div><div className="results" aria-live="polite"><div className="results-heading"><h2>Steder i området</h2><span className="muted">{results.length} treff</span></div>{results.length ? results.map((place) => <PlaceCard key={place.id} place={place} favorite={favorites.includes(place.id)} inTrip={tripSelection.includes(place.id)} canAdd={tripSelection.length < 3} onFavorite={() => toggleFavorite(place.id)} onSelect={() => setSelected(place)} onToggleTrip={() => toggleTripSelection(place.id)} />) : <div className="empty-state"><h2>Ingen treff</h2><p>Prøv et annet søk eller fjern noen filtre.</p><button className="button secondary" onClick={reset}>Nullstill filtre</button></div>}</div></div>{selected && <PlaceDetails place={selected} inTrip={tripSelection.includes(selected.id)} canAdd={tripSelection.length < 3} onClose={() => setSelected(null)} onToggleTrip={() => toggleTripSelection(selected.id)} />}</section>;
 }
 
 function TripPlanner() {

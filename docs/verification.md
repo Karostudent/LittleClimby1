@@ -156,9 +156,17 @@
 - Peisestuen er registrert som park på Odderøya; lekeplassstatus må kontrolleres manuelt før den beskrives som lekeplass.
 - Kart- og stedsmodellen er ikke redesignet.
 - Totalt reelle steder: 10; totalt fiktive demosteder: 13.
-- Verifisert: `npm test` bestod 2026-11-17 med 32 tester i 4 testfiler.
+- Verifisert: `npm test` bestod 2026-11-17 med 34 tester i 4 testfiler.
 - Verifisert: `npm run build` bestod 2026-11-17 med Vite-produksjonsbygg.
 - Verifisert: `git diff --check` bestod 2026-11-17.
+
+## Kartutsnitt og filtreringsforklaring
+
+- Kartet bruker nå Leaflet `fitBounds` for synlige resultater, sentrerer på ett treff og beholdes uendret ved åpning av stedsdetaljer.
+- Standardutsnittet beregnes fra alle registrerte stedskoordinater.
+- Aktive fasilitetsfiltre viser en kort forklaring om at bare bekreftet «Ja» inngår og at «Ukjent» ikke teller som treff.
+- Nettleserkontroll 2026-11-17: Standardkart viste alle 23 markører; søk etter «Dyreparken» og «Hamresanden» ga ett treff; ingen-treffkombinasjon viste tydelig «Ingen treff med bekreftet «Ja»»; stedsdetalj åpnet og lukket uten andre endringer i navigasjon eller turvalg.
+- De nye reelle stedene bruker direkte OSM-, virksomhets- eller kartkilde der generelle kommunesider tidligere ble brukt som stedsidentitet.
 
 ## Turplanlegging og ekstern veibeskrivelse
 

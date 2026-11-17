@@ -67,3 +67,5 @@
 16. Legg til et fiktivt demosted i turen og kontroller at veibeskrivelsesknappen ikke vises og at årsaken forklares kort.
 17. Søker etter «Ravnedalen», «Baneheia», «Aquarama» eller «Leo’s Lekeland» og kontroller at reelle markører og detaljer åpnes.
 18. Legg til opptil tre reelle steder i Min tur, kontroller valgt rekkefølge og at Google Maps-lenken oppdateres.
+19. Søk etter «Dyreparken» eller «Hamresanden» og kontroller at kartet sentrerer på treffet.
+20. Aktiver stellerom eller barnevognplass og les forklaringen om at bare bekreftet «Ja» inkluderes. Prøv en filterkombinasjon uten treff.
