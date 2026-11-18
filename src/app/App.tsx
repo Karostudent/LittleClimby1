@@ -133,9 +133,9 @@ function Home() {
     <div className="welcome-hero">
       <div className="welcome-copy">
         <p className="eyebrow">Enklere babyliv, hjemme og ute</p>
-        <h1>Finn et sted som passer dere.</h1>
+        <h1>Enklere Babyliv - Gjør turen god for liten og stor!</h1>
         <p className="lead">Se barnevennlige steder og aktiviteter i Kristiansand.</p>
-        <div className="actions"><Link className="button primary" to="/utforsk">Finn barnevennlige steder</Link><Link className="button secondary" to="/reise">Min baby</Link></div>
+        <div className="actions"><Link className="button primary" to="/utforsk">Utforsk barnevennlige steder</Link><Link className="button secondary" to="/reise">Min baby</Link></div>
         <p className="welcome-note">Du kan starte uten innlogging. Alt du legger inn i demoen, lagres bare lokalt i nettleseren.</p>
       </div>
       <div className="welcome-illustration" aria-label="Egne illustrasjoner laget for Enklere Babyliv">
