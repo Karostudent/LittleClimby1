@@ -206,7 +206,7 @@ body.detail-open{overflow:hidden}
   .babybot-future-grid{grid-template-columns:1fr}
   .babybot-compose{padding:.65rem .75rem}
 }
-h1[tabindex="-1"]:focus:not(:focus-visible),
-h2[tabindex="-1"]:focus:not(:focus-visible) {
+h1[tabindex="-1"]:focus,
+h2[tabindex="-1"]:focus {
   outline: none;
 }
