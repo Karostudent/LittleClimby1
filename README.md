@@ -6,19 +6,39 @@ Dette er en privat demo med syntetiske data – ikke en offentlig tjeneste eller
 
 ## Kom i gang
 
-Forutsetter Node.js 20 eller nyere.
+Forutsetter Node.js 20 eller nyere og npm.
+
+Installer låste avhengigheter fra prosjektroten:
 
 ```bash
-npm install
+npm ci
+```
+
+Start utviklingsserveren:
+
+```bash
 npm run dev
 ```
 
-Bygg og test:
+Åpne URL-en som Vite viser i terminalen, vanligvis `http://localhost:5173`.
+Stopp serveren med `Ctrl+C`.
+
+### Test og produksjonsbuild
+
+Kjør testene:
+
+```bash
+npm test
+```
+
+Lag en produksjonsbuild:
 
 ```bash
 npm run build
-npm test
 ```
+
+`npm run build` kjører TypeScript-sjekk før Vite lager produksjonsfilene i `dist/`.
+Mappen `dist/` og `node_modules/` er genererte filer og skal ikke legges til i Git.
 
 ## Funksjonalitet
 
@@ -103,13 +123,17 @@ Se [docs/data-provenance.md](docs/data-provenance.md) for kilder og status for r
 
 ## Verifisering og brukertest
 
-Kjør:
+For en full lokal kontroll, kjør:
 
 ```bash
+npm ci
 npm test
 npm run build
+git diff --check
 ```
 
-Siste verifisering: 34 tester bestått, production build bestått og `git diff --check` bestått. Manuelle Ingrid- og Jonas-skript finnes i [docs/test-scenarios.md](docs/test-scenarios.md). Kravstatus finnes i [docs/requirements-status.md](docs/requirements-status.md), og testnotater kan føres i [docs/user-test-notes.md](docs/user-test-notes.md).
+Siste verifisering 2026-11-18: 34 tester bestått i 4 testfiler, production build bestått og `git diff --check` bestått. Vitest er oppdatert til `4.1.12`. Manuelle Ingrid- og Jonas-skript finnes i [docs/test-scenarios.md](docs/test-scenarios.md). Kravstatus finnes i [docs/requirements-status.md](docs/requirements-status.md), og testnotater kan føres i [docs/user-test-notes.md](docs/user-test-notes.md).
+
+Sikkerhetsstatus for utviklingsavhengigheter og resterende audit-funn er dokumentert i [docs/verification.md](docs/verification.md). Kjør `npm audit` ved behov; ikke bruk `npm audit fix --force` uten å vurdere kompatibilitet først.
 
 En produksjonsversjon trenger egen databehandling, personvern- og sikkerhetsvurdering, kartleverandøravtale, verifisering av fasiliteter, universell utforming og løpende kvalitetssikring.

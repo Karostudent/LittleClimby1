@@ -111,6 +111,17 @@
 - Verifisert: `npm run build` bestått 2026-11-17 med Vite-produksjonsbygg.
 - Verifisert: `git diff --check` bestått 2026-11-17.
 
+## Siste verifisering og teknisk status
+
+- Verifisert 2026-11-18: `npm ci` fullført med låst avhengighetssett.
+- Verifisert 2026-11-18: `npm test` bestått med Vitest `4.1.12`, 4 testfiler og 34 tester.
+- Verifisert 2026-11-18: `npm run build` bestått med Vite `6.4.5` og TypeScript-sjekk.
+- Verifisert 2026-11-18: `git diff --check` bestått.
+- Oppdatert: programmatisk fokuserte overskrifter med `tabindex="-1"` viser ikke lenger turkis fokusramme. Fokusmarkeringer for knapper, lenker og skjemafelt er beholdt.
+- `npm audit` rapporterte 7 gjenstående funn: 5 høye utviklingsavhengighetsfunn knyttet til `picomatch` i Vite/Vitest-kjeden og 2 moderate React Router-funn.
+- `npm audit --omit=dev` rapporterte 2 moderate React Router-funn. Appen er en klientbasert prototype uten SSR, backend eller dynamiske eksterne rutemål.
+- Kritiske Vitest/Tinypool-funn ble lukket ved oppdatering til Vitest `4.1.12`. React og React Router ble ikke oppdatert. `npm audit fix --force` ble ikke brukt.
+
 ## Måltrettet UX- og kvalitetssikring
 
 - Rettet: Stedsdialogen bruker tilgjengelig viewport-høyde, intern vertikal scrolling og en alltid tilgjengelig «Lukk»-handling.
