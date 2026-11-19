@@ -10,14 +10,16 @@ Statusene betyr:
 | Område | Status | Dokumentasjon |
 |---|---|---|
 | Kart, liste, søk og filtre | Verifisert i kode/test | `src/domain/places.test.ts`, `src/app/App.tsx` |
+| Utvidet reell stedsdatabase | Implementert og verifisert i kode/test | `src/data/places.ts`, `src/domain/places.test.ts`, `docs/data-provenance.md` |
+| Google Maps-veibeskrivelse for reelle steder | Verifisert i kode/test | `src/domain/places.ts`, `src/domain/places.test.ts`, `src/app/App.tsx` |
 | `unknown` ekskluderes fra positive filtre | Verifisert i kode/test | `src/domain/places.test.ts` |
-| Favoritter i lokal lagring | Implementert, manuell kontroll gjenstår | `src/services/storage.ts`, Ingrid-skript |
+| Favoritter i lokal lagring | Verifisert i kode/test og nettleserkontroll | `src/services/storage.ts`, Ingrid-skript |
 | Fiktive og reelle stedsidentiteter | Implementert, data er demo | `docs/data-provenance.md` |
 | Termin- og ukeinngang | Verifisert i kode/test | `src/domain/journey.test.ts` |
 | Milepæler og minst tre pappatips | Verifisert i kode/test | `src/domain/journey.test.ts` |
 | Separate råd til mor/den gravide og far/medforelder | Verifisert i kode/test | `src/domain/journey.test.ts`, `src/domain/journey.ts` |
 | To sjekklister og lokal utholdenhet | Verifisert i kode/test; manuell reload gjenstår | `src/services/storage.test.ts`, Jonas-skript |
-| Valg av barnets alder 0–5 år på profil | Implementert; manuell UI-kontroll gjenstår | `src/app/App.tsx` |
+| Valg av barnets alder 0–6 år og fødselsdato på profil | Verifisert i kode/test og nettleserkontroll; eksklusive innganger implementert | `src/app/App.tsx`, `src/domain/journey.test.ts` |
 | Aldersfiltrerte aktivitetsforslag | Verifisert i kode/test; manuell UI-kontroll gjenstår | `src/data/activities.test.ts`, `src/data/activities.ts` |
 | Alderstilpassede sjekkpunkter | Verifisert i kode/test; manuell UI-kontroll gjenstår | `src/domain/journey.test.ts`, `src/domain/journey.ts` |
 | Kort aldersbeskrivelse i «Din status» | Verifisert i kode/test; manuell UI-kontroll gjenstår | `src/domain/journey.test.ts`, `src/app/App.tsx` |
@@ -25,13 +27,16 @@ Statusene betyr:
 | Varslingsforhåndsvisning | Implementert og simulert | `src/app/App.tsx` |
 | Sletting av demodata | Verifisert i lagringstest; manuell UI-kontroll gjenstår | `src/services/storage.test.ts`, Jonas-skript |
 | Pappasporet, guider og aktivitetsoversikt | Implementert; innholdet er demo/designhypotese | `src/app/App.tsx` |
-| Responsiv layout | CSS-regler implementert; manuell kontroll gjenstår | `src/app/styles.css` |
-| Tastaturfokus og dialogsemantikk | Implementert; skjermleser-/tastaturtest gjenstår | `src/app/App.tsx`, `src/app/styles.css` |
+| Little BabyBot-konseptdemo under Mer | Implementert; ingen AI, nettverk eller melding lagres | `src/app/App.tsx`, `src/app/styles.css` |
+| Responsiv layout og femvalgsnavigasjon | Nettleserkontroll gjennomført; full skjermlesertest gjenstår | `src/app/styles.css`, `src/app/App.tsx` |
+| Tastaturfokus og dialogsemantikk | Escape, fokus og bakgrunnssperre kontrollert i nettleser; skjermlesertest gjenstår | `src/app/App.tsx`, `src/app/styles.css` |
 | Kartfliser og ekstern karttjeneste | Simulert av ekstern leverandør | `src/app/App.tsx`, `docs/data-provenance.md` |
 | Produksjonsinnlogging, sending, booking, betaling og medisinsk rådgivning | Utenfor MVP | `docs/MASTERSPESIFIKASJON.md` |
 
 ## Faktisk verifisert i fase 4
 
-- `npm test`: 8 tester bestått.
+- Siste `npm test`: 34 tester bestått i 4 testfiler.
 - `npm run build`: bestått.
-- Manuell brukertest, mobilnettleser, skjermleser og runtime-kartfeil: ikke kjørt i denne fasen.
+- Mobil- og desktopnavigasjon med Hjem, Utforsk, Min tur, Min baby og Mer er implementert; Guider, Partnertilbud og Profil ligger under Mer.
+- Nettleserkontroll er kjørt for 320–1920 px bredde og 320–900 px høyde. Hurting-oppdatering av filter, Escape/lukking av Mer-meny og stedsdialog, samt Min tur-fjerning er kontrollert.
+- Faktisk brukertest med testpersoner og skjermlesergjennomgang er ikke kjørt i denne fasen.

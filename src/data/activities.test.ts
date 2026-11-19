@@ -10,7 +10,16 @@ describe('age-adapted activities', () => {
     expect(toddlerIds).not.toContain('activity-baby-sensory');
   });
 
-  it('does not show activities outside their declared age range', () => {
-    expect(activitiesForAge(6)).toEqual([]);
+  it('shows activities declared for the school-start age', () => {
+    const schoolStartIds = activitiesForAge(6).map((activity) => activity.id);
+    expect(schoolStartIds).toContain('activity-family-meetup');
+    expect(schoolStartIds).toContain('activity-kindergarten-play');
+    expect(schoolStartIds).not.toContain('activity-toddler-outdoor');
+  });
+
+  it('keeps every suggestion inside its declared age range', () => {
+    for (let age = 0; age <= 6; age += 1) {
+      expect(activitiesForAge(age).every((activity) => age >= activity.ageMinYears && age <= activity.ageMaxYears)).toBe(true);
+    }
   });
 });

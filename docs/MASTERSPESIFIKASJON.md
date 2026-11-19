@@ -104,13 +104,13 @@ Jonas/Ingrid/Maria er personas konstruert på bakgrunn av funn og tolkninger i o
 
 ## 3. Informasjonsarkitektur og navigasjon
 
-Fem hovedområder (mobil bunnmeny, desktop toppmeny/sidepanel):
+Fem hovedvalg (mobil bunnmeny, desktop toppmeny/sidepanel):
 
 1. **Hjem:** tydelig inngang til «Finn steder», aktivitetstips, mulighet for frivillig personlig profil, neste milepæl hvis profil finnes.
 2. **Utforsk:** kart/liste, søk, filterchips, kategorier, detaljkort for steder/turer/aktiviteter, favoritter og eventuell ekstern navigasjon.
-3. **Min baby:** frivillig registrering av termin eller svangerskapsuke, tidslinje, milepæler, pappatips, sjekklister og utstyrslister.
-4. **Guider:** Pappasporet, tips for foreldre med baby på tur, kort og kvalitetssikret kunnskap med kildehenvisning.
-5. **Profil:** oppdater/slett demoprofil, valg av foreldrerolle/innhold og varslingspreferanser; visning av lagrede steder.
+3. **Min tur:** opptil tre valgte stopp, dato og huskelapp, med kobling tilbake til Utforsk.
+4. **Min baby:** frivillig registrering av termin eller svangerskapsuke, tidslinje, milepæler, pappatips, sjekklister og utstyrslister.
+5. **Mer:** samler Guider, Partnertilbud og Profil/innstillinger. Partnerportalen er tilgjengelig fra Partnertilbud, men er ikke et hovedvalg.
 
 Globalt: tydelig merkevare, enkel navigasjon, mulig søk og synlig demomodus. Ingen døde menyer: sekundærsider kan være enklere, men lenker må føre til faktisk innhold eller være tydelig merket «Ikke i denne prototypen».
 

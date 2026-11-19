@@ -32,8 +32,17 @@ export const activities: Activity[] = [
     title: 'Familietreff i nærmiljøet',
     description: 'En fiktiv møteplass for familier med barn i flere aldre.',
     ageMinYears: 0,
-    ageMaxYears: 5,
+    ageMaxYears: 6,
     locationLabel: 'Demo Barseltreff ved sjøen',
+    demoOnly: true,
+  },
+  {
+    id: 'activity-kindergarten-play',
+    title: 'Åpen lekestund for større barn',
+    description: 'En fiktiv aktivitet med enkel lek, fantasi og tid til å bli kjent med andre.',
+    ageMinYears: 3,
+    ageMaxYears: 6,
+    locationLabel: 'Demo Åpen lekestund',
     demoOnly: true,
   },
 ];
