@@ -46,7 +46,7 @@ function NavigationIcon({ name }: { name: NavigationIconName }) {
     bot: <><rect x="5" y="7" width="14" height="12" rx="4" /><path d="M12 7V3M9 3h6M9 12h.01M15 12h.01M9 16h6" /></>,
   }[name];
 
-  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{paths}</svg>;
+  return <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">{paths}</svg>;
 }
 
 function MoreMenu() {
