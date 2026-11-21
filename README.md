@@ -95,6 +95,41 @@ Mappen `dist/` og `node_modules/` er genererte filer og skal ikke legges til i G
 - Aktivt valg markeres med et mintfarget ikonfelt inspirert av Emma-branchen.
 - Navigasjonssymbolene er SVG-symboler: hus, kart, rute, hjerte og informasjon.
 
+### Slik henger sidene sammen
+
+```mermaid
+flowchart TD
+    H["Hjem<br/>/"] --> U["Utforsk<br/>/utforsk"]
+    H --> T["Min tur<br/>/planlegg"]
+    H --> B["Min baby<br/>/reise"]
+    H --> M["Mer-menyen"]
+
+    U -->|åpne sted| D["Stedsdetaljer<br/>dialog"]
+    U -->|legg til stopp| T
+    D -->|legg til i Min tur| T
+    D -.->|ekstern lenke| X["OpenStreetMap<br/>veibeskrivelse"]
+
+    T -->|endre stopp| U
+    T -.->|ekstern lenke| GM["Google Maps<br/>samlet veibeskrivelse"]
+
+    B -->|endre opplysninger| P["Profil og innstillinger<br/>/profil"]
+    B -->|finn steder| U
+    P -->|tilbake til Min baby| B
+
+    M --> G["Guider<br/>/guider"]
+    M --> PA["Partnertilbud<br/>/partnere"]
+    M --> LB["Little BabyBot<br/>/little-babybot"]
+    M --> P
+
+    G -->|finn steder| U
+    G -->|se sjekklister| B
+    PA -->|utforsk steder| U
+    PA -->|partnerinngang| PP["Partnerportal<br/>/partnerportal"]
+    PP -->|se brukersiden| PA
+```
+
+Heltrukne linjer viser intern navigasjon i appen. Stiplede linjer viser eksterne lenker. `Utforsk` har også hurtigfiltre som åpner samme side med et aktivt filter. Stedsdetaljer åpnes som en dialog fra `Utforsk`, ikke som en egen URL-rute.
+
 ### Hjem
 
 - Hjem viser én hovedhandling: «Finn barnevennlige steder».
